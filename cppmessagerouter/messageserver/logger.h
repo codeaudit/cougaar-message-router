@@ -21,29 +21,37 @@
 using namespace std;
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string>
+#include <qthread.h>
+#include <list>
+#include <qmutex.h>
+#include <logentry.h>
+#include <time.h>
 
 /**
   *@author David Craine
   */
 
-class Logger {
+class Logger : public QThread {
 public: 
 	Logger();
 	~Logger();
   void setLevel(int level);
   /** No descriptions */
-  void log(string& msg, int level) const;
+  void log(string& msg, int level);
   /** No descriptions */
-  void log(const char *, int level) const;
-  void forceLog(const char *) const;
-  void log(const char *subject, const char *msg, int level) const;
-  void log(const char *from, const char* to, const char *subject, const char* msg, int level) const;
+  void log(const char *, int level);
+  void forceLog(const char *);
+  void log(const char *subject, const char *msg, int level);
+  void log(const char *from, const char* to, const char *subject, const char* msg, int level);
   /** Write property of bool enabled. */
   void enable();
   void disable();
   /** Read property of bool enabled. */
   const bool isenabled();
+  virtual void run();
+  void stop();
   
 public:  // Public attributes
   static const int LEVEL_INFO =1;
@@ -54,15 +62,23 @@ public:  // Public attributes
 private:  //private methods
   string getLevelStr(int level) const;
   char * getCurrentTimeStr(char*, unsigned int len) const;
+  struct tm* getCurrentTime(struct tm*);
+  char * convertTimeToStr(struct tm* , char *, unsigned int) const;
+  void addLogEntry(LogEntry *);
+  void writeLogEntry(LogEntry *);
     
 private: // Private attributes
   /**  */
   bool enabled;
+  bool keepRunning;
+  list<LogEntry *> stack;
+  QMutex listLock;
   int currentLevel;
   string LEVEL_INFO_STR;
   string LEVEL_WARN_STR;
   string LEVEL_DEBUG_STR;
   string LEVEL_SHOUT_STR;
+  char *pLogFileName;
 };
 
 #endif

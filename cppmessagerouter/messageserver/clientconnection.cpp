@@ -337,7 +337,7 @@ bool ClientConnection::processMessage(Message& msg){
   ServerStats::getInstance()->incrementIncomingMsgCount();
   if (msg.getto() != "") {
     Context::getInstance()->getLogger()->log(msg.getfrom().c_str(), msg.getto().c_str(),
-      msg.getsubject().c_str(), msg.getbody().c_str(), Logger::LEVEL_INFO);
+      "Routing Message", msg.getsubject().c_str(), Logger::LEVEL_INFO);
     routeMessage(msg);
     return true;
   }
@@ -433,7 +433,7 @@ bool ClientConnection::handleMessage(Message& msg){
       reply->setto(msg.getfrom());
       reply->setsubject("list");
       string& list = Context::getInstance()->getconnectionRegistry()->listConnections();
-      Context::getInstance()->getLogger()->log((const char *)"Current List", list.c_str(), Logger::LEVEL_INFO);
+      //Context::getInstance()->getLogger()->log((const char *)"Current List", list.c_str(), Logger::LEVEL_INFO);
       reply->setbody(list);
       delete &list;
     }

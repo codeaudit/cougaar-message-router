@@ -28,6 +28,7 @@ Context::Context(){
   eavesDroppingAllowed = FALSE;
   errorMessagesAllowed = FALSE;
   logger = new Logger();
+  logger->start();
   connectionValidator = new ConnectionValidator();
   connectionValidator->start();
   ServerStats::getInstance();

@@ -39,44 +39,44 @@
    for (int i=1; i<argc; i++) {
      if (!strcmp(argv[i], "-b")) {
         block_read = true;
-        cout << "block read enabled" << endl << flush;
+        Context::getInstance()->getLogger()->forceLog("block read enabled");
         
       }
       if (!strcmp(argv[i], "-i")) {
         Logger* logger = Context::getInstance()->getLogger();
         logger->setLevel(Logger::LEVEL_INFO);
         logger->enable();
-        cout << "logging enabled at level INFO" << endl << flush;
+        Context::getInstance()->getLogger()->forceLog("logging enabled at level INFO");
       }
       if (!strcmp(argv[i], "-w")) {
         Logger* logger = Context::getInstance()->getLogger();
         logger->setLevel(Logger::LEVEL_WARN);
         logger->enable();
-        cout << "logging enabled at level WARN" << endl << flush;
+        Context::getInstance()->getLogger()->forceLog("logging enabled at level WARN");
       }
       if (!strcmp(argv[i], "-d")) {
         Logger* logger = Context::getInstance()->getLogger();
         logger->setLevel(Logger::LEVEL_DEBUG);
         logger->enable();
-        cout << "debugging enabled at LEVEL DEBUG" << endl << flush;
+        Context::getInstance()->getLogger()->forceLog("debugging enabled at LEVEL DEBUG");
       }
       if (!strcmp(argv[i], "-s")) {
         Logger* logger = Context::getInstance()->getLogger();
         logger->setLevel(Logger::LEVEL_SHOUT);
         logger->enable();
-        cout << "debugging enabled at LEVEL SHOUT" << endl << flush;
+        Context::getInstance()->getLogger()->forceLog("debugging enabled at LEVEL SHOUT");
       }
       if (!strcmp(argv[i], "-r")) {
         Context::getInstance()->setAllowDuplicateConnections(false);
-        cout << "disabling duplicate connections" << endl << flush;
+        Context::getInstance()->getLogger()->forceLog("disabling duplicate connections");
       }
       if (!strcmp(argv[i], "-e")) {
         Context::getInstance()->enableEavesDropping();
-        cout << "eavesdropping enabled" << endl << flush;
+        Context::getInstance()->getLogger()->forceLog("eavesdropping enabled");
       }
       if (!strcmp(argv[i], "-m")) {
         Context::getInstance()->enableErrorMessages();
-        cout << "error messages enabled" << endl << flush;
+        Context::getInstance()->getLogger()->forceLog("error messages enabled");
       }
       if (!strcmp(argv[i], "-h")) {
         cout << "Options are:" << endl << flush;
@@ -110,7 +110,7 @@
     }
     catch ( SocketException& e )
     {
-      std::cout << "Exception was caught:" << e.description() << "\nExiting.\n" << endl;
+      Context::getInstance()->getLogger()->forceLog(e.description().c_str());
     }
     
     return EXIT_SUCCESS;
