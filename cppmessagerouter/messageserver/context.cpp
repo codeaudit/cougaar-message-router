@@ -40,10 +40,10 @@ Context* Context::getInstance(){
   return currentInstance;
 }
 /** Read property of ListenerRegistry listenerRegistry. */
-const ListenerRegistry* Context::getlistenerRegistry(){
+ListenerRegistry* Context::getlistenerRegistry(){
 	return listenerRegistry;
 }
 
-const Logger* Context::getLogger() const {
+Logger* Context::getLogger() {
   return logger;
 }

@@ -56,14 +56,10 @@
       
       while ( true )
       {
-        //cout << "waiting for socket connection" << endl;
         ServerSocket *new_sock = new ServerSocket();
         server.accept ( *new_sock );
-        //cout << "accepted new socket connection" << endl;
         ClientConnection* cc = new ClientConnection(new_sock, false);
-        //cout << "created client connection object" << endl;
         cc->start();
-        //cout << "started client connection" << endl;
       }
     }
     catch ( SocketException& e )

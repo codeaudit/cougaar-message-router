@@ -78,11 +78,11 @@ private: // Private methods
   /** No descriptions */
   void routeMessage(Message& msg);
   /** No descriptions */
-  void processMessage(Message& msg);
+  bool processMessage(Message& msg);
   /** No descriptions */
   void registerClient(string &);
   /** No descriptions */
-  void handleMessage(Message& msg);
+  bool handleMessage(Message& msg);
   /** No descriptions */
   void getData(char *buffer, int size);
   /** No descriptions */

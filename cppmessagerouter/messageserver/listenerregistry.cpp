@@ -27,26 +27,16 @@ ListenerRegistry::ListenerRegistry(){
 ListenerRegistry::~ListenerRegistry(){
 }
 
-/** No descriptions */
-/*void ListenerRegistry::registerListener(ClientConnection *cc ){
-  listeners.push_back(cc);
-} */
-
-void  ListenerRegistry::registerListener(ClientConnection* const cc ) const {
+void  ListenerRegistry::registerListener(ClientConnection* cc )  {
   listeners.push_back(cc);
 }
 
-/** No descriptions */
-/*void ListenerRegistry::deregisterListener(ClientConnection *cc){
-  listeners.remove(cc);
-}*/
-
-void ListenerRegistry::deregisterListener(ClientConnection * const cc) const {
+void ListenerRegistry::deregisterListener(ClientConnection* cc)  {
   listeners.remove(cc);
 }
 
 /** No descriptions */
-void ListenerRegistry::notifyListeners(Message &msg) const {
+void ListenerRegistry::notifyListeners(Message &msg)  {
   list<ClientConnection *>::iterator iter;
 
   iter = listeners.begin();

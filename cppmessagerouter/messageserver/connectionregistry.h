@@ -24,6 +24,8 @@
   *@author David Craine
   */
 
+typedef map<string, ClientConnection*> ConnectionMap;
+
 class ConnectionRegistry {
 public: 
 	ConnectionRegistry();
@@ -35,6 +37,10 @@ public:
   void deregisterConnection(string &name);
   /** No descriptions */
   string& listConnections();
+
+private:
+  ConnectionMap clientMap;
+
 };
 
 #endif

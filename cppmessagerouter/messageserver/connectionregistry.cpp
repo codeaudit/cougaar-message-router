@@ -19,8 +19,6 @@
 #include "connectionregistry.h"
 #include <iostream.h>
 
-typedef map<string, ClientConnection*> ConnectionMap;
-ConnectionMap clientMap;
 
 ConnectionRegistry::ConnectionRegistry(){
 }
@@ -33,7 +31,6 @@ void ConnectionRegistry::registerConnection(ClientConnection *cc, string& name) 
  
 ClientConnection * ConnectionRegistry::findConnection(const string& name) {
   ClientConnection* cc = clientMap[name];
-  //cout << "Connection Registry found connection: " << cc->name << " for name: " << name << endl;
   return cc;
   
 }

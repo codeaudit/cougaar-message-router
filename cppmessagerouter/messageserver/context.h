@@ -34,8 +34,8 @@ public:
   /** No descriptions */
   static Context* getInstance();
   /** Read property of ListenerRegistry listenerRegistry. */
-  const ListenerRegistry* getlistenerRegistry();
-  const Logger* getLogger() const;
+  ListenerRegistry* getlistenerRegistry();
+  Logger* getLogger();
   
 private:
 	Context();

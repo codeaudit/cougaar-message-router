@@ -2,6 +2,7 @@
 
 #include "ServerSocket.h"
 #include "SocketException.h"
+#include <iostream.h>
 
 
 ServerSocket::ServerSocket ( int port )
@@ -51,7 +52,7 @@ const ServerSocket& ServerSocket::operator >> ( std::string& s ) const
 }
 
 const int ServerSocket::recv (char* c, int size) const  {
-  this->recv(c, size, false);
+  return this->recv(c, size, false);
 }
 
 const int ServerSocket::recv (char* c, int size, bool wait ) const
@@ -86,4 +87,5 @@ void ServerSocket::accept ( ServerSocket& sock )
     }
 
 }
+
 

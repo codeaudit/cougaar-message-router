@@ -220,6 +220,7 @@ bool Socket::connect ( const std::string host, const int port )
     return false;
 }
 
+
 void Socket::set_non_blocking ( const bool b )
 {
 

@@ -23,19 +23,23 @@
 /**
   *@author David Craine
   */
-
+typedef list<ClientConnection *> ListenerList;
+  
 class ListenerRegistry {
 public: 
 	ListenerRegistry();
 	~ListenerRegistry();
   /** No descriptions */
   //void registerListener(ClientConnection *);
-  void registerListener(ClientConnection * const) const;
+  void registerListener(ClientConnection *);
   /** No descriptions */
   //void deregisterListener(ClientConnection *);
-  void deregisterListener(ClientConnection * const) const;
+  void deregisterListener(ClientConnection *);
   /** No descriptions */
-  void notifyListeners(Message &) const;
+  void notifyListeners(Message &);
+
+private:
+  ListenerList listeners;
 };
 
 #endif

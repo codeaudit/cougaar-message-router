@@ -66,7 +66,39 @@ ServerSocket.o ServerSocket.o: ServerSocket.cpp ServerSocket.h Socket.h \
   /usr/include/c++/3.2/bits/stl_heap.h \
   /usr/include/c++/3.2/bits/stl_tempbuf.h \
   /usr/include/c++/3.2/bits/basic_string.tcc /usr/include/arpa/inet.h \
-  SocketException.h
+  SocketException.h /usr/include/c++/3.2/backward/iostream.h \
+  /usr/include/c++/3.2/backward/backward_warning.h \
+  /usr/include/c++/3.2/iostream /usr/include/c++/3.2/ostream \
+  /usr/include/c++/3.2/ios /usr/include/c++/3.2/bits/localefwd.h \
+  /usr/include/c++/3.2/i386-redhat-linux/bits/c++locale.h \
+  /usr/include/c++/3.2/clocale /usr/include/locale.h \
+  /usr/include/bits/locale.h /usr/include/langinfo.h \
+  /usr/include/nl_types.h /usr/include/iconv.h /usr/include/libintl.h \
+  /usr/include/c++/3.2/cctype /usr/include/ctype.h \
+  /usr/include/c++/3.2/bits/ios_base.h /usr/include/c++/3.2/streambuf \
+  /usr/include/c++/3.2/bits/streambuf.tcc \
+  /usr/include/c++/3.2/bits/basic_ios.h \
+  /usr/include/c++/3.2/bits/streambuf_iterator.h \
+  /usr/include/c++/3.2/bits/locale_facets.h /usr/include/c++/3.2/cwctype \
+  /usr/include/wctype.h \
+  /usr/include/c++/3.2/i386-redhat-linux/bits/ctype_base.h \
+  /usr/include/c++/3.2/i386-redhat-linux/bits/ctype_inline.h \
+  /usr/include/c++/3.2/bits/codecvt.h \
+  /usr/include/c++/3.2/i386-redhat-linux/bits/codecvt_specializations.h \
+  /usr/include/c++/3.2/i386-redhat-linux/bits/messages_members.h \
+  /usr/include/c++/3.2/bits/basic_ios.tcc \
+  /usr/include/c++/3.2/bits/ostream.tcc /usr/include/c++/3.2/locale \
+  /usr/include/c++/3.2/bits/locale_facets.tcc /usr/include/c++/3.2/cerrno \
+  /usr/include/errno.h /usr/include/bits/errno.h \
+  /usr/include/linux/errno.h /usr/include/asm/errno.h \
+  /usr/include/c++/3.2/cmath /usr/include/math.h \
+  /usr/include/bits/huge_val.h /usr/include/bits/nan.h \
+  /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
+  /usr/include/bits/mathinline.h /usr/include/c++/3.2/bits/cmath.tcc \
+  /usr/include/c++/3.2/limits \
+  /usr/include/c++/3.2/i386-redhat-linux/bits/cpu_limits.h \
+  /usr/include/c++/3.2/typeinfo /usr/include/c++/3.2/istream \
+  /usr/include/c++/3.2/bits/istream.tcc
 
 ServerSocket.h:
 
@@ -295,3 +327,105 @@ Socket.h:
 /usr/include/arpa/inet.h:
 
 SocketException.h:
+
+/usr/include/c++/3.2/backward/iostream.h:
+
+/usr/include/c++/3.2/backward/backward_warning.h:
+
+/usr/include/c++/3.2/iostream:
+
+/usr/include/c++/3.2/ostream:
+
+/usr/include/c++/3.2/ios:
+
+/usr/include/c++/3.2/bits/localefwd.h:
+
+/usr/include/c++/3.2/i386-redhat-linux/bits/c++locale.h:
+
+/usr/include/c++/3.2/clocale:
+
+/usr/include/locale.h:
+
+/usr/include/bits/locale.h:
+
+/usr/include/langinfo.h:
+
+/usr/include/nl_types.h:
+
+/usr/include/iconv.h:
+
+/usr/include/libintl.h:
+
+/usr/include/c++/3.2/cctype:
+
+/usr/include/ctype.h:
+
+/usr/include/c++/3.2/bits/ios_base.h:
+
+/usr/include/c++/3.2/streambuf:
+
+/usr/include/c++/3.2/bits/streambuf.tcc:
+
+/usr/include/c++/3.2/bits/basic_ios.h:
+
+/usr/include/c++/3.2/bits/streambuf_iterator.h:
+
+/usr/include/c++/3.2/bits/locale_facets.h:
+
+/usr/include/c++/3.2/cwctype:
+
+/usr/include/wctype.h:
+
+/usr/include/c++/3.2/i386-redhat-linux/bits/ctype_base.h:
+
+/usr/include/c++/3.2/i386-redhat-linux/bits/ctype_inline.h:
+
+/usr/include/c++/3.2/bits/codecvt.h:
+
+/usr/include/c++/3.2/i386-redhat-linux/bits/codecvt_specializations.h:
+
+/usr/include/c++/3.2/i386-redhat-linux/bits/messages_members.h:
+
+/usr/include/c++/3.2/bits/basic_ios.tcc:
+
+/usr/include/c++/3.2/bits/ostream.tcc:
+
+/usr/include/c++/3.2/locale:
+
+/usr/include/c++/3.2/bits/locale_facets.tcc:
+
+/usr/include/c++/3.2/cerrno:
+
+/usr/include/errno.h:
+
+/usr/include/bits/errno.h:
+
+/usr/include/linux/errno.h:
+
+/usr/include/asm/errno.h:
+
+/usr/include/c++/3.2/cmath:
+
+/usr/include/math.h:
+
+/usr/include/bits/huge_val.h:
+
+/usr/include/bits/nan.h:
+
+/usr/include/bits/mathdef.h:
+
+/usr/include/bits/mathcalls.h:
+
+/usr/include/bits/mathinline.h:
+
+/usr/include/c++/3.2/bits/cmath.tcc:
+
+/usr/include/c++/3.2/limits:
+
+/usr/include/c++/3.2/i386-redhat-linux/bits/cpu_limits.h:
+
+/usr/include/c++/3.2/typeinfo:
+
+/usr/include/c++/3.2/istream:
+
+/usr/include/c++/3.2/bits/istream.tcc:

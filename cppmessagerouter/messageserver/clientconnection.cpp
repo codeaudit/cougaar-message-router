@@ -37,7 +37,6 @@ void printbuffer(char *buf, int size) {
     else
       printf("%c", buf[i]);
   }
-  cout << endl << flush;
 }
 
 long msgcount=0;
@@ -56,22 +55,27 @@ ClientConnection::~ClientConnection(){
 void ClientConnection::run() {
   Message * msg;                                           
   sender->start();
+  bool keepRunning = true;
   try
   {
-    while ( true )
+    while ( keepRunning )
     {
       if (use_block_read) {    //determine whether to use block reading method or not
         MessageList& messages = getMessages();
         while (messages.size() > 0) {
           Message *msg = messages.front();
           messages.pop_front();
-          processMessage(*msg);        
+          keepRunning = processMessage(*msg);
+          if (!keepRunning) {
+            break;  //break out of the inner loop if we get a disconnect request
+          }        
         }
       }
       else {
         msg = getMessage();
         if (msg != NULL) {
-          processMessage(*msg);
+          keepRunning = processMessage(*msg);
+          //processMessage(*msg);
         }
       }
     }
@@ -80,7 +84,8 @@ void ClientConnection::run() {
     Logger *logger = Context::getInstance()->getLogger();
     logger->log("Socket exception", ex.description().c_str());
   }
-
+  
+  Context::getInstance()->getLogger()->log(name.c_str(), "closing connection");
   /***** cleanup *****/
   if (tmp_buffer != NULL) {
     delete tmp_buffer;
@@ -92,7 +97,9 @@ void ClientConnection::run() {
     //delete packetData;
   //}
   deregisterClient();
-  delete ss;
+  if (ss != NULL) {
+    delete ss;
+  }
   if (sender != NULL) {
     sender->stop();
     delete sender;
@@ -114,6 +121,7 @@ void ClientConnection::getData(char *buffer, int size){
     index += recv_size;
   }
   delete tmp_buffer;
+  tmp_buffer = NULL;
 }
 
 /** No descriptions */
@@ -126,6 +134,7 @@ void ClientConnection::getHeaderData(unsigned char* buffer, int size){
     index += recv_size;
   }
   delete tmp_buffer;
+  tmp_buffer = NULL;
 }
 
 
@@ -150,28 +159,17 @@ Message* ClientConnection::getMessage(){
   bodyLength |= packet_header[6];
   bodyLength <<= 8;
   bodyLength |= packet_header[7];
-  //printf("%x %x %x %x\n", packet_header[4], packet_header[5], packet_header[6], packet_header[7]);
-  cout << flush;
-  /*printf("to length: %d\n", toLength);
-  printf("from length: %d\n", fromLength);
-  printf("thread length: %d\n", threadLength);
-  printf("subject length: %d\n", subjectLength);
-  printf("body length: %d\n", bodyLength);  */  
   int totalLength = toLength+fromLength+threadLength+subjectLength+bodyLength;
-  //msgcount++;
-  //printf("%d: received packet length: %d\n", msgcount, totalLength);
   packetData = new char[totalLength+1]; //add 1 for the end of string char
   memset(packetData, 0, sizeof(packetData));
 
   getData(packetData, totalLength);
 
-  //printf("packet data: %s\n", packetData);
   
   //now construct the Message object
   Message *msg = new Message();
   int index = 0;
   string messagedata = packetData;
-  //if (toLength == 0)   {  //if this message has no to address then it gets handled by the router
     if (toLength != 0) {
       msg->setto(messagedata.substr(0, toLength));
       index += toLength;
@@ -220,16 +218,17 @@ void ClientConnection::routeMessage(Message& msg){
 }
 
 /** No descriptions */
-void ClientConnection::processMessage(Message& msg){
+bool ClientConnection::processMessage(Message& msg){
   if (msg.getto() != "") {
-    //cout << "routing msg from: " << name << " to: " << msg.getto() << endl << flush;
     Context::getInstance()->getLogger()->log(msg.getfrom().c_str(), msg.getto().c_str(),
       msg.getsubject().c_str(), msg.getbody().c_str());
     routeMessage(msg);
+    return true;
   }
   else {
-    //cout << "handling msg from: " << msg.getfrom() << " to: " << msg.getto() << " body: " << msg.getbody() << endl;
-    handleMessage(msg);
+    bool ret = handleMessage(msg);
+    delete &msg; //if we handle the message locally we need to delete it when we're done
+    return ret;
   }
 }
 
@@ -247,28 +246,7 @@ void ClientConnection::registerClient(string& name){
 
 /** No descriptions */
 void ClientConnection::sendMessage(Message& msg){
-  /*char* header = msg.getMessageHeader();
-  char toLength = header[0];
-  char fromLength = header[1];
-  char threadLength = header[2];
-  char subjectLength = header[3];
-  long bodyLength =0;
-  bodyLength |= header[4];
-  bodyLength <<= 8;
-  bodyLength |= header[5];
-  bodyLength <<= 8;
-  bodyLength |= header[6];
-  bodyLength <<= 8;
-  bodyLength |= header[7];
-  //printf("sending message length: %d\n",toLength+fromLength+threadLength+subjectLength+bodyLength);
-  msgcount++;
-  char tmpc[30];
-  sprintf(tmpc, "%d : %d",msgcount, (toLength+fromLength+threadLength+subjectLength+bodyLength));
-  cout << "Sent message: " << tmpc << endl << flush;*/
-
-  //cout << "client connection for: " << name << " sending to: " << msg.getto() << ":" << msg.getbody() << endl;
   sender->addMessage(msg);
-  
 }
 
 /** No descriptions */
@@ -282,7 +260,7 @@ void ClientConnection::deregisterClient(){
 }
 
 /** No descriptions */
-void ClientConnection::handleMessage(Message& msg){
+bool ClientConnection::handleMessage(Message& msg){
   string& subject = msg.getsubject();
   Context::getInstance()->getLogger()->log(msg.getfrom().c_str(), (const char *)"server",
     msg.getsubject().c_str(), msg.getbody().c_str());
@@ -290,10 +268,13 @@ void ClientConnection::handleMessage(Message& msg){
     Message* reply = new Message();
     reply->setthread(msg.getthread());
     if (subject == "connect") {  //handle the connect request
-      //cout << "connected: " << msg.getbody() << endl;
       reply->setsubject("connected");
       reply->setto(msg.getbody());
       registerClient(msg.getbody());
+    }
+    else if (subject == "disconnect") { //handle the disconnect request
+      delete reply;
+      return false;
     }
     else if (subject == "list") {  //handle the list request
       reply->setto(msg.getfrom());
@@ -323,6 +304,7 @@ void ClientConnection::handleMessage(Message& msg){
   catch (std::exception& ex) {
     Context::getInstance()->getLogger()->forceLog(ex.what());
   }
+  return true;
   
 }
 
@@ -344,35 +326,23 @@ void ClientConnection::pack(char *src, int srcStartPos, int srcLength, unsigned 
 
 /** No descriptions */
 MessageList& ClientConnection::getMessages(){
-  //cout << "in getMessages()" << endl << flush;
   char* readBuffer = new char[MAX_BUF_SIZE+1];
   memset(readBuffer, 0, sizeof(readBuffer));
   MessageList *messages = new MessageList();
-  //cout << "created message list" << endl << flush;
   //we want to fill the packetBuffer with as much data as we can get
   int actualSize = ss->recv(readBuffer, MAX_BUF_SIZE, false);
-  //printbuffer(readBuffer, actualSize);
-  //cout << "read data" << endl << flush;
-  //printf("message size: %d\n", actualSize);
   int residualPacketLength = packetBufferSize-packetBufferPos;
-  //printf("residual packet length %d\n", residualPacketLength);
-  //cout << "got residual packet lentgh" << endl << flush;
   char* tmpBuf = new char[actualSize + residualPacketLength];  //create a temporary buffer to hold the data;
   //since the tmpBuf will become the packetBuffer, set the size now
   packetBufferSize = actualSize + residualPacketLength;  
-  //cout << "created tmp buffer" << endl << flush;
   //pack the residual data from the packet buffer into the tmp buffer
   pack(packetBuffer, packetBufferPos, residualPacketLength, tmpBuf, 0);
-  //cout << "packed residual" << endl << flush;
   //pack the newly read data into the tmp buffer 
   pack(readBuffer, 0, actualSize, tmpBuf, residualPacketLength);
-  //cout << "packed tmp buffer" << endl << flush;
   if (packetBuffer != NULL) {
     delete packetBuffer;  //delete the old packet buffer
-    //cout << "deleted packetBuffer" << endl << flush;
   }
   packetBuffer = tmpBuf;  //set the packet buffer to the tmp buffer
-  //cout << "set packetbuffer to tmpBuf" << endl << flush;  
 
   packetBufferPos = 0;  //set the packetBufferPos to the beginning of the buffer
   //if there aren't even 8 bytes in the buffer there's not even enough for a header so
@@ -397,9 +367,6 @@ MessageList& ClientConnection::getMessages(){
     bodyLength <<= 8;
     bodyLength |= packetBuffer[packetBufferPos]; packetBufferPos++;
     int totalLength = toLength+fromLength+threadLength+subjectLength+bodyLength;
-    //printf("total length: %d\n", totalLength);
-    //printf("packetBufferPos: %d, packetBufferSize: %d\n", packetBufferPos, packetBufferSize);
-    cout << flush;
     //check to make sure the remainder of the packetBuffer fully contains this packet
     if ((packetBufferSize-packetBufferPos) < totalLength) {
       packetBufferPos -= PACKET_HEADER_SIZE; //step back to tbe beginning of this packet
@@ -407,46 +374,32 @@ MessageList& ClientConnection::getMessages(){
     }
     //otherwise, we need to constuct the Message
     Message *msg = new Message();
-    //cout << "CREATED NEW MESSAGE" << endl << flush;
     char *datastr = createSubStr(packetBuffer, packetBufferPos, totalLength);
     string packetBufferStr = datastr;
-    //cout << "packetBufferStr" << endl << packetBufferStr << endl << flush;
     int pos = 0;
     if (toLength != 0) {
-      //cout << "check to" << endl << flush;
       msg->setto(packetBufferStr.substr(pos, toLength));
-      //cout << "checked to" << endl << flush;
       pos += toLength;
     }
     if (fromLength != 0) {
-      //cout << "check from" << endl << flush;
       msg->setfrom(packetBufferStr.substr(pos, fromLength));
-      //cout << "checked from" << endl << flush;
       pos += fromLength;
     }
     if (threadLength != 0) {
-      //cout << "check thread" << endl << flush;
       msg->setthread(packetBufferStr.substr(pos, threadLength));
-      //cout << "checked thread" << endl << flush;
       pos += threadLength;
     }
     if (subjectLength != 0) {
-      //cout << "check subject" << endl << flush;      
       msg->setsubject(packetBufferStr.substr(pos, subjectLength));
-      //cout << "checked subject" << endl << flush; 
       pos += subjectLength;
     }
     if (bodyLength != 0) {
-      //printf("body lengthL %d\n", bodyLength);
-      //cout << "check body" << endl << flush;      
       msg->setbody(packetBufferStr.substr(pos, bodyLength));
-      //cout << "checked body" << endl << flush; 
       pos += bodyLength;
     }
     delete datastr;
     messages->push_back(msg);
     packetBufferPos += totalLength;  //update the packet buffer pos
-    //cout << "ADDED MESSAGE TO LIST" << endl << flush;        
   }
   return *messages;
 
