@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5096
-#define VERSION "MessageRouter 1.5"
+#define VERSION "MessageRouter 1.6"
  
 #include "clientconnection.h"
 #include <iostream.h>
@@ -108,6 +108,16 @@ bool ClientConnection::isRunning() {
   return keepRunning;
 }
 
+void ClientConnection::closeNow() {
+  keepRunning = FALSE;
+  if (ss != NULL) {
+    ss->shutdown();
+  }
+  //delete ss;
+  //ss = NULL;
+  //close();
+}
+
 void ClientConnection::close() {
   Context::getInstance()->getLogger()->log(name.c_str(), "closing connection", Logger::LEVEL_INFO);
   /***** cleanup *****/
@@ -139,11 +149,19 @@ void ClientConnection::close() {
 void ClientConnection::getData(char *buffer, int size){
   tmp_buffer = new char[size];
   int index = 0;
-  while (index < size) {
-    int recv_size = ss->recv(tmp_buffer, (size-index));
-    pack(tmp_buffer, 0, recv_size, buffer, index);
-    index += recv_size;
+  try {
+    while (index < size) {
+      int recv_size = ss->recv(tmp_buffer, (size-index));
+      pack(tmp_buffer, 0, recv_size, buffer, index);
+      index += recv_size;
+    }
   }
+  catch (SocketException &se) {
+    delete tmp_buffer;
+    tmp_buffer = NULL;
+    throw se;
+  }
+ 
   delete tmp_buffer;
   tmp_buffer = NULL;
 }
@@ -152,11 +170,19 @@ void ClientConnection::getData(char *buffer, int size){
 void ClientConnection::getHeaderData(unsigned char* buffer, int size){
   tmp_buffer = new char[size];
   int index = 0;
-  while (index < size) {
-    int recv_size = ss->recv(tmp_buffer, (size-index));
-    pack(tmp_buffer, 0, recv_size, buffer, index);
-    index += recv_size;
+  try {
+    while (index < size) {
+      int recv_size = ss->recv(tmp_buffer, (size-index));
+      pack(tmp_buffer, 0, recv_size, buffer, index);
+      index += recv_size;
+    }
   }
+  catch (SocketException &se) {
+    delete tmp_buffer;
+    tmp_buffer = NULL;
+    throw se;
+  }
+  
   delete tmp_buffer;
   tmp_buffer = NULL;
 }
@@ -299,13 +325,27 @@ bool ClientConnection::handleMessage(Message& msg){
     Message* reply = new Message();
     reply->setthread(msg.getthread());
     if (subject == "connect") {  //handle the connect request
-      //if a connection with this uer name already exists then disconnect
+      //check if a connection with this uer name already exists
       if (Context::getInstance()->getconnectionRegistry()->checkForExistingConnection(msg.getbody())) {
-        reply->setsubject("ERROR");
-        reply->setbody("user name already registered");
-        Context::getInstance()->getLogger()->log("Attempt to login under duplicate user name", msg.getbody().c_str(), Logger::LEVEL_WARN);
-        sendMessageNow(*reply);
-        return false;
+        //if duplicate connections aren't allowed then refuse this current request
+        if (!Context::getInstance()->getAllowDuplicateConnections()) {
+          reply->setsubject("ERROR");
+          reply->setbody("duplicate reigstrations not allowed");
+          Context::getInstance()->getLogger()->log("Attempt to login under duplicate user name", msg.getbody().c_str(), Logger::LEVEL_WARN);
+          sendMessageNow(*reply);
+          return false;
+        }
+        else {  //othewrwise disconnect the existing connection and allow this request
+          ClientConnection *cc = Context::getInstance()->getconnectionRegistry()->findConnection(msg.getbody());
+          if (cc != NULL) {
+            Context::getInstance()->getLogger()->log("Duplicate connection request...closing original connection.", msg.getbody().c_str(), Logger::LEVEL_WARN);
+            cc->closeNow();
+            cc->wait(2000);
+          }
+          reply->setsubject("connected");
+          reply->setto(msg.getbody());
+          registerClient(msg.getbody());
+        }
       }
       else {
         reply->setsubject("connected");

@@ -19,6 +19,7 @@
 Context * Context::currentInstance;
 
 Context::Context(){
+  allowDuplicateConnections = TRUE;  //default value
   connectionRegistry = new ConnectionRegistry();
   listenerRegistry = new ListenerRegistry();
   logger = new Logger();
@@ -52,4 +53,12 @@ Logger* Context::getLogger() {
 
 ConnectionValidator* Context::getConnectionValidator() {
   return connectionValidator;
+}
+
+void Context::setAllowDuplicateConnections(bool b) {
+  allowDuplicateConnections = b;
+}
+
+bool Context::getAllowDuplicateConnections() {
+  return allowDuplicateConnections;
 }

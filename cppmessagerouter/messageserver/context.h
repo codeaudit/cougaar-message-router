@@ -38,6 +38,8 @@ public:
   ListenerRegistry* getlistenerRegistry();
   Logger* getLogger();
   ConnectionValidator *getConnectionValidator();
+  void setAllowDuplicateConnections(bool);
+  bool getAllowDuplicateConnections();
   
 private:
 	Context();
@@ -53,6 +55,7 @@ private: // Private attributes
 
   Logger* logger;
   ConnectionValidator *connectionValidator;
+  bool allowDuplicateConnections;
 };
 
 #endif

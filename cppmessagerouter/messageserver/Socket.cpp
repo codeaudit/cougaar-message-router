@@ -53,6 +53,10 @@ bool Socket::create()
 }
 
 
+int Socket::shutdown() {
+  return ::shutdown(m_sock, SHUT_RDWR);
+}
+
 
 bool Socket::bind ( const int port )
 {

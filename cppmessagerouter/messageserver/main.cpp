@@ -66,6 +66,10 @@
         logger->enable();
         cout << "debugging enabled at LEVEL SHOUT" << endl << flush;
       }
+      if (!strcmp(argv[i], "-r")) {
+        Context::getInstance()->setAllowDuplicateConnections(false);
+        cout << "disabling duplicate connections" << endl << flush;
+      }
       if (!strcmp(argv[i], "-h")) {
         cout << "Options are:" << endl << flush;
         cout << "   -b Block Read enabled" << endl << flush;
@@ -73,6 +77,7 @@
         cout << "   -w Warn-level logging enabled" << endl << flush;
         cout << "   -d Debug-level logging enabled" << endl << flush;
         cout << "   -s Shout-level logging enabled" << endl << flush;
+        cout << "   -r Refuse duplicate connections" << endl << flush;
         return EXIT_SUCCESS;
       }     
    }

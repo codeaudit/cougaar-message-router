@@ -54,6 +54,7 @@ public:
   int getValidationCount();
   void resetValidationCount();
   void close();
+  void closeNow();
   bool isRunning();
 
 public:

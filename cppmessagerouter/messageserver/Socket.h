@@ -28,6 +28,7 @@ class Socket
   bool bind ( const int port );
   bool listen() const;
   bool accept ( Socket& ) const;
+  virtual int shutdown();
 
   // Client initialization
   bool connect ( const std::string host, const int port );
@@ -39,8 +40,6 @@ class Socket
   int recv ( char*, int ) const;
   int recv ( char*, int, bool ) const;
   
-
-
   void set_non_blocking ( const bool );
 
   bool is_valid() const { return m_sock != -1; }
@@ -49,8 +48,6 @@ class Socket
 
   int m_sock;
   sockaddr_in m_addr;
-
-
 };
 
 
