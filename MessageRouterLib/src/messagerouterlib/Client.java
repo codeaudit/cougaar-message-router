@@ -19,12 +19,10 @@ public class Client extends JFrame
   JTextField jTextFieldServer = new JTextField();
   JLabel jLabelUserId = new JLabel();
   JTextField jTextFieldUser = new JTextField();
-  JButton jButtonConnect = new JButton();
 
   Session session;
   Session[] MultiSessions;
   Border border1;
-  JButton jButtonDisconnect = new JButton();
   JLabel jLabeltargetUser = new JLabel();
   JTextField jTextFieldTargetUser = new JTextField();
   JPanel jPanelSendMessages = new JPanel();
@@ -51,6 +49,7 @@ public class Client extends JFrame
   JToggleButton jToggleButtonRegister = new JToggleButton();
   JButton jButtonMultiConnect = new JButton();
   JTextArea jTextAreaDisplayMessages = new JTextArea();
+  JToggleButton jToggleButtonConnect = new JToggleButton();
 
   public Client() {
     try {
@@ -92,12 +91,8 @@ public class Client extends JFrame
     jTextFieldServer.setText("");
     jTextFieldUser.setPreferredSize(new Dimension(75, 20));
     jTextFieldUser.setText("");
-    jButtonConnect.setText("Connect");
-    jButtonConnect.addActionListener(new Client_jButtonConnect_actionAdapter(this));
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     this.setTitle("Message Clent");
-    jButtonDisconnect.setText("Disconnect");
-    jButtonDisconnect.addActionListener(new Client_jButtonDisconnect_actionAdapter(this));
     jLabeltargetUser.setText("Target");
     jTextFieldTargetUser.setPreferredSize(new Dimension(75, 20));
     jTextFieldTargetUser.setText("");
@@ -118,6 +113,8 @@ public class Client extends JFrame
     jTextAreaDisplayMessages.setEditable(false);
     jTextAreaDisplayMessages.setText("");
     jListOnlineUsers.addMouseListener(new Client_jListOnlineUsers_mouseAdapter(this));
+    jToggleButtonConnect.setText("Connect");
+    jToggleButtonConnect.addActionListener(new Client_jToggleButtonConnect_actionAdapter(this));
     jPanelSendMessages.add(jTextFieldSendSubject, BorderLayout.NORTH);
     jPanelSendMessages.add(jScrollPaneSendMessages, BorderLayout.CENTER);
     jSplitPane1.add(jSplitPane2, JSplitPane.TOP);
@@ -135,8 +132,7 @@ public class Client extends JFrame
     jPanel1.add(jTextFieldUser, null);
     jPanel1.add(jLabeltargetUser, null);
     jPanel1.add(jTextFieldTargetUser, null);
-    jPanel1.add(jButtonConnect, null);
-    jPanel1.add(jButtonDisconnect, null);
+    jPanel1.add(jToggleButtonConnect, null);
     jPanel1.add(jToggleButtonRegister, null);
     jPanel1.add(jButtonMultiConnect, null);
     jSplitPane1.setDividerLocation(200);
@@ -156,29 +152,6 @@ public class Client extends JFrame
       w.setLocation((screenSize.width - windowSize.width)/2, (screenSize.height - windowSize.height)/2);
   }
 
-
-  void jButtonConnect_actionPerformed(ActionEvent e) {
-    try {
-      jTextAreaDisplayMessages.setText("");
-      session = new Session();
-      if (session.connect(jTextFieldServer.getText(), jTextFieldUser.getText()) ) {
-        jTextAreaDisplayMessages.append("Connected\n");
-        session.addListener(this);
-      }
-      else {
-        jTextAreaDisplayMessages.append("Connection attempt failed\n");
-      }
-    }
-    catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
-
-  void jButtonDisconnect_actionPerformed(ActionEvent e) {
-    if (session != null && session.isConnected()) {
-      session.disconnect();
-    }
-  }
 
   void jTextAreaSendMessages_keyTyped(KeyEvent e) {
     if (e.getKeyChar() == '\n') {
@@ -293,6 +266,32 @@ public class Client extends JFrame
     }
   }
 
+  void jToggleButtonConnect_actionPerformed(ActionEvent e) {
+    if (jToggleButtonConnect.getText().equals("Connect"))
+      try {
+        jTextAreaDisplayMessages.setText("");
+        session = new Session();
+        if (session.connect(jTextFieldServer.getText(), jTextFieldUser.getText())) {
+          jTextAreaDisplayMessages.append("Connected\n");
+          session.addListener(this);
+          jToggleButtonConnect.setText("Disconnect");
+        }
+        else {
+          jTextAreaDisplayMessages.append("Connection attempt failed\n");
+        }
+      }
+      catch (Exception ex) {
+        ex.printStackTrace();
+      }
+    else {
+      if (session != null && session.isConnected()) {
+        session.disconnect();
+      }
+      jToggleButtonConnect.setText("Connect");
+    }
+
+  }
+
 }
 
 class Flasher extends Thread {
@@ -341,28 +340,6 @@ class Flasher extends Thread {
   }
 
 
-}
-
-class Client_jButtonConnect_actionAdapter implements java.awt.event.ActionListener {
-  Client adaptee;
-
-  Client_jButtonConnect_actionAdapter(Client adaptee) {
-    this.adaptee = adaptee;
-  }
-  public void actionPerformed(ActionEvent e) {
-    adaptee.jButtonConnect_actionPerformed(e);
-  }
-}
-
-class Client_jButtonDisconnect_actionAdapter implements java.awt.event.ActionListener {
-  Client adaptee;
-
-  Client_jButtonDisconnect_actionAdapter(Client adaptee) {
-    this.adaptee = adaptee;
-  }
-  public void actionPerformed(ActionEvent e) {
-    adaptee.jButtonDisconnect_actionPerformed(e);
-  }
 }
 
 class Client_jTextAreaSendMessages_keyAdapter extends java.awt.event.KeyAdapter {
@@ -417,5 +394,16 @@ class Client_jListOnlineUsers_mouseAdapter extends java.awt.event.MouseAdapter {
   }
   public void mouseClicked(MouseEvent e) {
     adaptee.jListOnlineUsers_mouseClicked(e);
+  }
+}
+
+class Client_jToggleButtonConnect_actionAdapter implements java.awt.event.ActionListener {
+  Client adaptee;
+
+  Client_jToggleButtonConnect_actionAdapter(Client adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jToggleButtonConnect_actionPerformed(e);
   }
 }
