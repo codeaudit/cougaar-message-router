@@ -3,67 +3,57 @@
 <KDevPrjSession>
 <LastCompileConfig>(Default)</LastCompileConfig>
  <Mainframe MaximizeMode="1" />
- <DocsAndViews NumberOfDocuments="30" >
-<Doc0 CursorPosLine="24" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="60" FileName="/root/cppmessagerouter/messageserver/clientconnection.cpp" >
+ <DocsAndViews NumberOfDocuments="25" >
+<Doc0 CursorPosLine="77" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="19" FileName="/root/cppmessagerouter/messageserver/logger.cpp" >
 <View0 Top="25" Width="400" Attach="1" Height="300" Left="3" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc0>
-  <Doc1 CursorPosLine="28" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/connectionregistry.h" >
-<View0 Top="48" Width="683" Attach="1" Height="362" Left="26" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc1>
-  <Doc2 CursorPosLine="61" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="4" FileName="/root/cppmessagerouter/messageserver/connectionregistry.cpp" >
-<View0 Top="71" Width="683" Attach="1" Height="362" Left="49" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc2>
-  <Doc3 CursorPosLine="41" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/messagesender.cpp" >
-<View0 Top="94" Width="400" Attach="1" Height="300" Left="72" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc3>
-  <Doc4 CursorPosLine="39" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/connectionvalidator.h" >
-<View0 Top="117" Width="400" Attach="1" Height="300" Left="95" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc4>
-  <Doc5 CursorPosLine="70" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="26" FileName="/root/cppmessagerouter/messageserver/context.h" >
-<View0 Top="140" Width="683" Attach="1" Height="362" Left="118" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc5>
-  <Doc6 CursorPosLine="23" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="48" FileName="/root/cppmessagerouter/messageserver/context.cpp" >
-<View0 Top="163" Width="683" Attach="1" Height="362" Left="141" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc6>
-  <Doc7 CursorPosLine="25" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="14" FileName="/root/cppmessagerouter/messageserver/listenerregistry.h" >
-<View0 Top="186" Width="683" Attach="1" Height="367" Left="164" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc7>
-  <Doc8 CursorPosLine="31" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/messagesender.h" >
-<View0 Top="209" Width="400" Attach="1" Height="300" Left="187" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc8>
-  <Doc9 CursorPosLine="34" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/clientconnection.h" >
-<View0 Top="232" Width="683" Attach="1" Height="367" Left="210" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc9>
-  <Doc10 CursorPosLine="30" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/listenerregistry.cpp" >
-<View0 Top="255" Width="683" Attach="1" Height="367" Left="233" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc10>
-  <Doc11 CursorPosLine="34" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/logger.cpp" >
-<View0 Top="278" Width="400" Attach="1" Height="300" Left="256" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc11>
-  <Doc12 CursorPosLine="32" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/message.cpp" >
-<View0 Top="301" Width="724" Attach="1" Height="367" Left="279" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc12>
-  <Doc13 CursorPosLine="76" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="25" FileName="/root/cppmessagerouter/messageserver/main.cpp" >
-<View0 Top="324" Width="400" Attach="1" Height="300" Left="302" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc13>
-  <Doc14 CursorPosLine="29" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/clientconnectionfactory.cpp" >
-<View0 Top="347" Width="724" Attach="1" Height="367" Left="325" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc14>
-  <Doc15 CursorPosLine="33" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/clientconnectionfactory.h" >
-<View0 Top="25" Width="400" Attach="1" Height="300" Left="348" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc15>
-  <Doc16 CursorPosLine="25" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/clientconnectionmonitor.cpp" >
-<View0 Top="48" Width="400" Attach="1" Height="300" Left="371" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc16>
-  <Doc17 CursorPosLine="33" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/clientconnectionmonitor.h" >
-<View0 Top="71" Width="400" Attach="1" Height="300" Left="394" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc17>
-  <Doc18 CursorPosLine="8" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/ServerSocket.h" >
-<View0 Top="94" Width="724" Attach="1" Height="367" Left="417" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc18>
-  <Doc19 CursorPosLine="29" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/logger.h" >
-<View0 Top="117" Width="764" Attach="1" Height="367" Left="440" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc19>
-  <Doc20 CursorPosLine="53" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/ClientSocket.cpp" >
-<View0 Top="140" Width="400" Attach="1" Height="300" Left="463" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc20>
-  <Doc21 CursorPosLine="53" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/ServerSocket.cpp" >
-<View0 Top="163" Width="683" Attach="1" Height="367" Left="486" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc21>
-  <Doc22 CursorPosLine="176" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/Socket.cpp" >
-<View0 Top="186" Width="764" Attach="1" Height="367" Left="509" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc22>
-  <Doc23 CursorPosLine="44" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/Socket.h" >
-<View0 Top="209" Width="764" Attach="1" Height="367" Left="532" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc23>
-  <Doc24 CursorPosLine="92" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/eavesdropregistry.cpp" >
-<View0 Top="232" Width="764" Attach="1" Height="426" Left="555" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc24>
-  <Doc25 CursorPosLine="43" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="45" FileName="/root/cppmessagerouter/messageserver/eavesdropregistry.h" >
-<View0 Top="255" Width="764" Attach="1" Height="367" Left="578" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc25>
-  <Doc26 CursorPosLine="28" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/message.h" >
-<View0 Top="278" Width="764" Attach="1" Height="426" Left="601" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc26>
-  <Doc27 CursorPosLine="28" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="45" FileName="/usr/include/c++/3.2/backward/backward_warning.h" >
-<View0 Top="301" Width="764" Attach="1" Height="426" Left="624" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc27>
-  <Doc28 CursorPosLine="17" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="70" FileName="/root/cppmessagerouter/messageserver/serverstats.cpp" >
-<View0 Top="299" Width="770" Attach="1" Height="454" Left="644" Focus="1" Type="KWriteView" MinMaxMode="2" />  </Doc28>
-  <Doc29 CursorPosLine="69" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="14" FileName="/root/cppmessagerouter/messageserver/serverstats.h" >
-<View0 Top="347" Width="683" Attach="1" Height="362" Left="670" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc29> </DocsAndViews>
+  <Doc1 CursorPosLine="42" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/logentry.h" >
+<View0 Top="48" Width="683" Attach="1" Height="426" Left="26" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc1>
+  <Doc2 CursorPosLine="34" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/logentry.cpp" >
+<View0 Top="71" Width="683" Attach="1" Height="426" Left="49" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc2>
+  <Doc3 CursorPosLine="462" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="17" FileName="/root/cppmessagerouter/messageserver/clientconnection.cpp" >
+<View0 Top="69" Width="689" Attach="1" Height="454" Left="69" Focus="1" Type="KWriteView" MinMaxMode="2" />  </Doc3>
+  <Doc4 CursorPosLine="69" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/logger.h" >
+<View0 Top="117" Width="683" Attach="1" Height="426" Left="95" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc4>
+  <Doc5 CursorPosLine="91" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="56" FileName="/root/cppmessagerouter/messageserver/main.cpp" >
+<View0 Top="140" Width="683" Attach="1" Height="426" Left="118" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc5>
+  <Doc6 CursorPosLine="108" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="56" FileName="/root/cppmessagerouter/messageserver/messagesender.cpp" >
+<View0 Top="163" Width="683" Attach="1" Height="426" Left="141" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc6>
+  <Doc7 CursorPosLine="44" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/clientconnection.h" >
+<View0 Top="186" Width="683" Attach="1" Height="426" Left="164" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc7>
+  <Doc8 CursorPosLine="64" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="22" FileName="/root/cppmessagerouter/messageserver/messagesender.h" >
+<View0 Top="209" Width="683" Attach="1" Height="426" Left="187" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc8>
+  <Doc9 CursorPosLine="96" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/serverstats.cpp" >
+<View0 Top="232" Width="683" Attach="1" Height="426" Left="210" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc9>
+  <Doc10 CursorPosLine="34" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/serverstats.h" >
+<View0 Top="255" Width="683" Attach="1" Height="426" Left="233" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc10>
+  <Doc11 CursorPosLine="114" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="33" FileName="/root/cppmessagerouter/messageserver/connectionregistry.cpp" >
+<View0 Top="278" Width="683" Attach="1" Height="426" Left="256" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc11>
+  <Doc12 CursorPosLine="41" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="30" FileName="/root/cppmessagerouter/messageserver/connectionregistry.h" >
+<View0 Top="301" Width="683" Attach="1" Height="426" Left="279" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc12>
+  <Doc13 CursorPosLine="160" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/Socket.cpp" >
+<View0 Top="324" Width="683" Attach="1" Height="426" Left="302" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc13>
+  <Doc14 CursorPosLine="48" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/Socket.h" >
+<View0 Top="347" Width="683" Attach="1" Height="426" Left="325" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc14>
+  <Doc15 CursorPosLine="70" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/ServerSocket.cpp" >
+<View0 Top="370" Width="683" Attach="1" Height="426" Left="348" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc15>
+  <Doc16 CursorPosLine="30" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/context.h" >
+<View0 Top="393" Width="683" Attach="1" Height="426" Left="371" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc16>
+  <Doc17 CursorPosLine="22" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/context.cpp" >
+<View0 Top="25" Width="683" Attach="1" Height="426" Left="394" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc17>
+  <Doc18 CursorPosLine="60" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="32" FileName="/root/cppmessagerouter/messageserver/connectionvalidator.cpp" >
+<View0 Top="48" Width="683" Attach="1" Height="426" Left="417" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc18>
+  <Doc19 CursorPosLine="66" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="29" FileName="/root/cppmessagerouter/messageserver/clientconnectionmonitor.cpp" >
+<View0 Top="71" Width="683" Attach="1" Height="426" Left="440" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc19>
+  <Doc20 CursorPosLine="40" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="30" FileName="/root/cppmessagerouter/messageserver/connectionvalidator.h" >
+<View0 Top="94" Width="683" Attach="1" Height="426" Left="463" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc20>
+  <Doc21 CursorPosLine="46" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="25" FileName="/root/cppmessagerouter/messageserver/clientconnectionmonitor.h" >
+<View0 Top="117" Width="683" Attach="1" Height="426" Left="486" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc21>
+  <Doc22 CursorPosLine="65" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/eavesdropregistry.cpp" >
+<View0 Top="140" Width="683" Attach="1" Height="426" Left="509" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc22>
+  <Doc23 CursorPosLine="53" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="28" FileName="/root/cppmessagerouter/messageserver/listenerregistry.cpp" >
+<View0 Top="163" Width="683" Attach="1" Height="426" Left="532" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc23>
+  <Doc24 CursorPosLine="43" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="26" FileName="/root/cppmessagerouter/messageserver/listenerregistry.h" >
+<View0 Top="186" Width="683" Attach="1" Height="426" Left="555" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc24> </DocsAndViews>
  <CompileConfigs>
 <Release>
 <Architecture>i386</Architecture>

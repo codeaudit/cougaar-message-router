@@ -117,7 +117,7 @@ install_location=
 type=HEADER
 
 [messageserver/Makefile.am]
-files=messageserver/clientconnection.cpp,messageserver/clientconnection.h,messageserver/ClientSocket.cpp,messageserver/ClientSocket.h,messageserver/ServerSocket.cpp,messageserver/ServerSocket.h,messageserver/Socket.cpp,messageserver/SocketException.h,messageserver/Socket.h,messageserver/main.cpp,messageserver/message.cpp,messageserver/message.h,messageserver/context.cpp,messageserver/context.h,messageserver/connectionregistry.cpp,messageserver/connectionregistry.h,messageserver/messagesender.cpp,messageserver/messagesender.h,messageserver/listenerregistry.cpp,messageserver/listenerregistry.h,messageserver/logger.cpp,messageserver/logger.h,messageserver/connectionvalidator.cpp,messageserver/connectionvalidator.h,messageserver/clientconnectionfactory.cpp,messageserver/clientconnectionfactory.h,messageserver/clientconnectionmonitor.cpp,messageserver/clientconnectionmonitor.h,messageserver/eavesdropregistry.cpp,messageserver/eavesdropregistry.h,messageserver/serverstats.cpp,messageserver/serverstats.h,messageserver/logentry.cpp,messageserver/logentry.h
+files=messageserver/clientconnection.cpp,messageserver/clientconnection.h,messageserver/ClientSocket.cpp,messageserver/ClientSocket.h,messageserver/ServerSocket.cpp,messageserver/ServerSocket.h,messageserver/Socket.cpp,messageserver/SocketException.h,messageserver/Socket.h,messageserver/main.cpp,messageserver/message.cpp,messageserver/message.h,messageserver/context.cpp,messageserver/context.h,messageserver/connectionregistry.cpp,messageserver/connectionregistry.h,messageserver/messagesender.cpp,messageserver/messagesender.h,messageserver/listenerregistry.cpp,messageserver/listenerregistry.h,messageserver/logger.cpp,messageserver/logger.h,messageserver/connectionvalidator.cpp,messageserver/connectionvalidator.h,messageserver/clientconnectionfactory.cpp,messageserver/clientconnectionfactory.h,messageserver/clientconnectionmonitor.cpp,messageserver/clientconnectionmonitor.h,messageserver/eavesdropregistry.cpp,messageserver/eavesdropregistry.h,messageserver/serverstats.cpp,messageserver/serverstats.h,messageserver/logentry.cpp,messageserver/logentry.h,messageserver/lock.cpp,messageserver/lock.h
 sub_dirs=
 type=prog_main
 
@@ -250,6 +250,18 @@ install_location=
 type=SOURCE
 
 [messageserver/listenerregistry.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[messageserver/lock.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[messageserver/lock.h]
 dist=true
 install=false
 install_location=
