@@ -437,6 +437,13 @@ bool ClientConnection::handleMessage(Message& msg){
       reply->setbody(list);
       delete &list;
     }
+    else if (subject == "get send queue stats") {
+      reply->setto(msg.getfrom());
+      reply->setsubject("send queue stats");
+      string& stats = Context::getInstance()->getconnectionRegistry()->getSendQueueStats();
+      reply->setbody(stats);
+      delete &stats;
+    }
     else if (subject == "register") {
       Context::getInstance()->getlistenerRegistry()->registerListener(this);
       reply->setto(msg.getfrom());
@@ -730,6 +737,10 @@ char * ClientConnection::createSubStr(char *src, int start, int length){
 
 const bool ClientConnection::operator== (const ClientConnection& right) {
   return (this->name == right.name);
+}
+
+string& ClientConnection::getSendQueueStats() {
+  return sender->getStats();  
 }
 
 

@@ -94,3 +94,27 @@ bool ConnectionRegistry::checkForExistingConnection(const string& name) {
      return TRUE;
    }
 }
+
+string& ConnectionRegistry::getSendQueueStats() {
+  string* ret = new string();
+
+  if (!clientMap.empty()) {
+    ConnectionMap::iterator pos;
+    pos = clientMap.begin();
+    while (pos != clientMap.end()) {
+      if (clientMap[pos->first] != NULL) {
+        *ret += pos->first + " : ";
+        string& stats = clientMap[pos->first]->getSendQueueStats();
+        *ret += stats + "\n";
+        delete &stats;
+        pos++;
+      }
+      else {
+        Context::getInstance()->getLogger()->log("Found NULL connection", (pos->first).c_str(), Logger::LEVEL_WARN);
+        clientMap.erase(pos++);
+      }
+    }
+  }
+
+  return *ret;
+}

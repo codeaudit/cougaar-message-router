@@ -57,6 +57,7 @@ public:
   void close();
   void closeNow();
   bool isRunning();
+  string& getSendQueueStats();
 
 public:
   /**  */

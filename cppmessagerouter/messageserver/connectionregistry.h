@@ -39,6 +39,7 @@ public:
   /** No descriptions */
   string& listConnections();
   void validateConnections();
+  string& getSendQueueStats();
 
 private:
   ConnectionMap clientMap;

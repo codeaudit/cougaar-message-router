@@ -94,6 +94,7 @@ string& ServerStats::getStatsStr() {
   return *(new string(tmpBuffer));
 }
 
+
 void ServerStats::run() {
   unsigned long int sum = 0;
   unsigned long int intervalCount = 0;

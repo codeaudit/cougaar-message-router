@@ -41,6 +41,7 @@ public:
   void stop();
   void sendMessage(Message &);
   void setName(string& name);
+  string& getStats();
   
 public: // Public attributes
   /**  */

@@ -143,3 +143,10 @@ void MessageSender::cleanupMessages(){
   //Context::getInstance()->getLogger()->log("cleanupmessages: complete", Logger::LEVEL_WARN);
 
 }
+
+string& MessageSender::getStats() {
+  char buffer[256];
+
+  sprintf(buffer, "queue length: %d",  stack.size());
+  return *(new string(buffer));
+}
