@@ -19,6 +19,11 @@
 
 Message::Message(){
   this->msgHeaderSet = false;
+  to = "";
+  from = "";
+  subject = "";
+  thread = "";
+  body = "";
 }
 
 Message::Message(const Message& m) {
