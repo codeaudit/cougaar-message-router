@@ -207,6 +207,27 @@ public class Client extends JFrame
             }
           }
         }
+        else if (args[0].equals("-stress2")) {
+          String userName = args[1];
+          String server = args[2];
+          String targetUser = args[3];
+          int rate = Integer.parseInt(args[4]);
+          Session session = new Session();
+          long msgCount = 0;
+          while (true) {
+            if (session.connect(server, userName)) {
+              for (int i = 0; i < rate; i++) {
+                msgCount++;
+                session.postMessage(targetUser,
+                                    ("subject " + String.valueOf(msgCount)),
+                                    Util.randomString(1000));
+              }
+              session.disconnect();
+            }
+            Thread.currentThread().sleep(2000);
+          }
+
+        }
       }
 
       catch (Exception e) {
