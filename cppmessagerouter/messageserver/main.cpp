@@ -137,7 +137,7 @@
         ServerSocket *new_sock = new ServerSocket();
         server.accept ( *new_sock );
         //ClientConnection* cc = new ClientConnection(new_sock, false);
-        ClientConnection *cc = ccf->createClientConnection(new_sock, false);
+        ClientConnection *cc = ccf->createClientConnection(new_sock, block_read);
         cc->start();
       }
     }
