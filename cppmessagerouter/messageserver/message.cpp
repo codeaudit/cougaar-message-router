@@ -119,7 +119,7 @@ char * Message::getMessageHeader() {
     msgHeader[7] = (unsigned char)(bodyLength & (unsigned long)0x000000ff);
     
   }
-  return msgHeader;
+  return (char *)msgHeader;
 
 }
 

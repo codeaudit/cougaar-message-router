@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.8 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.9 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -163,7 +163,7 @@ MCOPIDL = @MCOPIDL@
 MEINPROC = @MEINPROC@
 MICO_INCLUDES = @MICO_INCLUDES@
 MICO_LDFLAGS = @MICO_LDFLAGS@
-MOC = /usr/lib/qt3-gcc3.2/bin/moc
+MOC = /usr/lib/qt-3.1/bin/moc
 MSGFMT = /usr/bin/msgfmt
 NOOPT_CFLAGS = -O0
 NOOPT_CXXFLAGS = -O0
@@ -179,15 +179,15 @@ PYTHONMODDIR = @PYTHONMODDIR@
 QTDOCDIR = @QTDOCDIR@
 QTE_NORTTI = 
 QTOPIA_INCLUDES = @QTOPIA_INCLUDES@
-QT_INCLUDES = -I/usr/lib/qt3-gcc3.2/include
-QT_LDFLAGS = -L/usr/lib/qt3-gcc3.2/lib
+QT_INCLUDES = -I/usr/lib/qt-3.1/include
+QT_LDFLAGS = -L/usr/lib/qt-3.1/lib
 RANLIB = ranlib
 RC = @RC@
 REPO = -frepo
 SETUIDFLAGS = @SETUIDFLAGS@
 STRIP = strip
 TOPSUBDIRS =  autom4te-2.53.cache messageserver
-UIC = /usr/lib/qt3-gcc3.2/bin/uic -L $(kde_widgetdir) -nounload
+UIC = /usr/lib/qt-3.1/bin/uic -L $(kde_widgetdir) -nounload
 UIC_TR = tr2i18n
 USER_INCLUDES = 
 USER_LDFLAGS = 
@@ -203,8 +203,8 @@ X_EXTRA_LIBS =  -lresolv
 X_INCLUDES = -I/usr/X11R6/include
 X_LDFLAGS = -L/usr/X11R6/lib
 X_PRE_LIBS = 
-all_includes = -I/usr/lib/qt3-gcc3.2/include -I/usr/X11R6/include
-all_libraries = -L/usr/X11R6/lib -L/usr/lib/qt3-gcc3.2/lib
+all_includes = -I/usr/lib/qt-3.1/include -I/usr/X11R6/include
+all_libraries = -L/usr/X11R6/lib -L/usr/lib/qt-3.1/lib
 am__include = include
 am__quote = 
 idldir = @idldir@
@@ -232,8 +232,8 @@ kde_templatesdir = @kde_templatesdir@
 kde_wallpaperdir = @kde_wallpaperdir@
 kde_widgetdir = @kde_widgetdir@
 micodir = @micodir@
-qt_includes = /usr/lib/qt3-gcc3.2/include
-qt_libraries = /usr/lib/qt3-gcc3.2/lib
+qt_includes = /usr/lib/qt-3.1/include
+qt_libraries = /usr/lib/qt-3.1/lib
 x_includes = /usr/X11R6/include
 x_libraries = /usr/X11R6/lib
 subdir = messageserver/docs/en
