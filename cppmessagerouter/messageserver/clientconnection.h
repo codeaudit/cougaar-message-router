@@ -25,6 +25,7 @@
 #include <list>
 #include "message.h"
 #include "messagesender.h"
+#include <time.h>
 
 /**
   *@author David Craine
@@ -86,6 +87,10 @@ private: // Private attributes
   /**  */
   bool validationCount;  //used to track outstanding validation requests
   QMutex closeLock;
+  time_t startTime;
+  //local message counters
+  unsigned int incomingMsgCount;
+  unsigned int outgoingMsgCount;
   
 private: // Private methods
   /** No descriptions */

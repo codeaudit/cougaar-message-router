@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5096
-#define VERSION "MessageRouter 1.7.40"
+#define VERSION "MessageRouter 1.7.41"
  
 #include "clientconnection.h"
 #include <iostream.h>
@@ -81,6 +81,9 @@ ClientConnection::ClientConnection(ServerSocket* sock, bool blockread){
   validationCount = 0;
   isClosed = false;
   isClosing = false;
+  time(&startTime);
+  incomingMsgCount = 0;
+  outgoingMsgCount = 0;
 }
 
 ClientConnection::~ClientConnection(){
@@ -352,6 +355,8 @@ bool ClientConnection::broadcastMessage(Message& msg) {
 /** No descriptions */
 bool ClientConnection::processMessage(Message& msg){
   ServerStats::getInstance()->incrementIncomingMsgCount();
+  incomingMsgCount++;
+  
   if (msg.getto() == "broadcast") {
     broadcastMessage(msg);
     return true;
@@ -387,6 +392,8 @@ void ClientConnection::registerClient(string& name){
 /** Adds a message to the message sender queue */
 void ClientConnection::sendMessage(Message& msg){
   ServerStats::getInstance()->incrementOutgoingMsgCount();
+  outgoingMsgCount++;
+  
   sender->addMessage(msg);
 }
 
@@ -394,6 +401,7 @@ void ClientConnection::sendMessage(Message& msg){
 void ClientConnection::sendMessageNow(Message& msg) {
   sender->sendMessage(msg);
   ServerStats::getInstance()->incrementOutgoingMsgCount();
+  outgoingMsgCount++;
 }
 
 /** No descriptions */
