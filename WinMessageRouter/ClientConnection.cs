@@ -27,8 +27,9 @@ namespace WinMessageRouter
 		private bool use_block_read;
 		private string name;
 		private Thread threadRunner;
+		private bool keepRunning = true;
 
-		private static const string CMD_LIST = 
+		private static string CMD_LIST = 
 		"list - get a list of connected clients\n"+
 		"register - register for online/offlien updates for all clients\n"+
 		"deregister - deregister for online/offline updates\n"+
@@ -60,6 +61,15 @@ namespace WinMessageRouter
 			sender.start();
 			packetBufferPos = 0;
 			packetBufferSize = 0;
+		}
+
+		private void closeNow() 
+		{
+			keepRunning = false;
+			if (ss != null) 
+			{
+				ss.Shutdown(SocketShutdown.Both);
+			}
 		}
 
 		public void start() 
@@ -151,6 +161,7 @@ namespace WinMessageRouter
 
 		private bool processMessage(Message msg) 
 		{
+			ServerStats.getInstance().incrementIncomingMsgCount();
 			if ((msg.To != null) && (msg.To != ""))
 			{
 				Context.getInstance().getLogger().log(msg.From, msg.To, msg.Subject, msg.Body, Logger.LEVEL_INFO);
@@ -185,9 +196,33 @@ namespace WinMessageRouter
 				reply.Thread = msg.Thread;
 				if (subject == "connect") 
 				{  //handle the connect request
-					reply.Subject = "connected";
-					reply.To = msg.Body;
-					registerClient(msg.Body);
+					//check for an existing connection
+					if (Context.getInstance().getConnectionRegistry().findConnection(msg.Body) != null) 
+					{
+						if (!Context.getInstance().getAllowDuplucateConnections()) 
+						{
+							reply.Subject = "ERROR";
+							reply.Body = "duplicate registrations not allowed";
+							Context.getInstance().getLogger().log("Attempt to login under duplicate user name", msg.Body, Logger.LEVEL_WARN);
+							sendMessageNow(reply);
+							return false;
+						}
+						else 
+						{ //close the original connection and process the new request
+							ClientConnection cc = Context.getInstance().getConnectionRegistry().findConnection(msg.Body);
+							Context.getInstance().getLogger().log("Duplicate connection request...closing original connection.", msg.Body, Logger.LEVEL_WARN);
+							cc.closeNow();
+						}
+						reply.Subject = "connected";
+						reply.To = msg.Body;
+						registerClient(msg.Body);
+					}
+					else 
+					{
+						reply.Subject = "connected";
+						reply.To = msg.Body;
+						registerClient(msg.Body);
+					}
 				}
 				else if (subject == "disconnect") 
 				{
@@ -221,39 +256,102 @@ namespace WinMessageRouter
 				}
 				else if (subject == "eavesdrop") 
 				{
-				}
+					if (Context.getInstance().isEavesDroppingEnabled()) 
+					{
+						Context.getInstance().getEavesDropRegistry().registerEavesDropper(msg.Body, this);
+						reply.To = msg.From;
+						reply.Subject = "eavesdrop enabled";
+						reply.Body = msg.Body;
+					}
+				}													
 				else if (subject == "globaleavesdrop") 
 				{
+					if (Context.getInstance().isEavesDroppingEnabled()) 
+					{
+						Context.getInstance().getEavesDropRegistry().registerGlobalEavesDropper(this);
+						reply.To = msg.From;
+						reply.Subject = "gloableavesdrop enabled";
+					}
 				}
 				else if (subject == "uneavesdrop") 
 				{
+					if (Context.getInstance().isEavesDroppingEnabled()) 
+					{
+						Context.getInstance().getEavesDropRegistry().deregisterEavesDropper(msg.Body, this);
+						reply.To = msg.From;
+						reply.Subject = "eavesdrop disabled";
+						reply.Body = msg.Body;
+					}
 				}
 				else if(subject == "uneavesdropall") 
 				{
+					if (Context.getInstance().isEavesDroppingEnabled()) 
+					{
+						Context.getInstance().getEavesDropRegistry().deregisterAllEavesDroppers(this);
+						reply.To = msg.From;
+						reply.Subject = "all eavesdroppers disabled";
+					}
 				}
 				else if (subject == "unglobaleavesdrop")
 				{
+					if (Context.getInstance().isEavesDroppingEnabled()) 
+					{
+						Context.getInstance().getEavesDropRegistry().deregisterGlobalEavesDropper(this);
+						reply.To = msg.From;
+						reply.Subject = "globaleavesdrop disabled";
+					}
 				}
 				else if (subject == "enable eavesdropping") 
 				{
+					Context.getInstance().enableEavesDropping();
+					reply.To = msg.From;
+					reply.Subject = "eavesdropping enabled";
 				}
 				else if (subject == "disable eavesdropping")
 				{
+					Context.getInstance().disableEavesdropping();
+					reply.To = msg.From;
+					reply.Subject = "eavesdropping disabled";
 				}
 				else if (subject == "enable error messages") 
 				{
+					Context.getInstance().enableErrorMessages();
+					reply.To = msg.From;
+					reply.Subject = "error messages enabled";
 				}
 				else if (subject == "disable error messages") 
 				{
+					Context.getInstance().disableErrorMessages();
+					reply.To = msg.From;
+					reply.Subject = "error messages disabled";
 				}
 				else if (subject == "get stats") 
 				{
+					reply.To = msg.From;
+					reply.Subject = "stats";
+					reply.Body = ServerStats.getInstance().getStatsStr();
 				}
 				else if (subject == "reset stats") 
 				{
+					ServerStats.getInstance().resetStats();
+					reply.To = msg.From;
+					reply.Subject = "stats reset";
 				}
 				else if (subject == "kill connection") 
 				{
+					reply.To = msg.From;
+					reply.Body = msg.Body;
+					Context.getInstance().getLogger().log(msg.From, "SERVER", "Request to kill connection", msg.Body, Logger.LEVEL_DEBUG);
+					ClientConnection cc = Context.getInstance().getConnectionRegistry().findConnection(msg.Body);
+					if (cc != null) 
+					{
+						cc.closeNow();
+						reply.Subject = "connection killed";
+					}
+					else 
+					{
+						reply.Subject = "unable to kill connection";
+					}
 				}
 				else if (subject == "set log level") 
 				{
@@ -281,7 +379,7 @@ namespace WinMessageRouter
 					{
 						reply.Subject = "unknown log level";
 					}
-					 reply.To = msg.From;
+					reply.To = msg.From;
 				}
 				else if (subject == "enable logging") 
 				{
@@ -302,12 +400,21 @@ namespace WinMessageRouter
 					reply.Body = CMD_LIST;
 				}
 				else 
-				{ //send an error reply
-					reply.To = msg.From;
-					reply.Subject = "ERROR";
-					reply.Body = "Unknown command";
+				{ 
+					if (Context.getInstance().errorMessageEnabled()) //check if error messaging is enabled
+					{
+						//send an error reply
+						reply.To = msg.From;
+						reply.Subject = "ERROR";
+						reply.Body = "Unknown command";
+					}
+					else  //if not then just return
+					{
+						return true;
+					}
 				}
 				sendMessage(reply);
+	
 			}
 			catch (Exception ex) 
 			{
@@ -344,7 +451,6 @@ namespace WinMessageRouter
 		public void run() 
 		{
 			Message msg;
-			bool keepRunning = true;
 			
 			try 
 			{
@@ -389,7 +495,14 @@ namespace WinMessageRouter
 
 		public void sendMessage(Message msg) 
 		{
+			ServerStats.getInstance().incrementOutgoingMsgCount();
 			sender.addMessage(msg);
+		}
+
+		public void sendMessageNow(Message msg) 
+		{
+			ServerStats.getInstance().incrementOutgoingMsgCount();
+			sender.sendMessage(msg);
 		}
 
 		public void deregisterClient() 

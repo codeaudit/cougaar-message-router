@@ -54,6 +54,21 @@ namespace WinMessageRouter
 					logger.enable();
 					System.Console.WriteLine("Debugging Enabled at level SHOUT");
 				}
+				else if (args[i].Equals("-r")) 
+				{
+					Context.getInstance().setAllowDuplicateConnections(false);
+					System.Console.WriteLine("Disabling duplicate connections");
+				}
+				else if (args[i].Equals("-e")) 
+				{
+					Context.getInstance().enableEavesDropping();
+					System.Console.WriteLine("Eavesdropping enabled");
+				}
+				else if (args[i].Equals("-m")) 
+				{
+					Context.getInstance().enableErrorMessages();
+					Console.WriteLine("error messages enabled");
+				}
 				if (args[i].Equals("-h")) 
 				{
 					System.Console.WriteLine("Options are:");
@@ -62,6 +77,10 @@ namespace WinMessageRouter
 					System.Console.WriteLine("   -w Wanr-level logging enabled");
 					System.Console.WriteLine("   -d Debug-level logging enabled");
 					System.Console.WriteLine("   -s Shout-level logging enabled");
+					System.Console.WriteLine("   -r Refuse duplicate connections");
+					System.Console.WriteLine("   -e Enable eavesdropping");
+					System.Console.WriteLine("   -m Enable error messages");
+
 					return;
 				}
 			}

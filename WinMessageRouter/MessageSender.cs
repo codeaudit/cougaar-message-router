@@ -16,6 +16,7 @@ namespace WinMessageRouter
 		private Stack stack = new Stack();
 		private bool keepRunning = true;
 		private string name;
+		private Mutex sendLock = new Mutex();
 
 		public MessageSender(Socket sock)
 		{
@@ -61,8 +62,9 @@ namespace WinMessageRouter
 			}
 		}
 
-		private void sendMessage(Message msg) 
+		public void sendMessage(Message msg) 
 		{
+			sendLock.WaitOne();
 			try 
 			{
 				byte[] sendBuffer = new byte[ClientConnection.PACKET_HEADER_SIZE+msg.MessageData.Length];
@@ -83,6 +85,7 @@ namespace WinMessageRouter
 			{
 				Context.getInstance().getLogger().forceLog("Message Sender; Error in sendMessage(): " + ex.Message);
 			}
+			sendLock.ReleaseMutex();
 		}
 
 		public string Name
