@@ -1,41 +1,27 @@
 #!/bin/bash
-# init file for MessageServer
+# init file for Message Router
 #
-# description: Message Router Daemon for Cougaar Society
+# description: Message Router Daemon
 # chkconfig: 2345 99 10
 #
-# source function library... run chkconfig --add messageserver to install
+# source function library... run chkconfig --add acme to install
 . /etc/init.d/functions
 
 start() {
   ps -ef > /tmp/$$  
-  if grep "messageserver" /tmp/$$> /dev/null ; then
+  if grep "messagerouter" /tmp/$$> /dev/null ; then
     echo "messagerouter already running.  Use service messagerouter stop first."
     RETVAL=1
   else
     cd /usr/local/sbin
-    ./messageserver >> /var/log/messagerouter &
-     echo "$!" > messageserver.pid
-     RETVAL=0
-     echo
-     echo_success
-  fi
-  rm /tmp/$$
-  return $RETVAL
-}
+    # restart if it dies
+    ./messagerouter.sh &>/dev/null &
 
-debug(){
-  ps -ef > /tmp/$$  
-  if grep "messageserver" /tmp/$$> /dev/null ; then
-    echo "messagerouter already running.  Use service messagerouter stop first."
-    RETVAL=1
-  else
-    cd /usr/local/sbin
-    ./messageserver -d &>/var/log/messagerouter &
-     echo "$!" > messageserver.pid
-     RETVAL=0
-     echo
-     echo_success
+    echo "$!" > messagerouter-sh.pid
+
+	RETVAL=0
+	echo
+	echo_success
   fi
   rm /tmp/$$
   return $RETVAL
@@ -43,22 +29,34 @@ debug(){
 
 stop() {
   cd /usr/local/sbin
-  if [ -f messageserver.pid ] ; then
+  if [ -f messagerouter-sh.pid ] ; then
     local line p pid=
-    read line < messageserver.pid
+    read line < messagerouter-sh.pid
     for p in $line ; do
       [ -z "${p//[0-9]/}" -a -d /proc/$p ] &&
       pid="$pid $p"
     done
     if [ -n "${pid-:}" ] ; then
       kill -9 $pid
-      rm -rf messageserver.pid
+      rm -rf messagerouter-sh.pid
     fi
   fi  
-
-  RETVAL=0
-  echo_success
-  return $RETVAL
+  if [ -f messagerouter.pid ] ; then
+    local line p pid=
+    read line < messagerouter.pid
+    for p in $line ; do
+      [ -z "${p//[0-9]/}" -a -d /proc/$p ] &&
+      pid="$pid $p"
+    done
+    if [ -n "${pid-:}" ] ; then
+      kill -9 $pid
+      rm -rf messagerouter.pid
+    fi
+  fi  
+  
+	RETVAL=0
+	echo_success
+	return $RETVAL
 }
 
 reload(){
@@ -83,9 +81,6 @@ case "$1" in
         ;;
   reload)
 	reload
-        ;;
-  debug)
-        debug
         ;;
   status)
         status snmpd

@@ -3,7 +3,7 @@
 Summary: RPM for installing the Cougaar society message server
 Name: messagerouter
 Version: 1
-Release: 2 
+Release: 4 
 Copyright: Cougaar
 Group: Applications/UltraLog
 Source: messagerouter
@@ -21,6 +21,7 @@ This file contains the Cougaar society message server executable
 %install
 %files
 /usr/local/sbin/messageserver
+/usr/local/sbin/messagerouter.sh
 /etc/init.d/messagerouter
 %clean
 %post
