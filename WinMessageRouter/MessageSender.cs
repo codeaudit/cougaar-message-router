@@ -13,7 +13,7 @@ namespace WinMessageRouter
 	{
 		private Thread threadRunner;
 		private Socket ss;
-		private Stack stack = new Stack();
+		private Queue stack = new Queue();
 		private bool keepRunning = true;
 		private string name;
 		private Mutex sendLock = new Mutex();
@@ -49,7 +49,7 @@ namespace WinMessageRouter
 				}
 				else 
 				{
-					stack.Push(msg);
+					stack.Enqueue(msg);
 				}
 			}
 		}
@@ -62,7 +62,7 @@ namespace WinMessageRouter
 				{
 					while (this.stack.Count > 0) 
 					{
-						sendMessage((Message)stack.Pop());
+						sendMessage((Message)stack.Dequeue());
 					}
 					Thread.Sleep(TimeSpan.FromMilliseconds(500));
 				}

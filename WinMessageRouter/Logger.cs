@@ -142,13 +142,16 @@ namespace WinMessageRouter
 		{
 			if (enabled) 
 			{
-				if (use_output_file) 
+				if (level >= currentLevel) 
 				{
-					addLogEntry(new LogEntry(level, msg));
-				}
-				else 
-				{
-					writeLogEntry(Console.Out, new LogEntry(level, msg));
+					if (use_output_file) 
+					{
+						addLogEntry(new LogEntry(level, msg));
+					}
+					else 
+					{
+						writeLogEntry(Console.Out, new LogEntry(level, msg));
+					}
 				}
 			}
 		}
@@ -157,13 +160,16 @@ namespace WinMessageRouter
 		{
 			if (enabled) 
 			{
-				if (use_output_file) 
+				if (level >= currentLevel) 
 				{
-					addLogEntry(new LogEntry(level, subject, msg));				
-				}
-				else 
-				{
-					writeLogEntry(Console.Out, new LogEntry(level, msg));
+					if (use_output_file) 
+					{
+						addLogEntry(new LogEntry(level, subject, msg));				
+					}
+					else 
+					{
+						writeLogEntry(Console.Out, new LogEntry(level, subject, msg));
+					}
 				}
 			}		
 		}
@@ -172,13 +178,16 @@ namespace WinMessageRouter
 		{
 			if (enabled) 
 			{
-				if (use_output_file) 
+				if (level >= currentLevel) 
 				{
-					addLogEntry(new LogEntry(level, from, to, subject, msg));
-				}
-				else 
-				{
-					writeLogEntry(Console.Out, new LogEntry(level, msg));
+					if (use_output_file) 
+					{
+						addLogEntry(new LogEntry(level, from, to, subject, msg));
+					}
+					else 
+					{
+						writeLogEntry(Console.Out, new LogEntry(level, from, to, subject, msg));
+					}
 				}
 			}
 		}
