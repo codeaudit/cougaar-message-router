@@ -11,8 +11,10 @@ public class Session implements SyncMessageReceiverListener {
   String userName;
   private int msgCount = 0;
   MessageReceiver receiver ;
+  public static Session currentSession;
 
   public Session() {
+    currentSession = this;
   }
 
   /**
@@ -91,7 +93,7 @@ public class Session implements SyncMessageReceiverListener {
    * @param body String
    */
   public void postMessage(String toUser, String subject, String thread, String body) {
-    send(userName, toUser, subject, body, thread);
+    send(userName, toUser, subject, thread, body);
   }
 
   public void postMessage(String toUser, String subject, String body) {

@@ -9,6 +9,9 @@ import java.net.SocketException;
 
 public class MessageReceiver extends Thread {
   private static final long MESSAGE_TIMEOUT = 60000;  //60 seconds
+  private static final String MSG_PING = "command[help]";
+  private static final String MSG_PONG = "here";
+
   private boolean keepRunning = true;
   Socket s;
   String name;
@@ -133,7 +136,13 @@ public class MessageReceiver extends Thread {
           msg.body = new String(data, index, bodyLength);
         }
 
-        notifyListeners(msg);
+        //if this is a PING message then we we to respond to it
+        if (msg.body != null && msg.body.equals(MSG_PING)) {
+          handlePing(msg);
+        }
+        else {  //otherwise just notify any registered listeners
+          notifyListeners(msg);
+        }
 
       }
       catch (SocketException se) {
@@ -146,5 +155,13 @@ public class MessageReceiver extends Thread {
 
     }
   }
+
+  private void handlePing(Message msg) {
+    System.out.println("received ping request using thread: " + msg.thread);
+    if (Session.currentSession != null && Session.currentSession.isConnected()) {
+      Session.currentSession.postMessage("", "", msg.thread, MSG_PONG);
+    }
+  }
+
 
 }
