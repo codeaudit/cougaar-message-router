@@ -62,6 +62,8 @@ public class Client extends JFrame
   JTextPane jTextPaneDisplayMessages = new JTextPane();
   SimpleAttributeSet incomingMsgAttrSet;
   SimpleAttributeSet outgoingMsgAttrSet;
+  SimpleAttributeSet onlineClientAttrSet;
+  SimpleAttributeSet offlineClientAttrSet;
   JTextField jTextFieldSendMessages = new JTextField();
   Border border9;
   TitledBorder titledBorder7;
@@ -80,9 +82,15 @@ public class Client extends JFrame
   private void initializeAttributeSets() {
     incomingMsgAttrSet = new SimpleAttributeSet();
     outgoingMsgAttrSet = new SimpleAttributeSet();
+    onlineClientAttrSet = new SimpleAttributeSet();
+    offlineClientAttrSet = new SimpleAttributeSet();
     StyleConstants.setForeground(incomingMsgAttrSet, Color.BLACK);
     StyleConstants.setForeground(outgoingMsgAttrSet, Color.BLUE);
+    StyleConstants.setForeground(onlineClientAttrSet, Color.GREEN);
+    StyleConstants.setForeground(offlineClientAttrSet, Color.RED);
     StyleConstants.setBold(incomingMsgAttrSet, true);
+    StyleConstants.setBold(onlineClientAttrSet, true);
+    StyleConstants.setBold(offlineClientAttrSet, true);
     StyleConstants.setItalic(outgoingMsgAttrSet, true);
   }
   private void jbInit() throws Exception {
@@ -181,9 +189,11 @@ public class Client extends JFrame
     String subject = msg.getSubject();
     if (subject != null && subject.equals("online")) {
       onlineUsers.addElement(msg.getBody());
+      displayMessage(msg.getBody()+ " : Online", onlineClientAttrSet);
     }
     else if (subject != null && subject.equals("offline")) {
       onlineUsers.removeElement(msg.getBody());
+      displayMessage(msg.getBody()+" : Offline", offlineClientAttrSet);
     }
     else {
       subject = subject == null?"":subject;
@@ -517,6 +527,11 @@ class History {
    }
 
    public void add(String s) {
+     if (s == null || s.equals("")) return;
+
+     if (list.contains(s)) {
+       list.remove(s);
+     }
      list.insertElementAt(s, 0);
    }
  }
