@@ -63,7 +63,7 @@ private:  //private methods
   string getLevelStr(int level) const;
   char * getCurrentTimeStr(char*, unsigned int len) const;
   struct tm* getCurrentTime(struct tm*);
-  char * convertTimeToStr(struct tm* , char *, unsigned int) const;
+  char * convertTimeToStr(struct tm , char *, unsigned int) const;
   void addLogEntry(LogEntry *);
   void writeLogEntry(LogEntry *);
     

@@ -38,7 +38,7 @@ private:
   void init(int logLevel, const char *from, const char *to, const char * subject, const char* msg);
   
 public:
-  struct tm *timestamp;
+  struct tm timestamp;
   int logLevel;
   string from;
   string to;

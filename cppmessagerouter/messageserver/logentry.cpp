@@ -30,14 +30,15 @@ LogEntry::LogEntry(int logLevel, const char *from, const char *to, const char * 
 }
 
 LogEntry::~LogEntry() {
-  delete timestamp;
 }
 
 void LogEntry::init(int logLevel, const char *from, const char *to, const char * subject, const char* msg) {
   time_t now;
-
+  struct tm* l_time;
   time(&now);
-  this->timestamp = localtime(&now);
+
+  l_time = localtime(&now);
+  this->timestamp = *l_time;
   this->logLevel = logLevel;
   this->from =  from;
   this->to = to;

@@ -89,8 +89,8 @@ void Logger::log(string& msg, int level)  {
   log(msg.c_str(), level);
 }
 
-char * Logger::convertTimeToStr(struct tm* time, char *str, unsigned int len) const {
-  strftime(str, len, "%d-%b-%Y %H:%M:%S", time);
+char * Logger::convertTimeToStr(struct tm time, char *str, unsigned int len) const {
+  strftime(str, len, "%d-%b-%Y %H:%M:%S", &time);
   return str;
 }
 
