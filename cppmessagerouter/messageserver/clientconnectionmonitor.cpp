@@ -50,6 +50,9 @@ void ClientConnectionMonitor::run(){
           pos = monitorList.erase(pos); //first remove the reference to the connection from this monitor list
           delete cc;  //now delete the ClientConnection object itself          
         }
+        else {
+          pos++;
+        }
       } while (pos != monitorList.end());
     }
   }

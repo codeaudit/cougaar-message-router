@@ -39,14 +39,15 @@ void MessageSender::run() {
     while(keepRunning) {
       while (this->stack.size() > 0) {
         sendMessage(*(this->stack.front()));
-          this->stack.pop_front();
+        this->stack.pop_front();
       }
       msleep(500);
     }
   }
   catch(SocketException& ex) {
     Context::getInstance()->getLogger()->forceLog(ex.description().c_str());
-  }   
+    cleanupMessages();  
+  }
 }
 
 /** No descriptions */
@@ -66,9 +67,16 @@ void MessageSender::stop(){
   while (!this->finished()) {
     msleep(500);
   }
+  cleanupMessages();
+}
+
+/** No descriptions */
+void MessageSender::cleanupMessages(){
+  cleanupLock.lock();
   while (this->stack.size() > 0) {
     Message *msg = this->stack.front();
     this->stack.pop_front();
     delete msg;
   }
+  cleanupLock.unlock();
 }

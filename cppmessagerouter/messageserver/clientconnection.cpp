@@ -127,8 +127,6 @@ void ClientConnection::close() {
     sender->wait(2000);
     delete sender;
   }
-  //delete this;
-
   return;
 }
 
@@ -238,6 +236,7 @@ void ClientConnection::routeMessage(Message& msg){
     reply->setbody("Unknown client: " + msg.getto());
     reply->setthread(msg.getthread());
     sendMessage(*reply);
+    delete &msg;  //delete the original message
   }
 }
 

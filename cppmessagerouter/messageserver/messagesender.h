@@ -19,6 +19,7 @@
 #define MESSAGESENDER_H
 
 #include <qthread.h>
+#include <qmutex.h>
 #include "ServerSocket.h"
 #include "message.h"
 #include <list>
@@ -47,9 +48,11 @@ public: // Public attributes
 private: // Private methods
   /** No descriptions */
   void sendMessage(Message &);
+  void cleanupMessages();
 
 private: // Private attributes
   bool keepRunning;
+  QMutex cleanupLock;
 
 };
 
