@@ -18,6 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5096
+#define VERSION "MessageRouter 1.5"
  
 #include "clientconnection.h"
 #include <iostream.h>
@@ -321,6 +322,11 @@ bool ClientConnection::handleMessage(Message& msg){
       Context::getInstance()->getconnectionRegistry()->validateConnections();
       delete reply;
       return true;
+    }
+    else if (subject == "version") {
+      reply->setto(msg.getfrom());
+      reply->setsubject("version");
+      reply->setbody(VERSION);
     }
     else if (msg.getthread() == "ping") { //a ping response causes validation count to reset
       delete reply;
