@@ -45,5 +45,11 @@ public class Message {
   public void setBody(String s) {
     body = s;
   }
+
+  public String toString() {
+    return from + ":" + to + ":" + thread + ":"+subject + ":" + body;
+  }
 }
+
+
 

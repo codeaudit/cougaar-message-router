@@ -29,13 +29,15 @@ public class Session implements SyncMessageReceiverListener {
       receiver = new MessageReceiver(connection, userName);
       receiver.start();
       Message reply = this.sendMessage("", "connect", userName);
-      if ((reply != null) && (reply.subject.equals("connected"))) {
+      if ((reply != null) && (reply.subject.equals("connected") || reply.body.equals("connected"))) {
         return true;
       }
     }
     catch (UnknownHostException ex) {
+      System.out.println(ex);
     }
     catch (IOException ex) {
+      System.out.println(ex);
     }
     return false;
   }

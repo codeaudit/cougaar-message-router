@@ -187,14 +187,18 @@ public class Client extends JFrame
   }
 
   public void receiveMsg(Message msg) {
-    if (msg.getSubject().equals("online")) {
+    System.out.println(msg.getSubject() + " : " + msg.getBody());
+    String subject = msg.getSubject();
+    if (subject != null && subject.equals("online")) {
       onlineUsers.addElement(msg.getBody());
     }
-    else if (msg.getSubject().equals("offline")) {
+    else if (subject != null && subject.equals("offline")) {
       onlineUsers.removeElement(msg.getBody());
     }
     else {
-      jTextAreaDisplayMessages.append(msg.getSubject() + " : " + msg.getBody()+"\n");
+      String body = msg.getBody()!=null?msg.getBody():"";
+      jTextAreaDisplayMessages.append(msg.getSubject() + " : " + body);
+      if (!body.endsWith("\n")) jTextAreaDisplayMessages.append("\n");
     }
   }
 
@@ -222,6 +226,7 @@ public class Client extends JFrame
   private void register() {
     if (session != null && session.isConnected()) {
       onlineUsers.clear();
+      //get the current list
       Message msg = session.sendMessage("", "list", "");
       StringTokenizer st = new StringTokenizer(msg.getBody(), "\n");
       while (st.hasMoreTokens()) {
