@@ -25,7 +25,9 @@ ClientConnectionMonitor::~ClientConnectionMonitor(){
 /** No descriptions */
 void ClientConnectionMonitor::addClientConnection(ClientConnection* cc){
   if (cc != NULL) {
+    monitorListLock.lock();
     monitorList.push_back(cc);
+    monitorListLock.unlock();
   }
 }
 
@@ -34,7 +36,9 @@ void ClientConnectionMonitor::run(){
   keepRunning = true;
   while (keepRunning) {
     msleep(2000);
+    //cout << "Connection monitor waking up..." << endl << flush;
       //loop though the monitornList and delete connection objects whose threads are terminiated
+    monitorListLock.lock();
     if (!monitorList.empty()) {
       MonitorList::iterator pos;
       pos = monitorList.begin();
@@ -56,5 +60,7 @@ void ClientConnectionMonitor::run(){
         }
       } while (pos != monitorList.end());
     }
+    //cout << "Connection monitor going back to sleep..." << endl << flush;
+    monitorListLock.unlock();
   }
 }

@@ -19,6 +19,7 @@
 #define CLIENTCONNECTIONMONITOR_H
 
 #include <qthread.h>
+#include <qmutex.h>
 #include <list>
 #include "clientconnection.h"
 
@@ -43,6 +44,7 @@ public:
   void addClientConnection(ClientConnection*);
 
   MonitorList monitorList;
+  QMutex monitorListLock;
 };
 
 #endif

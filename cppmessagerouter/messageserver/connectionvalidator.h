@@ -19,6 +19,7 @@
 #define CONNECTIONVALIDATOR_H
 
 #include <qthread.h>
+#include <qmutex.h>
 #include "clientconnection.h"
 
 /**
@@ -37,6 +38,7 @@ public:
   void stop();
 
   private:
+    QMutex connectionListLock;
     ValidationList connectionList;
     bool keepRunning;
 

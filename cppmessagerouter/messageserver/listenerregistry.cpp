@@ -25,17 +25,22 @@ ListenerRegistry::~ListenerRegistry(){
 }
 
 void  ListenerRegistry::registerListener(ClientConnection* cc )  {
+  listenerListLock.lock();
   listeners.push_back(cc);
+  listenerListLock.unlock();
 }
 
 void ListenerRegistry::deregisterListener(ClientConnection* cc)  {
+  listenerListLock.lock();
   listeners.remove(cc);
+  listenerListLock.unlock();
 }
 
 /** No descriptions */
 void ListenerRegistry::notifyListeners(Message &msg)  {
   list<ClientConnection *>::iterator iter;
 
+  listenerListLock.lock();
   iter = listeners.begin();
   for (iter = listeners.begin(); iter != listeners.end(); iter++) { 
     ClientConnection *cc = (ClientConnection *)(*iter);
@@ -46,6 +51,7 @@ void ListenerRegistry::notifyListeners(Message &msg)  {
       cc->sendMessage(*tmpMsg);
     }
   }
+  listenerListLock.unlock();
   //now we can delete the original message
   delete &msg;
 }

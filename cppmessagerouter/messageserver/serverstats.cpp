@@ -101,6 +101,7 @@ void ServerStats::run() {
   
   while (keepRunning) {
     msleep(SLEEP_INTERVAL);
+    //cout << "Server stats waking up..." << flush << endl;
 
     diffQueue[cycleCount] = incomingMsgCount - prevCount;
     prevCount = incomingMsgCount;
@@ -132,6 +133,7 @@ void ServerStats::run() {
 
     //printf("cycle: %d  avg1: %f  avg2: %f  avg3: %f  max: %f\n", cycleCount, avg1, avg2, avg3, max);
     cycleCount = (cycleCount + 1) % MAX_INTERVALS;  //adjust the cycle count
+    //cout << "Server stats going back to sleep..." << endl << flush;
   }
 }
 

@@ -41,12 +41,17 @@ void MessageSender::setName(string& name) {
 
 /** No descriptions */
 void MessageSender::run() {
+  bool gotSendStackLock = FALSE;
+  bool gotIncomingStackLock = FALSE;
   try {
     while(keepRunning) {
+      //cout << name << " message sender waking up..." << endl << flush;
       //copy items from incomingStack to sendStack
       sendStackLock.lock();  //lock the send stack so we can write to it
+      gotSendStackLock = TRUE;
       incomingStackLock.lock();  //lock the incomingStack so messages can't be added
-      while (!incomingStack.empty()) {
+      gotIncomingStackLock = TRUE;
+      while (incomingStack.size() > 0) {
         Message *msg = incomingStack.front();
         incomingStack.pop_front();
         if (msg != NULL) {
@@ -54,19 +59,25 @@ void MessageSender::run() {
         }
       }
       incomingStackLock.unlock();  //release the incomingStack so messages can be added again
-
+      gotIncomingStackLock = FALSE;
+      
       while (keepRunning && (sendStack.size() > 0)) {
         Message *msg = sendStack.front();
         sendStack.pop_front();
         sendMessage(*msg);
       }
       sendStackLock.unlock();  //now we can release the sendStack
-      msleep(200);
+      gotSendStackLock = FALSE;
+      //cout << name << " message sender going to sleep..." << endl << flush;
+      
+      msleep(1000);
     }
   }
   catch(SocketException& ex) {
     keepRunning = FALSE;
     Context::getInstance()->getLogger()->log(name.c_str(), ex.description().c_str(), Logger::LEVEL_DEBUG);  
+    if (gotSendStackLock) sendStackLock.unlock();
+    if (gotIncomingStackLock) incomingStackLock.unlock();
     stopLock.lock();
     if (!isStopped) {
       cleanupMessages();
@@ -77,6 +88,8 @@ void MessageSender::run() {
   catch(...) {
      keepRunning = FALSE;
      Context::getInstance()->getLogger()->log("Unknown error in MessageSender::run()", name.c_str(), Logger::LEVEL_DEBUG);
+     if (gotSendStackLock) sendStackLock.unlock();
+     if (gotIncomingStackLock) incomingStackLock.unlock();
      stopLock.lock();
      if (!isStopped) {
        cleanupMessages();
@@ -93,13 +106,14 @@ void MessageSender::addMessage(Message& msg){
     return;
   }
 
+  incomingStackLock.lock();  //lock the incomging stack
   if (incomingStack.size() >= MAX_QUEUE_SIZE) {
+    incomingStackLock.unlock();
     Context::getInstance()->getLogger()->log("Max Send Queue size exceeded", name.c_str(), Logger::LEVEL_DEBUG);
     delete &msg;
     return;
   }
-  
-  incomingStackLock.lock();  //lock the incomging stack
+
   incomingStack.push_back(&msg);  //push the message onto the stack
   incomingStackLock.unlock(); //unlock the incoming stack
 }
@@ -120,9 +134,13 @@ void MessageSender::sendMessage(Message& msg){
   catch (...) {
     Context::getInstance()->getLogger()->log("Unknown exception in sendMessage()", Logger::LEVEL_WARN);    
   }
-
+  
+  //cout << "deleting message" << endl << flush;
   delete &msg;
+  //cout << "message deleted" << endl << flush;
+  
   sendLock.unlock();
+  
 }
 
 /** No descriptions */

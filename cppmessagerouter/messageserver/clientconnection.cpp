@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5096
-#define VERSION "MessageRouter 1.7.32"
+#define VERSION "MessageRouter 1.7.35"
  
 #include "clientconnection.h"
 #include <iostream.h>
@@ -117,11 +117,14 @@ void ClientConnection::run() {
         }
       }
       else {
+        //cout << name << " waiting for msg..." << endl << flush;
         msg = getMessage();
         if (msg != NULL) {
+          //cout << name << " processing msg..." << endl << flush;
           keepRunning = processMessage(*msg);
           //processMessage(*msg);
         }
+        //cout << name << " processed msg." << endl << flush;
       }
     }
   }
@@ -248,9 +251,11 @@ void ClientConnection::getHeaderData(unsigned char* buffer, int size){
 //Del by KDevelop: 
 //Del by KDevelop: /** No descriptions */
 Message* ClientConnection::getMessage(){
+  //cout << name << " in getMessage()..." << endl << flush;
   unsigned char packet_header[PACKET_HEADER_SIZE];
 
   getHeaderData(packet_header, PACKET_HEADER_SIZE);
+  //cout << name << " got header data..." << endl << flush;
   
   //examine packet header to determine total message length
   unsigned char toLength = packet_header[0];
@@ -270,6 +275,7 @@ Message* ClientConnection::getMessage(){
   memset(packetData, 0, sizeof(packetData));
 
   getData(packetData, totalLength);
+  //cout << name << " got data..." << endl << flush;
   
   //now construct the Message object
   Message *msg = new Message();

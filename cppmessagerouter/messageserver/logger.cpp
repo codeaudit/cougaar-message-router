@@ -42,6 +42,8 @@ void Logger::setLevel(int level) {
 void Logger::writeLogEntry(FILE *pFile, LogEntry *entry) {
   char timebuffer[30];
   
+  if (entry == NULL) return;
+  
   if (entry->subject == "") { //msg only format
     fprintf(pFile, "%s - %s: %s\n", convertTimeToStr(entry->timestamp, (char *)timebuffer, sizeof(timebuffer)),
            getLevelStr(entry->logLevel).c_str(),
@@ -61,31 +63,41 @@ void Logger::writeLogEntry(FILE *pFile, LogEntry *entry) {
            entry->subject.c_str(),
            entry->msg.c_str());
   }
+  delete entry;
 }
 
 void Logger::run() {
   while (keepRunning) {
-    msleep(5000);
-    //first copy any entries from the incoming stack to the outgoing stack
-    //this way we can free the incoming stack so additional log entries can be
-    //posted while this thread is busing writing the current postings to the
-    //log file.  The copy should be quick since we're just moving pointers between
-    //stacks
-    incomingStackLock.lock(); //lock the incoming stack so new entries can't be added
-    while (keepRunning && (incomingStack.size() > 0)) {
-      LogEntry *entry = incomingStack.front();
-      incomingStack.pop_front();
-      outgoingStack.push_back(entry);
+    try {
+      msleep(5000);
+      //cout << "Logger wakking up..." << endl << flush;
+      //first copy any entries from the incoming stack to the outgoing stack
+      //this way we can free the incoming stack so additional log entries can be
+      //posted while this thread is busing writing the current postings to the
+      //log file.  The copy should be quick since we're just moving pointers between
+      //stacks
+      incomingStackLock.lock(); //lock the incoming stack so new entries can't be added
+      while (keepRunning && (incomingStack.size() > 0)) {
+        LogEntry *entry = incomingStack.front();
+        incomingStack.pop_front();
+        outgoingStack.push_back(entry);
+      }
+      incomingStackLock.unlock(); //unlock the incoming stack so new entries can be added again
+
+      if (outgoingStack.size() > 0) {
+        FILE *pFile = fopen(pLogFileName, "a");
+        while (keepRunning && (outgoingStack.size() > 0)) {
+          LogEntry *entry = outgoingStack.front();
+          outgoingStack.pop_front();
+          writeLogEntry(pFile, entry);
+        }
+        fclose(pFile);
+      }
+      //cout << "Logger going back to sleep..." << endl << flush;
     }
-    incomingStackLock.unlock(); //unlock the incoming stack so new entries can be added again
-    
-    FILE *pFile = fopen(pLogFileName, "a");
-    while (keepRunning && (outgoingStack.size() > 0)) {
-      LogEntry *entry = outgoingStack.front();
-      outgoingStack.pop_front();
-      writeLogEntry(pFile, entry);
+    catch (...) {
+      cout << "Unknown exception in Logger" << endl << flush;
     }
-    fclose(pFile);
   }
 }
 
@@ -144,6 +156,7 @@ void Logger::forceLog(const char *msg) {
   }
   else {
     writeLogEntry(stdout, new LogEntry(LEVEL_DEBUG, msg));
+    cout << flush;
   }
 }
 
@@ -157,6 +170,7 @@ void Logger::log(const char *msg, int level) {
   }
   else {
     writeLogEntry(stdout, new LogEntry(level, msg));
+    cout << flush;
   }
 }
 
@@ -169,6 +183,7 @@ void Logger::log(const char  *subject, const char *msg, int level) {
   }
   else {
     writeLogEntry(stdout, new LogEntry(level, subject, msg));
+    cout << flush;
   }
 }
 
@@ -181,6 +196,7 @@ void Logger::log(const char *from, const char* to, const char *subject, const ch
   }
   else {
     writeLogEntry(stdout, new LogEntry(level, from, to, subject, msg));
+    cout << flush;
   }
 }
 

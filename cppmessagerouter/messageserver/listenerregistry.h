@@ -19,6 +19,7 @@
 #define LISTENERREGISTRY_H
 
 #include "clientconnection.h"
+#include <qmutex.h>
 
 /**
   *@author David Craine
@@ -40,6 +41,7 @@ public:
 
 private:
   ListenerList listeners;
+  QMutex listenerListLock;
 };
 
 #endif

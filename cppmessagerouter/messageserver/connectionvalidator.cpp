@@ -32,6 +32,7 @@ void ConnectionValidator::run() {
   while (keepRunning) {
     msleep(1000);
     //loop though the connectionList and remove items that don't have the validation flag set
+    connectionListLock.lock();
     if (!connectionList.empty()) {
       ValidationList::iterator pos;
       pos = connectionList.begin();
@@ -56,13 +57,16 @@ void ConnectionValidator::run() {
         }
       } while (pos != connectionList.end());
     }
+    connectionListLock.unlock();
   }
 }
 
 void ConnectionValidator::validateConnection(ClientConnection* cc) {
   if (cc != NULL) {
+    connectionListLock.lock();
     connectionList.push_back(cc);  //add this connection to validation map
     cc->incrementValidationCount();  //set the increment the validation count
+    connectionListLock.unlock();
     Message *pingMsg = new Message();
     pingMsg->setbody(PING);
     pingMsg->setthread("ping");
