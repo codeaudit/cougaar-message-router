@@ -21,7 +21,7 @@ namespace WinMessageRouter
 		private MessageSender sender;
 		private byte[] packetBuffer;
 		private long packetBufferPos;
-		private string tmpBuffer;
+		//private string tmpBuffer;
 		private byte[] packetData;
 		private long  packetBufferSize;
 		private bool use_block_read;
@@ -55,6 +55,15 @@ namespace WinMessageRouter
 		"enable logging - enable the logging subsystem\n"+
 		"disable logging - disable the logging subsystem\n"+
 		"set log level <info|warn|debug|shout> - set the logging level\n"+
+		"log to file - enable logging to file" +
+		"log to stdout - enable logging to stdout" + 
+		"to: <broadcast> - send  a message addressed to <broadcast> to send a message to all connected clients" +
+		"get connection stats - get the stats for all current connections" +
+		"enable stat logging - enables logging of stats to log file" +
+		"disable stat logging - disables logging of stats to log file" +
+		"get stat logging - returns the current status fo stat logging" +
+		"enable sync send - enables sync sending mode" +
+		"disable sync send - disables sync sending mode" +
 		"help - get this message";
 
 		public ClientConnection(Socket sock, bool blockread)
