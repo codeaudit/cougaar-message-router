@@ -143,7 +143,7 @@ Message* ClientConnection::getMessage(){
       index += toLength;
     }
     if (fromLength != 0) {
-      msg->setfrom(messagedata.substr(0, fromLength));
+      msg->setfrom(messagedata.substr(index, fromLength));
       index += fromLength;
     }
     if (threadLength != 0) {
@@ -188,7 +188,7 @@ void ClientConnection::routeMessage(Message& msg){
 /** No descriptions */
 void ClientConnection::processMessage(Message& msg){
   if (msg.getto() != "") {
-    //cout << "routing msg from: " << name << " to: " << msg.getto() << endl;
+    cout << "routing msg from: " << name << " to: " << msg.getto() << endl << flush;
     routeMessage(msg);
   }
   else {

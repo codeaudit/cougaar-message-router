@@ -21,7 +21,7 @@
 #include <iostream.h>
 
 
-
+int tmpcount=0;
 MessageSender::MessageSender(ServerSocket* sock){
   this->ss = sock;
   this->name = name;
@@ -50,18 +50,14 @@ void MessageSender::addMessage(Message& msg){
 
 /** No descriptions */
 void MessageSender::sendMessage(Message& msg){
-  //cout << "message sender for: " << name << " sending to: " << msg.getto() << endl;
+  char tmpbuf[20];
+  sprintf(tmpbuf, "%d", tmpcount++);
+  cout << tmpbuf << " message sender for: " << name << " sending to: " << msg.getto() << endl << flush;
 
-  //we need to strip out the ending '\0' from the data string
-  /*const char *s =msg.getMessageData().c_str();
-  int len = strlen(s);
-  char *dataBuffer  = new char[len];
-  for (int i=0; i<len; i++) {
-    dataBuffer[i]=s[i];
-  } */
   *ss << msg.getMessageHeader() << msg.getMessageData();
   delete &msg;
 }
+
 /** No descriptions */
 void MessageSender::stop(){
   keepRunning = false;
