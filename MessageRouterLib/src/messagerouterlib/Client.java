@@ -18,8 +18,8 @@ import java.util.List;
 
 public class Client extends JFrame
     implements AsyncMessageReceiverListener {
-  SortedListModel onlineUsers = new SortedListModel();
-  //DefaultListModel onlineUsers = new DefaultListModel();
+  //SortedListModel onlineUsers = new SortedListModel();
+  DefaultListModel onlineUsers = new DefaultListModel();
   History msgHistory = new History();
   History subjectHistory = new History();
   static Client currentInstance;
@@ -71,6 +71,19 @@ public class Client extends JFrame
   JButton jButtonMessageStresser = new JButton();
   JPopupMenu jPopupMenuMessageArea = new JPopupMenu();
   JMenuItem jMenuItemClearMessages = new JMenuItem();
+  JMenuBar jMenuBarMain = new JMenuBar();
+  JMenu jMenuServer = new JMenu();
+  JMenuItem jMenuItemServerConnect = new JMenuItem();
+  JMenuItem jMenuItemServerDisconnect = new JMenuItem();
+  JMenu jMenuOptions = new JMenu();
+  JMenu jMenuTest = new JMenu();
+  JMenuItem jMenuItemOptionsRegister = new JMenuItem();
+  JMenuItem jMenuItemOptionsDeregister = new JMenuItem();
+  JMenuItem jMenuItemOptionsEavesdrop = new JMenuItem();
+  JMenuItem jMenuItemOptionsUneavesdrop = new JMenuItem();
+  JMenuItem jMenuItemTestMulticonnect = new JMenuItem();
+  JMenuItem jMenuItemTestMessageStresser = new JMenuItem();
+  JMenuItem jMenuItemTestMultidisconnect = new JMenuItem();
 
   public Client() {
     try {
@@ -128,6 +141,7 @@ public class Client extends JFrame
     jTextFieldUser.setPreferredSize(new Dimension(75, 20));
     jTextFieldUser.setText("");
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+    this.setJMenuBar(jMenuBarMain);
     this.setTitle("Message Client");
     jLabeltargetUser.setText("Target");
     jTextFieldTargetUser.setPreferredSize(new Dimension(75, 20));
@@ -161,6 +175,27 @@ public class Client extends JFrame
     jButtonMessageStresser.addActionListener(new Client_jToggleButtonMessageStresser_actionAdapter(this));
     jMenuItemClearMessages.setText("Clear Messages");
     jMenuItemClearMessages.addActionListener(new Client_jMenuItemClearMessages_actionAdapter(this));
+    jMenuServer.setText("Server");
+    jMenuItemServerConnect.setText("Connect");
+    jMenuItemServerConnect.addActionListener(new Client_jMenuItemServerConnect_actionAdapter(this));
+    jMenuItemServerDisconnect.setText("Disconnect");
+    jMenuItemServerDisconnect.addActionListener(new Client_jMenuItemServerDisconnect_actionAdapter(this));
+    jMenuOptions.setText("Options");
+    jMenuTest.setText("Test");
+    jMenuItemOptionsRegister.setText("Register");
+    jMenuItemOptionsRegister.addActionListener(new Client_jMenuItemOptionsRegister_actionAdapter(this));
+    jMenuItemOptionsDeregister.setText("Deregister");
+    jMenuItemOptionsDeregister.addActionListener(new Client_jMenuItemOptionsDeregister_actionAdapter(this));
+    jMenuItemOptionsEavesdrop.setText("Eavesdrop");
+    jMenuItemOptionsEavesdrop.addActionListener(new Client_jMenuItemOptionsEavesdrop_actionAdapter(this));
+    jMenuItemOptionsUneavesdrop.setText("Uneavesdrop");
+    jMenuItemOptionsUneavesdrop.addActionListener(new Client_jMenuItemOptionsUneavesdrop_actionAdapter(this));
+    jMenuItemTestMulticonnect.setText("Multiconnect");
+    jMenuItemTestMulticonnect.addActionListener(new Client_jMenuItemTestMulticonnect_actionAdapter(this));
+    jMenuItemTestMessageStresser.setText("Message Stresser");
+    jMenuItemTestMessageStresser.addActionListener(new Client_jMenuItemTestMessageStresser_actionAdapter(this));
+    jMenuItemTestMultidisconnect.setText("Multidisconnect");
+    jMenuItemTestMultidisconnect.addActionListener(new Client_jMenuItemTestMultidisconnect_actionAdapter(this));
     jPanelSendMessages.add(jTextFieldSendSubject, null);
     jPanelSendMessages.add(jTextFieldSendMessages, null);
     jSplitPane1.add(jSplitPane2, JSplitPane.TOP);
@@ -182,8 +217,27 @@ public class Client extends JFrame
     jPanel1.add(jButtonMultiConnect, null);
     jPanel1.add(jButtonMessageStresser, null);
     jPopupMenuMessageArea.add(jMenuItemClearMessages);
+    jMenuBarMain.add(jMenuServer);
+    jMenuBarMain.add(jMenuOptions);
+    jMenuBarMain.add(jMenuTest);
+    jMenuServer.add(jMenuItemServerConnect);
+    jMenuServer.add(jMenuItemServerDisconnect);
+    jMenuOptions.add(jMenuItemOptionsRegister);
+    jMenuOptions.add(jMenuItemOptionsDeregister);
+    jMenuOptions.add(jMenuItemOptionsEavesdrop);
+    jMenuOptions.add(jMenuItemOptionsUneavesdrop);
+    jMenuTest.add(jMenuItemTestMulticonnect);
+    jMenuTest.add(jMenuItemTestMultidisconnect);
+    jMenuTest.add(jMenuItemTestMessageStresser);
     jSplitPane1.setDividerLocation(200);
     jSplitPane2.setDividerLocation(600);
+
+    jMenuItemTestMulticonnect.setEnabled(true);
+    jMenuItemTestMultidisconnect.setEnabled(false);
+    jMenuItemServerConnect.setEnabled(true);
+    jMenuItemServerDisconnect.setEnabled(false);
+    jMenuItemOptionsRegister.setEnabled(true);
+    jMenuItemOptionsDeregister.setEnabled(false);
   }
 
   public static void main(String[] args) {
@@ -323,17 +377,27 @@ public class Client extends JFrame
 
 
   void jToggleButtonRegister_actionPerformed(ActionEvent e) {
+    handleRegister();
+  }
+
+  private void handleRegister() {
     if (session == null || !session.isConnected()) {
       jToggleButtonRegister.setSelected(false);
+      jMenuItemOptionsDeregister.setEnabled(false);
+      jMenuItemOptionsRegister.setEnabled(true);
       return;
     }
-    if (jToggleButtonRegister.isSelected()) {
+    if (jToggleButtonRegister.isSelected() || jMenuItemOptionsRegister.isEnabled()) {
       register();
       jToggleButtonRegister.setText("Deregister");
+      jMenuItemOptionsDeregister.setEnabled(true);
+      jMenuItemOptionsRegister.setEnabled(false);
     }
     else {
       deregister();
       jToggleButtonRegister.setText("Register");
+      jMenuItemOptionsDeregister.setEnabled(false);
+      jMenuItemOptionsRegister.setEnabled(true);
     }
   }
 
@@ -359,12 +423,18 @@ public class Client extends JFrame
   }
 
   void jButtonMultiConnect_actionPerformed(ActionEvent e) {
+    multiConnect();
+  }
+
+  private void multiConnect() {
     if (jButtonMultiConnect.getText().equals("Multi-Connect")) {
       String res = JOptionPane.showInputDialog(this,
                                                "Enter number of connections",
                                                "Multi-Connect");
       if (res != null) {
         jButtonMultiConnect.setText("Multi-Disconnect");
+        jMenuItemTestMulticonnect.setEnabled(false);
+        jMenuItemTestMultidisconnect.setEnabled(true);
         int count = Integer.parseInt(res);
         MultiSessions = new Session[count];
         for (int i = 0; i < count; i++) {
@@ -389,6 +459,8 @@ public class Client extends JFrame
         }
       }
       jButtonMultiConnect.setText("Multi-Connect");
+      jMenuItemTestMulticonnect.setEnabled(true);
+      jMenuItemTestMultidisconnect.setEnabled(false);
     }
   }
 
@@ -401,7 +473,12 @@ public class Client extends JFrame
   }
 
   void jToggleButtonConnect_actionPerformed(ActionEvent e) {
-    if (jToggleButtonConnect.isSelected())
+    handleConnect();
+
+  }
+
+  private void handleConnect() {
+    if (jToggleButtonConnect.isSelected() || jMenuItemServerConnect.isEnabled())
       try {
         jTextPaneDisplayMessages.setText("");
         session = new Session();
@@ -411,14 +488,20 @@ public class Client extends JFrame
             displayMessage("Connected\n", incomingMsgAttrSet);
             session.addListener(this);
             jToggleButtonConnect.setText("Disconnect");
+            jMenuItemServerConnect.setEnabled(false);
+            jMenuItemServerDisconnect.setEnabled(true);
           }
           else {
             jToggleButtonConnect.setSelected(false);
+            jMenuItemServerConnect.setEnabled(true);
+            jMenuItemServerDisconnect.setEnabled(false);
             displayMessage("Connection attempt failed\n", offlineClientAttrSet);
           }
         }
         catch (ConnectionException ex1) {
           jToggleButtonConnect.setSelected(false);
+          jMenuItemServerConnect.setEnabled(true);
+          jMenuItemServerDisconnect.setEnabled(false);
           displayMessage("Connection attempt failed: " + ex1.getMessage()+"\n", offlineClientAttrSet);
         }
       }
@@ -427,9 +510,10 @@ public class Client extends JFrame
       }
     else {
       disconnect();
+      jMenuItemServerConnect.setEnabled(true);
+      jMenuItemServerDisconnect.setEnabled(false);
       displayMessage("Disconnected\n", offlineClientAttrSet);
     }
-
   }
 
   private void disconnect() {
@@ -441,6 +525,23 @@ public class Client extends JFrame
     jToggleButtonRegister.setSelected(false);
     onlineUsers.clear();
     jToggleButtonRegister.setText("Register");
+  }
+
+  private void eavesdrop() {
+    //get the list of selected hosts from the online list
+
+    //iterate through the list of hosts
+      //if a host is already being eavesdropped on, skip it
+
+  }
+
+  private void uneavesdrop() {
+    //get the list of selected hosts from the online list
+
+    //iterate through the list of hosts
+      //if a host is not being eavesdropped on, skip it
+
+
   }
 
   void jTextFieldSendMessages_keyPressed(KeyEvent e) {
@@ -505,6 +606,10 @@ public class Client extends JFrame
   }
 
   void jButtonMessageStresser_actionPerformed(ActionEvent e) {
+    messageStresser();
+  }
+
+  private void messageStresser() throws HeadlessException {
     String res = JOptionPane.showInputDialog(this, "Number of messages to send");
     try {
       int count = Integer.parseInt(res);
@@ -523,6 +628,50 @@ public class Client extends JFrame
       jPopupMenuMessageArea.show(jTextPaneDisplayMessages, e.getX(), e.getY());
     }
   }
+
+  void jMenuItemServerConnect_actionPerformed(ActionEvent e) {
+    handleConnect();
+  }
+
+  void jMenuItemServerDisconnect_actionPerformed(ActionEvent e) {
+    handleConnect();
+  }
+
+  void jMenuItemOptionsRegister_actionPerformed(ActionEvent e) {
+    handleRegister();
+  }
+
+  void jMenuItemOptionsDeregister_actionPerformed(ActionEvent e) {
+    handleRegister();
+  }
+
+  void jMenuItemOptionsEavesdrop_actionPerformed(ActionEvent e) {
+
+  }
+
+  void jMenuItemOptionsUneavesdrop_actionPerformed(ActionEvent e) {
+
+  }
+
+  void jMenuItemTestMulticonnect_actionPerformed(ActionEvent e) {
+    multiConnect();
+  }
+
+  void jMenuItemTestMessageStresser_actionPerformed(ActionEvent e) {
+    messageStresser();
+  }
+
+  void jMenuItemTestMultidisconnect_actionPerformed(ActionEvent e) {
+    multiConnect();
+  }
+
+
+
+
+
+
+
+
 
 }
 
@@ -762,6 +911,105 @@ class Client_jTextPaneDisplayMessages_mouseAdapter extends java.awt.event.MouseA
   }
   public void mouseClicked(MouseEvent e) {
     adaptee.jTextPaneDisplayMessages_mouseClicked(e);
+  }
+}
+
+class Client_jMenuItemServerConnect_actionAdapter implements java.awt.event.ActionListener {
+  Client adaptee;
+
+  Client_jMenuItemServerConnect_actionAdapter(Client adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jMenuItemServerConnect_actionPerformed(e);
+  }
+}
+
+class Client_jMenuItemServerDisconnect_actionAdapter implements java.awt.event.ActionListener {
+  Client adaptee;
+
+  Client_jMenuItemServerDisconnect_actionAdapter(Client adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jMenuItemServerDisconnect_actionPerformed(e);
+  }
+}
+
+class Client_jMenuItemOptionsRegister_actionAdapter implements java.awt.event.ActionListener {
+  Client adaptee;
+
+  Client_jMenuItemOptionsRegister_actionAdapter(Client adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jMenuItemOptionsRegister_actionPerformed(e);
+  }
+}
+
+class Client_jMenuItemOptionsDeregister_actionAdapter implements java.awt.event.ActionListener {
+  Client adaptee;
+
+  Client_jMenuItemOptionsDeregister_actionAdapter(Client adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jMenuItemOptionsDeregister_actionPerformed(e);
+  }
+}
+
+class Client_jMenuItemOptionsEavesdrop_actionAdapter implements java.awt.event.ActionListener {
+  Client adaptee;
+
+  Client_jMenuItemOptionsEavesdrop_actionAdapter(Client adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jMenuItemOptionsEavesdrop_actionPerformed(e);
+  }
+}
+
+class Client_jMenuItemOptionsUneavesdrop_actionAdapter implements java.awt.event.ActionListener {
+  Client adaptee;
+
+  Client_jMenuItemOptionsUneavesdrop_actionAdapter(Client adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jMenuItemOptionsUneavesdrop_actionPerformed(e);
+  }
+}
+
+class Client_jMenuItemTestMulticonnect_actionAdapter implements java.awt.event.ActionListener {
+  Client adaptee;
+
+  Client_jMenuItemTestMulticonnect_actionAdapter(Client adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jMenuItemTestMulticonnect_actionPerformed(e);
+  }
+}
+
+class Client_jMenuItemTestMessageStresser_actionAdapter implements java.awt.event.ActionListener {
+  Client adaptee;
+
+  Client_jMenuItemTestMessageStresser_actionAdapter(Client adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jMenuItemTestMessageStresser_actionPerformed(e);
+  }
+}
+
+class Client_jMenuItemTestMultidisconnect_actionAdapter implements java.awt.event.ActionListener {
+  Client adaptee;
+
+  Client_jMenuItemTestMultidisconnect_actionAdapter(Client adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jMenuItemTestMultidisconnect_actionPerformed(e);
   }
 }
 
