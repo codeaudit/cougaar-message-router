@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5096
-#define VERSION "MessageRouter 1.7.53"
+#define VERSION "MessageRouter 1.7.56"
  
 #include "clientconnection.h"
 #include <iostream.h>
@@ -226,12 +226,12 @@ void ClientConnection::getData(char *buffer, int size){
     }
   }
   catch (SocketException &se) {
-    delete tmp_buffer;
+    delete [] tmp_buffer;
     tmp_buffer = NULL;
     throw se;
   }
  
-  delete tmp_buffer;
+  delete [] tmp_buffer;
   tmp_buffer = NULL;
 }
 
@@ -247,12 +247,12 @@ void ClientConnection::getHeaderData(unsigned char* buffer, int size){
     }
   }
   catch (SocketException &se) {
-    delete tmp_buffer;
+    delete [] tmp_buffer;
     tmp_buffer = NULL;
     throw se;
   }
   
-  delete tmp_buffer;
+  delete [] tmp_buffer;
   tmp_buffer = NULL;
 }
 
@@ -318,7 +318,7 @@ Message* ClientConnection::getMessage(){
     //msg->setMessageData(messagedata);
   //}
   
-    delete packetData;
+    delete [] packetData;
   
   return msg;
 }
@@ -698,7 +698,7 @@ void ClientConnection::pack(char *src, int srcStartPos, int srcLength, unsigned 
   }
 }
 
-/** No descriptions */
+/** THIS METHOD HAS NOT BEEN TESTED IN A LONG TIME.  IT NEEDS TO BE DEBUGGED.*/
 MessageList& ClientConnection::getMessages(){
   char* readBuffer = new char[MAX_BUF_SIZE+1];
   memset(readBuffer, 0, sizeof(readBuffer));
@@ -713,8 +713,9 @@ MessageList& ClientConnection::getMessages(){
   pack(packetBuffer, packetBufferPos, residualPacketLength, tmpBuf, 0);
   //pack the newly read data into the tmp buffer 
   pack(readBuffer, 0, actualSize, tmpBuf, residualPacketLength);
+  delete [] readBuffer;
   if (packetBuffer != NULL) {
-    delete packetBuffer;  //delete the old packet buffer
+    delete [] packetBuffer;  //delete the old packet buffer
   }
   packetBuffer = tmpBuf;  //set the packet buffer to the tmp buffer
 
@@ -771,7 +772,7 @@ MessageList& ClientConnection::getMessages(){
       msg->setbody(packetBufferStr.substr(pos, bodyLength));
       pos += bodyLength;
     }
-    delete datastr;
+    delete [] datastr;
     messages->push_back(msg);
     packetBufferPos += totalLength;  //update the packet buffer pos
   }

@@ -141,7 +141,6 @@ void ServerStats::run() {
     //check to see if it's time to dump the stats
     if (!cycleCount)
       logStats();
-
   }
 }
 
@@ -151,21 +150,21 @@ void ServerStats::stop() {
 
 void ServerStats::logStats() {
   //log the server stats
-  string& str = getStatsStr();
-  Context::getInstance()->getLogger()->log("Server Stats", str.c_str(), Logger::LEVEL_DEBUG);
-  delete &str;
+  string& str1 = getStatsStr();
+  Context::getInstance()->getLogger()->log("Server Stats", str1.c_str(), Logger::LEVEL_DEBUG);
+  delete &str1;
   //log the connection stats
-  str = Context::getInstance()->getconnectionRegistry()->getConnectionStatsStr();
-  Context::getInstance()->getLogger()->log("Connection Stats", str.c_str(), Logger::LEVEL_DEBUG);
-  delete &str;
+  string& str2 = Context::getInstance()->getconnectionRegistry()->getConnectionStatsStr();
+  Context::getInstance()->getLogger()->log("Connection Stats", str2.c_str(), Logger::LEVEL_DEBUG);
+  delete &str2;
   //log the send queue stats
-  str = Context::getInstance()->getconnectionRegistry()->getSendQueueStats();
-  Context::getInstance()->getLogger()->log("Send Queue Stats", str.c_str(), Logger::LEVEL_DEBUG);
-  delete &str;
+  string& str3 = Context::getInstance()->getconnectionRegistry()->getSendQueueStats();
+  Context::getInstance()->getLogger()->log("Send Queue Stats", str3.c_str(), Logger::LEVEL_DEBUG);
+  delete &str3;
   //log the connection profile stats
-  str = Context::getInstance()->getconnectionRegistry()->getConnectionProfiles();
-  Context::getInstance()->getLogger()->log("Connection Profiles", str.c_str(), Logger::LEVEL_DEBUG);
-  delete &str;
+  string& str4 = Context::getInstance()->getconnectionRegistry()->getConnectionProfiles();
+  Context::getInstance()->getLogger()->log("Connection Profiles", str4.c_str(), Logger::LEVEL_DEBUG);
+  delete &str4;
 }
 
 

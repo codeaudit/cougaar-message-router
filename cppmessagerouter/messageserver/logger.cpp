@@ -231,9 +231,16 @@ void Logger::disable() {
 }
 
 void Logger::addLogEntry(LogEntry* entry) {
-  incomingStackLock.lock();
-  incomingStack.push_back((LogEntry *)entry);
-  incomingStackLock.unlock();
+  try {
+    incomingStackLock.lock();
+    incomingStack.push_back((LogEntry *)entry);
+    incomingStackLock.unlock();
+  }
+  catch (...) {
+    cout << "Unknown exception in addLogEntry" << endl << flush;
+    if (incomingStackLock.gotLock())
+      incomingStackLock.unlock();
+  }
 }
 
 void Logger::setLogFilePath(const char *path) {
