@@ -33,6 +33,7 @@ Context::Context(){
   connectionValidator->start();
   ServerStats::getInstance();
   maxSendQueueSize=5000;      //default
+  syncSend = false;  //default
 }
 
 Context::~Context(){
@@ -113,4 +114,12 @@ int Context::getMaxSendQueueSize() {
 
 void Context::setMaxSendQueueSize(int size) {
   maxSendQueueSize = size;
+}
+
+void Context::setSyncSend(bool b) {
+  syncSend = b;
+}
+
+bool Context::getSyncSend() {
+  return syncSend;
 }

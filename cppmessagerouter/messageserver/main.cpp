@@ -105,6 +105,10 @@
         Context::getInstance()->logToStdout();
         cout << "logging to stdout" << endl << flush;
       }
+      if (!strcmp(argv[i], "-c")) {
+        Context::getInstance()->setSyncSend(true);
+        Context::getInstance()->getLogger()->forceLog("Synchronous sending enabled");
+      }
       if (!strcmp(argv[i], "-h")) {
         cout << "Options are:" << endl;
         cout << "   -b Block Read enabled" << endl;
@@ -119,6 +123,7 @@
         cout << "   -q=<value> Set the max size of the send queues" << endl;
         cout << "   -g disable logging" << endl;
         cout << "   -o log to stdout" << endl;
+        cout << "   -c use synchronous sending" << endl;
         cout << "   -h This help message" << endl << flush;
         return EXIT_SUCCESS;
       }     

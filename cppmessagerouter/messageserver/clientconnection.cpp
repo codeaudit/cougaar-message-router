@@ -352,7 +352,12 @@ void ClientConnection::routeMessage(Message& msg){
   if (targetConnection != NULL) {
     if (!targetConnection->isClosing) {
       routingProfileMap[msg.getto()]++;
-      targetConnection->sendMessage(msg);
+      if (Context::getInstance()->getSyncSend()) {
+        targetConnection->sendMessageNow(msg);
+      }
+      else {
+        targetConnection->sendMessage(msg);
+      }
     }
     else {
       delete &msg;
@@ -749,6 +754,14 @@ bool ClientConnection::handleMessage(Message& msg){
           reply->setsubject("unknown log level");
         }
         reply->setto(msg.getfrom());
+      }
+      else if (subject == "enable sync send") {
+        Context::getInstance()->setSyncSend(true);
+        reply->setsubject("sync send enabled");
+      }
+      else if (subject == "disable sync send") {
+        Context::getInstance()->setSyncSend(false);
+        reply->setsubject("sync send disabled");
       }
       else { //send an error reply
         if (Context::getInstance()->errorMessagesEnabled()) { //if error messaging is allowed

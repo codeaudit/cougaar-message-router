@@ -53,6 +53,8 @@ public:
   void logToStdout();
   int getMaxSendQueueSize();
   void setMaxSendQueueSize(int size);
+  void setSyncSend(bool);
+  bool getSyncSend();
   
 private:
 	Context();
@@ -74,6 +76,7 @@ private: // Private attributes
   bool eavesDroppingAllowed;
   bool errorMessagesAllowed;
   int maxSendQueueSize;
+  bool syncSend;
 };
 
 #endif
