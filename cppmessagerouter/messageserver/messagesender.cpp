@@ -45,7 +45,7 @@ void MessageSender::run() {
     }
   }
   catch(SocketException& ex) {
-    Context::getInstance()->getLogger()->forceLog(ex.description().c_str());
+    Context::getInstance()->getLogger()->log(ex.description().c_str(), Logger::LEVEL_DEBUG);
     cleanupMessages();  
   }
 }

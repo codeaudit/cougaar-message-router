@@ -31,21 +31,37 @@ class Logger {
 public: 
 	Logger();
 	~Logger();
+  void setLevel(int level);
   /** No descriptions */
-  void log(string& msg) const;
+  void log(string& msg, int level) const;
   /** No descriptions */
-  void log(const char *) const;
+  void log(const char *, int level) const;
   void forceLog(const char *) const;
-  void log(const char *subject, const char *msg) const;
-  void log(const char *from, const char* to, const char *subject, const char* msg) const;
+  void log(const char *subject, const char *msg, int level) const;
+  void log(const char *from, const char* to, const char *subject, const char* msg, int level) const;
   /** Write property of bool enabled. */
   void enable();
   void disable();
   /** Read property of bool enabled. */
   const bool isenabled();
+  
+public:  // Public attributes
+  static const int LEVEL_INFO =1;
+  static const int LEVEL_WARN = 2;
+  static const int LEVEL_DEBUG = 3;
+  static const int LEVEL_SHOUT = 4;
+
+private:  //private methods
+  string getLevelStr(int level) const;
+    
 private: // Private attributes
   /**  */
   bool enabled;
+  int currentLevel;
+  string LEVEL_INFO_STR;
+  string LEVEL_WARN_STR;
+  string LEVEL_DEBUG_STR;
+  string LEVEL_SHOUT_STR;
 };
 
 #endif

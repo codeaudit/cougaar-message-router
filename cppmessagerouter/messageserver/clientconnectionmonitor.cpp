@@ -40,11 +40,11 @@ void ClientConnectionMonitor::run(){
       pos = monitorList.begin();
        do {
         if (*pos == NULL) {
-          Context::getInstance()->getLogger()->log("NULL value detected in monitor list");
+          Context::getInstance()->getLogger()->log("NULL value detected in monitor list", Logger::LEVEL_WARN);
           pos = monitorList.erase(pos);
         }
         else if (((ClientConnection*)(*pos))->isRunning() == false) {
-          Context::getInstance()->getLogger()->log("Deleting Connection Object", ((ClientConnection*)(*pos))->name.c_str());
+          Context::getInstance()->getLogger()->log("Deleting Connection Object", ((ClientConnection*)(*pos))->name.c_str(), Logger::LEVEL_INFO);
           ClientConnection *cc = (ClientConnection *)(*pos);
           cc->wait(1000);  //make sure the thread is terminated
           pos = monitorList.erase(pos); //first remove the reference to the connection from this monitor list

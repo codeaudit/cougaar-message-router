@@ -22,14 +22,39 @@
 #include <stdlib.h>
 
 Logger::Logger(){
-}
-Logger::~Logger(){
-}
-/** No descriptions */
-void Logger::log(string& msg) const {
-  log(msg.c_str());
+  currentLevel = LEVEL_WARN;
+  LEVEL_INFO_STR = "INFO";
+  LEVEL_WARN_STR = "WARN";
+  LEVEL_DEBUG_STR = "DEBUG";
+  LEVEL_SHOUT_STR = "SHOUT";
 }
 
+Logger::~Logger(){
+}
+
+void Logger::setLevel(int level) {
+  this->currentLevel = level;
+}
+
+/** No descriptions */
+void Logger::log(string& msg, int level) const {
+  log(msg.c_str(), level);
+}
+
+string Logger::getLevelStr(int level) const {
+  switch (level) {
+    case LEVEL_INFO:
+     return LEVEL_INFO_STR;
+    case LEVEL_WARN:
+      return LEVEL_WARN_STR;
+    case LEVEL_DEBUG:
+      return LEVEL_DEBUG_STR;
+    case LEVEL_SHOUT:
+      return LEVEL_SHOUT_STR;
+    default:
+      return "ERROR";
+  }
+}
 
 //does not check the enabled flag
 void Logger::forceLog(const char *msg) const {
@@ -45,8 +70,9 @@ void Logger::forceLog(const char *msg) const {
 }
    
 /** No descriptions */
-void Logger::log(const char *msg) const {
+void Logger::log(const char *msg, int level) const {
   if (!enabled) return;
+  if (level < currentLevel) return;
   
   time_t now;
   struct tm *l_time;
@@ -55,12 +81,13 @@ void Logger::log(const char *msg) const {
   time(&now);
   l_time = localtime(&now);
   strftime(str, sizeof str, "%d-%b-%Y %H:%M:%S", l_time);
-  printf("%s  - %s\n", str, msg);
+  printf("%s  - %s: %s\n", str, getLevelStr(level).c_str(), msg);
   cout << flush;
 }
 
-void Logger::log(const char  *subject, const char *msg) const {
+void Logger::log(const char  *subject, const char *msg, int level) const {
   if (!enabled) return;
+  if (level < currentLevel) return;
 
   time_t now;
   struct tm *l_time;
@@ -69,12 +96,13 @@ void Logger::log(const char  *subject, const char *msg) const {
   time(&now);
   l_time = localtime(&now);
   strftime(str, sizeof str, "%d-%b-%Y %H:%M:%S", l_time);
-  printf("%s  - %s : %s\n", str, subject, msg);
+  printf("%s  - %s: %s : %s\n", str, getLevelStr(level).c_str(), subject, msg);
   cout << flush;
 }
 
-void Logger::log(const char *from, const char* to, const char *subject, const char* msg) const {
+void Logger::log(const char *from, const char* to, const char *subject, const char* msg, int level) const {
   if (!enabled) return;
+  if (level < currentLevel) return;
 
   time_t now;
   struct tm *l_time;
@@ -83,7 +111,7 @@ void Logger::log(const char *from, const char* to, const char *subject, const ch
   time(&now);
   l_time = localtime(&now);
   strftime(str, sizeof str, "%d-%b-%Y %H:%M:%S", l_time);
-  printf("%s  - from: %s - to: %s - %s : %s\n", str, from, to, subject, msg);
+  printf("%s  - %s: from: %s - to: %s - %s : %s\n", str, getLevelStr(level).c_str(), from, to, subject, msg);
   cout << flush;
 }
 

@@ -42,11 +42,30 @@
         cout << "block read enabled" << endl << flush;
         
       }
+      if (!strcmp(argv[i], "-i")) {
+        Logger* logger = Context::getInstance()->getLogger();
+        logger->setLevel(Logger::LEVEL_INFO);
+        logger->enable();
+        cout << "debugging enabled at level INFO" << endl << flush;
+      }
+      if (!strcmp(argv[i], "-w")) {
+        Logger* logger = Context::getInstance()->getLogger();
+        logger->setLevel(Logger::LEVEL_WARN);
+        logger->enable();
+        cout << "debugging enabled at level WARN" << endl << flush;
+      }
       if (!strcmp(argv[i], "-d")) {
         Logger* logger = Context::getInstance()->getLogger();
+        logger->setLevel(Logger::LEVEL_DEBUG);
         logger->enable();
-        cout << "debugging enabled" << endl << flush;
+        cout << "debugging enabled at LEVEL DEBUG" << endl << flush;
       }
+      if (!strcmp(argv[i], "-s")) {
+        Logger* logger = Context::getInstance()->getLogger();
+        logger->setLevel(Logger::LEVEL_SHOUT);
+        logger->enable();
+        cout << "debugging enabled at LEVEL SHOUT" << endl << flush;
+      }      
    }
  }
 

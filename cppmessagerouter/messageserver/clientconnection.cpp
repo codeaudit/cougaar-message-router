@@ -96,7 +96,7 @@ void ClientConnection::run() {
   catch ( SocketException& ex) {
     keepRunning = false;
     Logger *logger = Context::getInstance()->getLogger();
-    logger->log("Socket exception", ex.description().c_str());
+    logger->log("Socket exception", ex.description().c_str(), Logger::LEVEL_DEBUG);
   }
   
   close();
@@ -107,7 +107,7 @@ bool ClientConnection::isRunning() {
 }
 
 void ClientConnection::close() {
-  Context::getInstance()->getLogger()->log(name.c_str(), "closing connection");
+  Context::getInstance()->getLogger()->log(name.c_str(), "closing connection", Logger::LEVEL_INFO);
   /***** cleanup *****/
   if (tmp_buffer != NULL) {
     delete tmp_buffer;
@@ -244,7 +244,7 @@ void ClientConnection::routeMessage(Message& msg){
 bool ClientConnection::processMessage(Message& msg){
   if (msg.getto() != "") {
     Context::getInstance()->getLogger()->log(msg.getfrom().c_str(), msg.getto().c_str(),
-      msg.getsubject().c_str(), msg.getbody().c_str());
+      msg.getsubject().c_str(), msg.getbody().c_str(), Logger::LEVEL_INFO);
     routeMessage(msg);
     return true;
   }
@@ -286,7 +286,7 @@ void ClientConnection::deregisterClient(){
 bool ClientConnection::handleMessage(Message& msg){
   string& subject = msg.getsubject();
   Context::getInstance()->getLogger()->log(msg.getfrom().c_str(), (const char *)"server",
-    msg.getsubject().c_str(), msg.getbody().c_str());
+    msg.getsubject().c_str(), msg.getbody().c_str(), Logger::LEVEL_INFO);
   try {  
     Message* reply = new Message();
     reply->setthread(msg.getthread());
@@ -303,7 +303,7 @@ bool ClientConnection::handleMessage(Message& msg){
       reply->setto(msg.getfrom());
       reply->setsubject("list");
       string& list = Context::getInstance()->getconnectionRegistry()->listConnections();
-      Context::getInstance()->getLogger()->log((const char *)"Current List", list.c_str());
+      Context::getInstance()->getLogger()->log((const char *)"Current List", list.c_str(), Logger::LEVEL_INFO);
       reply->setbody(list);
       delete &list;
     }
@@ -335,7 +335,7 @@ bool ClientConnection::handleMessage(Message& msg){
     sendMessage(*reply);
   }
   catch (std::exception& ex) {
-    Context::getInstance()->getLogger()->forceLog(ex.what());
+    Context::getInstance()->getLogger()->log(ex.what(), Logger::LEVEL_DEBUG);
   }
   return true;
   

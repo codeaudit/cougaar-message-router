@@ -54,7 +54,7 @@ string& ConnectionRegistry::listConnections() {
         pos++;
       }
       else {
-        Context::getInstance()->getLogger()->log("Found NULL connection", (pos->first).c_str());
+        Context::getInstance()->getLogger()->log("Found NULL connection", (pos->first).c_str(), Logger::LEVEL_WARN);
         clientMap.erase(pos++);
       }
     }
