@@ -45,6 +45,7 @@ public:
   bool getAllowDuplicateConnections();
   void enableEavesDropping();
   bool isEavesDroppingEnabled();
+  void disableEavesDropping();
   
 private:
 	Context();

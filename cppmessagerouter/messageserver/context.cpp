@@ -69,6 +69,10 @@ void Context::enableEavesDropping() {
    eavesDroppingAllowed = TRUE;
 }
 
+void Context::disableEavesDropping() {
+  eavesDroppingAllowed = FALSE;
+}
+
 bool Context::isEavesDroppingEnabled() {
   return eavesDroppingAllowed;
 }

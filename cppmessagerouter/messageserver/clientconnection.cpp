@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5096
-#define VERSION "MessageRouter 1.7.19"
+#define VERSION "MessageRouter 1.7.20"
  
 #include "clientconnection.h"
 #include <iostream.h>
@@ -460,6 +460,16 @@ bool ClientConnection::handleMessage(Message& msg){
         reply->setto(msg.getfrom());
         reply->setsubject("globaleavesdrop disnabled");
       }
+    }
+    else if (subject == "enable eavesdropping") {
+      Context::getInstance()->enableEavesDropping();
+      reply->setto(msg.getfrom());
+      reply->setsubject("eavesdropping enabled");
+    }
+    else if (subject == "disable eavesdropping") {
+      Context::getInstance()->disableEavesDropping();
+      reply->setto(msg.getfrom());
+      reply->setsubject("eavesdropping disabled");
     }
     else if (msg.getthread() == "ping") { //a ping response causes validation count to reset
       delete reply;
