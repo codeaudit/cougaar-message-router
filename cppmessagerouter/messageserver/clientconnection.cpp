@@ -512,7 +512,7 @@ bool ClientConnection::handleMessage(Message& msg){
     else if (subject == "disable error messages") {
       Context::getInstance()->disableErrorMessages();
       reply->setto(msg.getfrom());
-      reply->setsubject("error message disabled");
+      reply->setsubject("error messages disabled");
     }
     else if (subject == "get stats") {
       reply->setto(msg.getfrom());

@@ -46,13 +46,13 @@
         Logger* logger = Context::getInstance()->getLogger();
         logger->setLevel(Logger::LEVEL_INFO);
         logger->enable();
-        cout << "debugging enabled at level INFO" << endl << flush;
+        cout << "logging enabled at level INFO" << endl << flush;
       }
       if (!strcmp(argv[i], "-w")) {
         Logger* logger = Context::getInstance()->getLogger();
         logger->setLevel(Logger::LEVEL_WARN);
         logger->enable();
-        cout << "debugging enabled at level WARN" << endl << flush;
+        cout << "logging enabled at level WARN" << endl << flush;
       }
       if (!strcmp(argv[i], "-d")) {
         Logger* logger = Context::getInstance()->getLogger();
@@ -87,7 +87,7 @@
         cout << "   -s Shout-level logging enabled" << endl << flush;
         cout << "   -r Refuse duplicate connections" << endl << flush;
         cout << "   -e Enable eavesdropping" << endl << flush;
-        cout << "   -m Enale error messages" << endl << flush;
+        cout << "   -m Enable error messages" << endl << flush;
         return EXIT_SUCCESS;
       }     
    }
