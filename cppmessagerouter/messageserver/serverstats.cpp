@@ -138,8 +138,8 @@ void ServerStats::run() {
     cycleCount = (cycleCount + 1) % MAX_INTERVALS;  //adjust the cycle count
     //cout << "Server stats going back to sleep..." << endl << flush;
 
-    //check to see if it's time to dump the stats
-    if (!cycleCount)
+    //dump the stats every 5 minutes
+    if (!(cycleCount % 60))
       logStats();
   }
 }

@@ -64,7 +64,7 @@ void MessageSender::run() {
       sendStackLock.unlock();  //now we can release the sendStack
       //cout << name << " message sender going to sleep..." << endl << flush;
       
-      msleep(1000);
+      msleep(500);
     }
   }
   catch(SocketException& ex) {
