@@ -328,6 +328,7 @@ void ClientConnection::routeMessage(Message& msg){
   if (targetConnection != NULL) {
     if (!targetConnection->isClosing) {
       targetConnection->sendMessage(msg);
+      routingProfileMap[msg.getto()]++;
     }
     else {
       delete &msg;
@@ -642,6 +643,12 @@ bool ClientConnection::handleMessage(Message& msg){
        reply->setbody(stats);
        delete &stats;
     }
+    else if (subject == "get connection profiles") {
+       reply->setsubject("connection profiles") {
+       string& profiles = Context::getInstance()->getconnectionRegistry()->getConnectionProfiles();
+       reply->setbody(profiles);
+       delete &profiles;
+    }   
     else if (subject == "help") {
       reply->setsubject("COMMAND LIST");
       string body = "\n";
@@ -797,6 +804,23 @@ unsigned int ClientConnection::getIncomingMsgCount() {
 
 unsigned int ClientConnection::getOutgoingMsgCount() {
   return outgoingMsgCount;
+}
+
+string& ClientConnection::getRoutingProfileStr() {
+  string* ret = new string("");
+  char tmpbuf[10];
+  
+  if (!routingProfileMap.empty()) {
+    ConnectionProfileMap::iterator pos;
+    pos = routingProfileMap.begin();
+    while (pos != routingProfileMap.end()) {
+      *ret += pos->first+": ";
+      *ret += itoa(routingProfileMap[pos->first], tmpbuf, 10);
+      *ret += "\n";
+      pos++;
+    }
+  }
+  return *ret;
 }
 
 

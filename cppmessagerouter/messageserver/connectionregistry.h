@@ -44,6 +44,7 @@ public:
   string& getConnectionStatsStr();
   void broadcastMessage(Message& msg);
   int getConnectionCount();
+  string& getConnectionProfiles();
 
 private:
   ConnectionMap clientMap;

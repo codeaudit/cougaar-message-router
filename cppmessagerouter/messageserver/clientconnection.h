@@ -32,6 +32,7 @@
   */
 
 typedef list<Message *> MessageList;
+typedef map<string, int> ConnectionProfileMap;
 
 class ClientConnection : public QThread {
 public: 
@@ -62,6 +63,7 @@ public:
   time_t getStartTime();
   unsigned int getIncomingMsgCount();
   unsigned int getOutgoingMsgCount();
+  string& getRoutingProfileStr();
 
 public:
   /**  */
@@ -94,6 +96,7 @@ private: // Private attributes
   //local message counters
   unsigned int incomingMsgCount;
   unsigned int outgoingMsgCount;
+  ConnectionProfileMap routingProfileMap;
   
 private: // Private methods
   /** No descriptions */

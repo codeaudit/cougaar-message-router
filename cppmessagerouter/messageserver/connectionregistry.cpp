@@ -183,3 +183,23 @@ string& ConnectionRegistry::getConnectionStatsStr() {
   }
   return *ret;
 }
+
+string& ConnectionRegistry::getConnectionProfiles() {
+  string *ret = new string("\n");
+
+  if (!clientMap.empty()) {
+    ConnectionMap::iterator pos;
+    pos = clientMap.begin();
+    while (pos != clientMap.end()) {
+      if (clientMap[pos->first] != NULL) {
+        *ret += pos->first + " : ";
+        string& profile = clientMap[pos->first]->getConnectionProfile();
+        *ret += profile;
+        delete &profile; 
+      }
+      pos++;
+    }
+  }
+
+  return *ret;
+}
