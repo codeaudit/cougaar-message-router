@@ -18,9 +18,10 @@ import java.util.List;
 
 public class Client extends JFrame
     implements AsyncMessageReceiverListener {
-  SortedListModel onlineUsers = new SortedListModel();
-  List msgHistory = new ArrayList();
-  List subjectHistory = new ArrayList();
+  //SortedListModel onlineUsers = new SortedListModel();
+  DefaultListModel onlineUsers = new DefaultListModel();
+  History msgHistory = new History();
+  History subjectHistory = new History();
 
   JSplitPane jSplitPane1 = new JSplitPane();
   BorderLayout borderLayout1 = new BorderLayout();
@@ -187,6 +188,8 @@ public class Client extends JFrame
       }
       msgHistory.add(body);
       subjectHistory.add(jTextFieldSendSubject.getText());
+      msgHistory.add(jTextAreaSendMessages.getText());
+      subjectHistory.add(jTextFieldSendSubject.getText());
       jTextAreaSendMessages.setText("");
       jTextFieldSendSubject.setText("");
     }
@@ -232,16 +235,11 @@ public class Client extends JFrame
       displayMessage(text, as);
   }
 
-  void jTextAreaSendSubject_keyTyped(KeyEvent e) {
-    if (e.getKeyChar() == '\n') {
-      jTextAreaSendMessages.requestFocus();
-    }
-  }
-
   void jTextFieldSendSubject_keyTyped(KeyEvent e) {
     if (e.getKeyChar() == '\n') {
       jTextAreaSendMessages.requestFocus();
     }
+
   }
 
   void jToggleButtonRegister_actionPerformed(ActionEvent e) {
@@ -347,6 +345,39 @@ public class Client extends JFrame
     jToggleButtonRegister.setText("Register");
   }
 
+  void jTextAreaSendMessages_keyPressed(KeyEvent e) {
+    if(e.getKeyCode() == e.VK_DOWN) {
+      String s = msgHistory.forward();
+      if (s != null) {
+        jTextAreaSendMessages.setText(s);
+      }
+    }
+    else if (e.getKeyCode() == e.VK_UP) {
+      String s = msgHistory.back();
+      if (s != null) {
+        jTextAreaSendMessages.setText(s);
+      }
+    }
+
+  }
+
+  void jTextFieldSendSubject_keyPressed(KeyEvent e) {
+    if(e.getKeyCode() == e.VK_DOWN) {
+      String s = subjectHistory.forward();
+      if (s != null) {
+        jTextFieldSendSubject.setText(s);
+      }
+    }
+    else if (e.getKeyCode() == e.VK_UP) {
+      String s = subjectHistory.back();
+      if (s != null) {
+        jTextFieldSendSubject.setText(s);
+      }
+    }
+  }
+
+
+
 }
 
 class Flasher extends Thread {
@@ -393,8 +424,6 @@ class Flasher extends Thread {
       }
     }
   }
-
-
 }
 
 class Client_jTextAreaSendMessages_keyAdapter extends java.awt.event.KeyAdapter {
@@ -406,6 +435,9 @@ class Client_jTextAreaSendMessages_keyAdapter extends java.awt.event.KeyAdapter 
   public void keyTyped(KeyEvent e) {
     adaptee.jTextAreaSendMessages_keyTyped(e);
   }
+  public void keyPressed(KeyEvent e) {
+    adaptee.jTextAreaSendMessages_keyPressed(e);
+  }
 }
 
 class Client_jTextFieldSendSubject_keyAdapter extends java.awt.event.KeyAdapter {
@@ -416,6 +448,9 @@ class Client_jTextFieldSendSubject_keyAdapter extends java.awt.event.KeyAdapter 
   }
   public void keyTyped(KeyEvent e) {
     adaptee.jTextFieldSendSubject_keyTyped(e);
+  }
+  public void keyPressed(KeyEvent e) {
+    adaptee.jTextFieldSendSubject_keyPressed(e);
   }
 }
 
@@ -463,41 +498,76 @@ class Client_jToggleButtonConnect_actionAdapter implements java.awt.event.Action
   }
 }
 
-class SortedListModel extends DefaultListModel {
-    public SortedListModel() {
-    }
 
-    public SortedListModel(Vector v) {
-        setElements(v);
-    }
 
-    public void setElements(Vector v) {
-        clear();
-        Object arr[]=v.toArray();
-        Arrays.sort(arr);
-        for (int i=0; i<arr.length; i++)
-            super.addElement(arr[i]);
-    }
+class History {
+   ArrayList list;
+   int pos = 0;
 
-    public void add(int idx, Object o) {
-        addElement(o);
-    }
 
-    public void setElementAt(Object o, int idx) {
-        removeElementAt(idx);
-        addElement(o);
-    }
+   public History() {
+     list = new ArrayList();
+   }
 
-    public void addElement(Object o) {
-        Comparable a=(Comparable)o;
-        int i=0;
-        for (i=0; i<getSize(); i++) {
-            if (a.compareTo(getElementAt(i))<0) {
-                break;
-            }
-        }
-        super.add(i,o);
-    }
+   public String forward() {
+     if (!list.isEmpty()) {
+       return (String)list.get(pos++);
+     }
+     return null;
+   }
+
+   public String back() {
+     if (!list.isEmpty()) {
+       pos = pos>0?--pos:0;
+       return (String)list.get(pos);
+     }
+     return null;
+
+   }
+
+   public void reset() {
+     pos = 0;
+   }
+
+   public void add(String s) {
+     list.add(s);
+   }
+ }
+
+ class SortedListModel extends DefaultListModel {
+  public SortedListModel() {
+  }
+
+  public SortedListModel(Vector v) {
+      setElements(v);
+  }
+
+  public void setElements(Vector v) {
+      clear();
+      Object arr[]=v.toArray();
+      Arrays.sort(arr);
+      for (int i=0; i<arr.length; i++)
+          super.addElement(arr[i]);
+  }
+
+  public void add(int idx, Object o) {
+      addElement(o);
+  }
+
+  public void setElementAt(Object o, int idx) {
+      removeElementAt(idx);
+      addElement(o);
+  }
+
+  public void addElement(Object o) {
+      Comparable a=(Comparable)o;
+      int i=0;
+      for (i=0; i<getSize(); i++) {
+          if (a.compareTo(getElementAt(i))<0) {
+              break;
+          }
+      }
+      super.add(i,o);
+  }
 }
-
 
