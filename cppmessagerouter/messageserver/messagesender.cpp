@@ -20,6 +20,7 @@
 #include "message.h"
 #include <iostream.h>
 #include "SocketException.h"
+#include "context.h"
 
 
 int tmpcount=0;
@@ -44,7 +45,7 @@ void MessageSender::run() {
     }
   }
   catch(SocketException& ex) {
-    cout << "Socket exception in message sender thread: " << ex.description() << endl << flush;
+    Context::getInstance()->getLogger()->forceLog(ex.description().c_str());
   }   
 }
 

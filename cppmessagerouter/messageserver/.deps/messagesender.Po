@@ -115,7 +115,11 @@ messagesender.o messagesender.o: messagesender.cpp messagesender.h \
   /usr/include/c++/3.2/limits \
   /usr/include/c++/3.2/i386-redhat-linux/bits/cpu_limits.h \
   /usr/include/c++/3.2/typeinfo /usr/include/c++/3.2/istream \
-  /usr/include/c++/3.2/bits/istream.tcc SocketException.h
+  /usr/include/c++/3.2/bits/istream.tcc SocketException.h context.h \
+  connectionregistry.h clientconnection.h /usr/include/c++/3.2/map \
+  /usr/include/c++/3.2/bits/stl_tree.h \
+  /usr/include/c++/3.2/bits/stl_map.h \
+  /usr/include/c++/3.2/bits/stl_multimap.h listenerregistry.h logger.h
 
 messagesender.h:
 
@@ -486,3 +490,21 @@ message.h:
 /usr/include/c++/3.2/bits/istream.tcc:
 
 SocketException.h:
+
+context.h:
+
+connectionregistry.h:
+
+clientconnection.h:
+
+/usr/include/c++/3.2/map:
+
+/usr/include/c++/3.2/bits/stl_tree.h:
+
+/usr/include/c++/3.2/bits/stl_map.h:
+
+/usr/include/c++/3.2/bits/stl_multimap.h:
+
+listenerregistry.h:
+
+logger.h:

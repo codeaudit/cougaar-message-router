@@ -321,7 +321,7 @@ void ClientConnection::handleMessage(Message& msg){
     sendMessage(*reply);
   }
   catch (std::exception& ex) {
-    cout << "Exception: " << ex.what() << endl;
+    Context::getInstance()->getLogger()->forceLog(ex.what());
   }
   
 }
