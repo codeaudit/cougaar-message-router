@@ -100,10 +100,11 @@ string& ServerStats::getStatsStr() {
 void ServerStats::run() {
   unsigned long int sum = 0;
   unsigned long int intervalCount = 0;
-  
+
+  //cout << "server stats starting" << endl << flush;
   while (keepRunning) {
     msleep(SLEEP_INTERVAL);
-    //cout << "Server stats waking up..." << flush << endl;
+    //cout << "Server stats waking up..." <<  endl << flush;
 
     diffQueue[cycleCount] = incomingMsgCount - prevCount;
     prevCount = incomingMsgCount;

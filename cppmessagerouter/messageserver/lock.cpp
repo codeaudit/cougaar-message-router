@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "lock.h"
+#include <iostream.h>
 
 Lock::Lock(){
   m_gotLock = false;

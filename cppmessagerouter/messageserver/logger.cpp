@@ -82,6 +82,8 @@ void Logger::run() {
       //posted while this thread is busing writing the current postings to the
       //log file.  The copy should be quick since we're just moving pointers between
       //stacks
+
+      //cout << "checking for logs entries" << endl << flush;
       incomingStackLock.lock(); //lock the incoming stack so new entries can't be added
       while (keepRunning && (incomingStack.size() > 0)) {
         LogEntry *entry = incomingStack.front();

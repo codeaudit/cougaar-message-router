@@ -30,7 +30,7 @@ ConnectionValidator::~ConnectionValidator(){
 void ConnectionValidator::run() {
   keepRunning = true;
   while (keepRunning) {
-    msleep(1000);
+    msleep(5000);
     //loop though the connectionList and remove items that don't have the validation flag set
     connectionListLock.lock();
     if (!connectionList.empty()) {
