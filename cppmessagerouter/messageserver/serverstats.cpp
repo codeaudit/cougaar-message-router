@@ -137,10 +137,35 @@ void ServerStats::run() {
     //printf("cycle: %d  avg1: %f  avg2: %f  avg3: %f  max: %f\n", cycleCount, avg1, avg2, avg3, max);
     cycleCount = (cycleCount + 1) % MAX_INTERVALS;  //adjust the cycle count
     //cout << "Server stats going back to sleep..." << endl << flush;
+
+    //check to see if it's time to dump the stats
+    if (!cycleCount)
+      logStats();
+
   }
 }
 
 void ServerStats::stop() {
   keepRunning = false;
 }
+
+void ServerStats::logStats() {
+  //log the server stats
+  string& str = getStatsStr();
+  Context::getInstance()->getLogger()->log("Server Stats", str.c_str(), Logger::LEVEL_DEBUG);
+  delete &str;
+  //log the connection stats
+  str = Context::getInstance()->getconnectionRegistry()->getConnectionStatsStr();
+  Context::getInstance()->getLogger()->log("Connection Stats", str.c_str(), Logger::LEVEL_DEBUG);
+  delete &str;
+  //log the send queue stats
+  str = Context::getInstance()->getconnectionRegistry()->getSendQueueStats();
+  Context::getInstance()->getLogger()->log("Send Queue Stats", str.c_str(), Logger::LEVEL_DEBUG);
+  delete &str;
+  //log the connection profile stats
+  str = Context::getInstance()->getconnectionRegistry()->getConnectionProfiles();
+  Context::getInstance()->getLogger()->log("Connection Profiles", str.c_str(), Logger::LEVEL_DEBUG);
+  delete &str;
+}
+
 

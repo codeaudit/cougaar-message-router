@@ -53,6 +53,7 @@ public:
 
 protected:
   ServerStats();
+  void logStats();
   
 private: // Private attributes
   /**  */

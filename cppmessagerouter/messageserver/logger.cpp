@@ -20,6 +20,8 @@
 #include <string>
 #include <iostream.h>
 #include <stdlib.h>
+#include "context.h"
+#include "serverstats.h"
 
 Logger::Logger(){
   currentLevel = LEVEL_WARN;
@@ -237,3 +239,4 @@ void Logger::addLogEntry(LogEntry* entry) {
 void Logger::setLogFilePath(const char *path) {
   pLogFileName = (char *)path;
 }
+
