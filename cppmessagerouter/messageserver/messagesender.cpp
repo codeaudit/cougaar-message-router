@@ -67,13 +67,22 @@ void MessageSender::run() {
 
 /** No descriptions */
 void MessageSender::addMessage(Message& msg){
+  int tryCount = 0;
+  bool gotLock = FALSE;
+  
   if (!keepRunning) {  //if the message router has stopped running
     delete &msg;  //delete the message
     return;
   }
-  stackLock.lock();
-  stack.push_back(&msg);
-  stackLock.unlock();
+  while (!(gotLock = stackLock.tryLock()) && (tryCount++ < 10)) {  //if we can't get a lock on the stack
+    msleep(500);  //sleep and try again  
+  }         
+
+  stack.push_back(&msg);  //push the message o the stack even if we didn't get the lock
+
+  if (gotLock) {    //only release the lock if we actually acquired it
+    stackLock.unlock();
+  }
 }
 
 /** No descriptions */
