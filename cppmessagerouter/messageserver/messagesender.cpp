@@ -40,28 +40,55 @@ void MessageSender::setName(string& name) {
 
 /** No descriptions */
 void MessageSender::run() {
+  bool gotLock;
+  int tryCount;
+  
   try {
     while(keepRunning) {
-      stackLock.lock();
+      gotLock = FALSE;
+      tryCount = 0;
+
+      while (!(gotLock = stackLock.tryLock()) && (tryCount++ < 10)) {  //if we can't get a lock on the stack
+        msleep(250);  //sleep and try again
+      }
+      if (!gotLock) {  //log the fact that we couldn't get the lock
+        Context::getInstance()->getLogger()->log("run() unable to get lock on sender", name.c_str(), Logger::LEVEL_DEBUG);
+      }
       while (keepRunning && (stack.size() > 0)) {
         Message *msg = stack.front();
         stack.pop_front();
         sendMessage(*msg);
       }
-      stackLock.unlock();
-      msleep(500);
+      if (gotLock) {
+        stackLock.unlock();
+      }
+      msleep(200);
     }
   }
   catch(SocketException& ex) {
     keepRunning = FALSE;
-    stackLock.unlock();
+    if (gotLock) {
+      stackLock.unlock();
+    }
     Context::getInstance()->getLogger()->log(name.c_str(), ex.description().c_str(), Logger::LEVEL_DEBUG);  
     stopLock.lock();
     if (!isStopped) {
       cleanupMessages();
       isStopped = TRUE;
     }
-    stopLock.unlock();
+  }
+  catch(...) {
+     keepRunning = FALSE;
+     if (gotLock) {
+       stackLock.unlock();
+     }
+     Context::getInstance()->getLogger()->log("Unknown error in MessageSender::run()", name.c_str(), Logger::LEVEL_DEBUG);
+     stopLock.lock();
+     if (!isStopped) {
+       cleanupMessages();
+       isStopped = TRUE;
+     }
+     stopLock.unlock();
   }
 }
 
@@ -75,8 +102,12 @@ void MessageSender::addMessage(Message& msg){
     return;
   }
   while (!(gotLock = stackLock.tryLock()) && (tryCount++ < 10)) {  //if we can't get a lock on the stack
-    msleep(500);  //sleep and try again  
-  }         
+    msleep(250);  //sleep and try again  
+  }
+
+  if (!gotLock) {  //log the fact that we couldn't get the lock
+    Context::getInstance()->getLogger()->log("addMessage() unable to get lock on sender", name.c_str(), Logger::LEVEL_DEBUG);
+  }
 
   stack.push_back(&msg);  //push the message o the stack even if we didn't get the lock
 
@@ -90,6 +121,7 @@ void MessageSender::sendMessage(Message& msg){
   sendLock.lock();
   try {
     *ss << msg.getMessageHeader() << msg.getMessageData();
+    Context::getInstance()->getLogger()->log(msg.getfrom().c_str(), msg.getto().c_str(), "Sent Message", msg.getbody().c_str(), Logger::LEVEL_INFO);
   }
   catch (SocketException &se) {
     Context::getInstance()->getLogger()->log("ERROR", se.description().c_str(), Logger::LEVEL_WARN);
@@ -125,29 +157,36 @@ void MessageSender::stop(){
 
 /** No descriptions */
 void MessageSender::cleanupMessages(){
+  bool gotLock = FALSE;
+  int tryCount =0;
+  
   cleanupLock.lock();
-  //Context::getInstance()->getLogger()->log("cleanupmessages: got cleanup lock", Logger::LEVEL_WARN);
-  stackLock.lock();
-  //Context::getInstance()->getLogger()->log("cleanupmessages: got stack lock", Logger::LEVEL_WARN);
+
+  while (!(gotLock = stackLock.tryLock()) && (tryCount++ < 10)) {  //if we can't get a lock on the stack
+    msleep(250);  //sleep and try again
+  }
+
+  if (!gotLock) {  //log the fact that we couldn't get the lock
+    Context::getInstance()->getLogger()->log("cleanupMessages() unable to get lock on sender", name.c_str(), Logger::LEVEL_DEBUG);
+  }
 
   try {
     while (!stack.empty()) {
-      //Context::getInstance()->getLogger()->log("cleanupmessages: stack contains items", Logger::LEVEL_WARN);
       Message *msg = stack.front();
-      //Context::getInstance()->getLogger()->log("cleanupmessages: found message", msg->getsubject().c_str(), Logger::LEVEL_WARN);
       stack.pop_front();
-      //Context::getInstance()->getLogger()->log("cleanupmessages: popped message from stack", Logger::LEVEL_WARN);
 
       if (msg != NULL) {
         delete msg;
-        //Context::getInstance()->getLogger()->log("cleanupmessages: deleted msg", Logger::LEVEL_WARN);
       }      
     }
   }
   catch (...)  {
     Context::getInstance()->getLogger()->log("Error in cleanupMessages()", Logger::LEVEL_WARN);
   }
-  stackLock.unlock();
+  if (gotLock) {
+    stackLock.unlock();
+  }
+  
   cleanupLock.unlock();
   //Context::getInstance()->getLogger()->log("cleanupmessages: complete", Logger::LEVEL_WARN);
 
