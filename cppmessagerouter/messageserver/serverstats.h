@@ -21,6 +21,7 @@
 using namespace std;
 
 #include <qmutex.h>
+#include <qthread.h>
 #include <stdlib.h>
 #include <string>
 #include <time.h>
@@ -29,10 +30,15 @@ using namespace std;
   *@author David Craine
   */
 
-class ServerStats {
+#define MAX_INTERVALS 180     //each interval is 5 seconds
+#define SLEEP_INTERVAL 5000 //5 secs
+class ServerStats : QThread {
 public: 
 	~ServerStats();
-  
+
+  void run();
+  void stop();
+    
   void incrementIncomingMsgCount();
   void incrementOutgoingMsgCount();
   
@@ -54,9 +60,14 @@ private: // Private attributes
   
   unsigned long int incomingMsgCount;
   unsigned long int outgoingMsgCount;
+  unsigned long int prevCount;
+  unsigned long int diffQueue[MAX_INTERVALS]; 
+  unsigned long int cycleCount;
   QMutex inLock;
   QMutex outLock;
   time_t startTime;
+  bool keepRunning;
+  double raw, avg1, avg2, avg3, max;
 };
 
 #endif

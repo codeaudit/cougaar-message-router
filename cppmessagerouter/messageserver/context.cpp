@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "context.h"
+#include "serverstats.h"
+
 Context * Context::currentInstance;
 
 Context::Context(){
@@ -28,6 +30,7 @@ Context::Context(){
   logger = new Logger();
   connectionValidator = new ConnectionValidator();
   connectionValidator->start();
+  ServerStats::getInstance();
 }
 
 Context::~Context(){
