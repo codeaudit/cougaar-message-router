@@ -30,6 +30,7 @@
 #include <vector>
 #include "context.h"
 #include "logger.h"
+#include "serverstats.h"
 
 void printbuffer(char *buf, int size) {
   for (int i=0; i<size; i++) {
@@ -307,6 +308,7 @@ void ClientConnection::routeMessage(Message& msg){
 
 /** No descriptions */
 bool ClientConnection::processMessage(Message& msg){
+  ServerStats::getInstance()->incrementIncomingMsgCount();
   if (msg.getto() != "") {
     Context::getInstance()->getLogger()->log(msg.getfrom().c_str(), msg.getto().c_str(),
       msg.getsubject().c_str(), msg.getbody().c_str(), Logger::LEVEL_INFO);
@@ -337,12 +339,14 @@ void ClientConnection::registerClient(string& name){
 
 /** Adds a message to the message sender queue */
 void ClientConnection::sendMessage(Message& msg){
+  ServerStats::getInstance()->incrementOutgoingMsgCount();
   sender->addMessage(msg);
 }
 
 /** Bypasses the message sender queue and sends the message directly**/
 void ClientConnection::sendMessageNow(Message& msg) {
   sender->sendMessage(msg);
+  ServerStats::getInstance()->incrementOutgoingMsgCount();
 }
 
 /** No descriptions */
@@ -471,6 +475,18 @@ bool ClientConnection::handleMessage(Message& msg){
       reply->setto(msg.getfrom());
       reply->setsubject("eavesdropping disabled");
     }
+    else if (subject == "get stats") {
+      reply->setto(msg.getfrom());
+      reply->setsubject("stats");
+      string& stats = ServerStats::getInstance()->getStatsStr();
+      reply->setbody(stats);
+      delete &stats;
+    }
+    else if (subject == "reset stats") {
+      ServerStats::getInstance()->resetStats();
+      reply->setto(msg.getfrom());
+      reply->setsubject("stats reset");
+    }      
     else if (msg.getthread() == "ping") { //a ping response causes validation count to reset
       delete reply;
       resetValidationCount();
