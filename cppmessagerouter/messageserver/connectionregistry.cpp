@@ -44,15 +44,19 @@ void ConnectionRegistry::deregisterConnection(string &name){
 /** No descriptions */
 string& ConnectionRegistry::listConnections() {
   string* ret = new string();
-  
-  ConnectionMap::iterator pos;
-  for (pos = clientMap.begin(); pos != clientMap.end(); ++pos) {
-    if (clientMap[pos->first] != NULL) {
-      *ret += pos->first + "\n";
-    }
-    else {
-      Context::getInstance()->getLogger()->log("Found NULL connection", (pos->first).c_str());
-      clientMap.erase(pos);
+
+  if (!clientMap.empty()) {
+    ConnectionMap::iterator pos;
+    pos = clientMap.begin();
+    while (pos != clientMap.end()) {
+      if (clientMap[pos->first] != NULL) {
+        *ret += pos->first + "\n";
+        pos++;
+      }
+      else {
+        Context::getInstance()->getLogger()->log("Found NULL connection", (pos->first).c_str());
+        clientMap.erase(pos++);
+      }
     }
   }
    
