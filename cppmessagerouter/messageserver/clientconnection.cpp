@@ -132,7 +132,9 @@ void ClientConnection::close() {
   //}
   deregisterClient();
   if (ss != NULL) {
+    ss->shutdown();
     delete ss;
+    ss = NULL;
   }
   if (sender != NULL) {
     sender->stop();
