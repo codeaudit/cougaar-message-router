@@ -131,6 +131,7 @@ void ClientConnection::close() {
   Context::getInstance()->getEavesDropRegistry()->deregisterAllEavesDroppers(this);
   Context::getInstance()->getEavesDropRegistry()->deregisterGlobalEavesDropper(this);
   Context::getInstance()->getEavesDropRegistry()->removeTarget(this->name);
+  
   //if (packetData != NULL) {
     //delete packetData;
   //}

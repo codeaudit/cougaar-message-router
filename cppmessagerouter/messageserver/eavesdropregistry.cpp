@@ -43,6 +43,7 @@ void EavesDropRegistry::removeTarget(string& target) {
     eavesDroppers.erase(target);
     delete targetEavesDroppers;
   }
+  mutex.unlock();
 }
 
 void EavesDropRegistry::deregisterAllEavesDroppers(ClientConnection* eavesdropper) {
@@ -89,7 +90,7 @@ void EavesDropRegistry::deregisterGlobalEavesDropper(ClientConnection* eavesdrop
   mutex.unlock();
 }
 
-void EavesDropRegistry::sendMessage(string& to, Message &msg) {
+void EavesDropRegistry::sendLocalMessage(string& to, Message &msg) {
   //check the local eaves droppers
   if (eavesDroppers.count(to) > 0) {
     ListEavesDroppers *ed = eavesDroppers[to];
@@ -103,7 +104,9 @@ void EavesDropRegistry::sendMessage(string& to, Message &msg) {
       pos++;
     }
   }
+}
 
+void EavesDropRegistry::sendGlobalMessage(Message &msg) {
   //check the global eaves droppers
   if (!globalEavesDroppers.empty()) {
     ListEavesDroppers::iterator pos;
@@ -120,8 +123,13 @@ void EavesDropRegistry::sendMessage(string& to, Message &msg) {
 
 /** No descriptions */
 void EavesDropRegistry::checkMessage(Message &msg) {
+  mutex.lock();
   //check local eaves droppers for the from address
-  sendMessage(msg.getfrom(), msg);
+  sendLocalMessage(msg.getfrom(), msg);
   //check local eaves droppers for the to address
-  sendMessage(msg.getto(), msg);
+  sendLocalMessage(msg.getto(), msg);
+  //check global eaves droppers
+  sendGlobalMessage(msg);
+
+  mutex.unlock();
 }

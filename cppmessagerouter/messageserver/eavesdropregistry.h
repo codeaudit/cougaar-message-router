@@ -50,7 +50,8 @@ public:
  public:
 
  private:
-  void sendMessage(string& to, Message& msg);
+  void sendLocalMessage(string& to, Message& msg);
+  void sendGlobalMessage(Message& msg);
 
  private:
   QMutex mutex;
