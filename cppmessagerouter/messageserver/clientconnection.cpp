@@ -496,21 +496,6 @@ bool ClientConnection::handleMessage(Message& msg){
       reply->setbody(stats);
       delete &stats;
     }
-    else if (subject == "set max send queue size") {
-      int val = atoi(msg.getbody().c_str());
-      if (val > 0) {
-        char buffer[128];
-        sprintf(buffer, "Max send queue size changed from %d to %d",
-            Context::getInstance()->getMaxSendQueueSize(), val);
-        Context::getInstance()->setMaxSendQueueSize(val);
-        Context::getInstance()->getLogger()->log(buffer, Logger::LEVEL_DEBUG);
-        reply->setsubject(buffer);
-      }
-      else {
-        reply->setsubject("set max send queue size");
-        reply->setbody("invalid value specified");
-      }
-    }
     else if (subject == "get max send queue size") {
       char buffer[128];
       sprintf(buffer, "Current max send queue size: %d", Context::getInstance()->getMaxSendQueueSize());
@@ -523,12 +508,7 @@ bool ClientConnection::handleMessage(Message& msg){
     else if (subject == "deregister") {
       Context::getInstance()->getlistenerRegistry()->deregisterListener(this);
       reply->setsubject("deregistered");
-    }
-    else if (subject == "validateConnections") {
-      Context::getInstance()->getconnectionRegistry()->validateConnections();
-      delete reply;
-      return true;
-    }
+    }    
     else if (subject == "version") {
       reply->setsubject("version");
       reply->setbody(VERSION);
@@ -565,91 +545,17 @@ bool ClientConnection::handleMessage(Message& msg){
         Context::getInstance()->getEavesDropRegistry()->deregisterGlobalEavesDropper(this);
         reply->setsubject("globaleavesdrop disnabled");
       }
-    }
-    else if (subject == "enable eavesdropping") {
-      Context::getInstance()->enableEavesDropping();
-      reply->setsubject("eavesdropping enabled");
-    }
-    else if (subject == "disable eavesdropping") {
-      Context::getInstance()->disableEavesDropping();
-      reply->setsubject("eavesdropping disabled");
-    }
-    else if (subject == "enable error messages") {
-      Context::getInstance()->enableErrorMessages();
-      reply->setsubject("error messages enabled");
-    }
-    else if (subject == "disable error messages") {
-      Context::getInstance()->disableErrorMessages();
-      reply->setsubject("error messages disabled");
-    }
+    }   
     else if (subject == "get stats") {
       reply->setsubject("stats");
       string& stats = ServerStats::getInstance()->getStatsStr();
       reply->setbody(stats);
       delete &stats;
-    }
-    else if (subject == "reset stats") {
-      ServerStats::getInstance()->resetStats();
-      reply->setsubject("stats reset");
-    }      
+    }   
     else if (msg.getthread() == "ping") { //a ping response causes validation count to reset
       delete reply;
       resetValidationCount();
       return true;
-    }
-    else if (subject == "kill sender") {  //used for testing
-      reply->setbody(msg.getbody());
-      Context::getInstance()->getLogger()->log(msg.getfrom().c_str(), "SERVER", "Request to kill sender", msg.getbody().c_str(), Logger::LEVEL_DEBUG);
-      ClientConnection *cc = Context::getInstance()->getconnectionRegistry()->getConnection(msg.getbody());
-      if (cc != NULL) {
-        cc->sender->stop();
-        reply->setsubject("sender killed");
-      }
-      else {
-        reply->setsubject("unable to kill sender");
-      }
-    }
-    else if (subject == "kill connection") {  //used for testing
-      reply->setbody(msg.getbody());
-      Context::getInstance()->getLogger()->log(msg.getfrom().c_str(), "SERVER", "Request to kill connection", msg.getbody().c_str(), Logger::LEVEL_DEBUG);
-      ClientConnection *cc = Context::getInstance()->getconnectionRegistry()->getConnection(msg.getbody());
-      if (cc != NULL) {
-        cc->closeNow();
-        reply->setsubject("connection killed");
-      }
-      else {
-        reply->setsubject("unable to kill connection");
-      }
-    }
-    else if (subject.find("set log level", -1) == 0) {
-      if (subject.find("info", -1) != -1) {
-        Context::getInstance()->getLogger()->setLevel(Logger::LEVEL_INFO);
-        reply->setsubject("log level set to INFO");
-      }
-      else if (subject.find("warn", -1) != -1) {
-        Context::getInstance()->getLogger()->setLevel(Logger::LEVEL_WARN);
-        reply->setsubject("log level set to WARN");
-      }
-      else if (subject.find("debug", -1) != -1) {
-        Context::getInstance()->getLogger()->setLevel(Logger::LEVEL_DEBUG);
-        reply->setsubject("log level set to DEBUG");
-      }
-      else if (subject.find("shout", -1) != -1) {
-        Context::getInstance()->getLogger()->setLevel(Logger::LEVEL_SHOUT);
-        reply->setsubject("log level set to SHOUT");
-      }
-      else {
-        reply->setsubject("unknown log level");
-      }
-      reply->setto(msg.getfrom());
-    }
-    else if (subject == "enable logging") {
-      Context::getInstance()->getLogger()->enable();
-      reply->setsubject("logging enabled");
-    }
-    else if (subject == "disable logging") {
-      Context::getInstance()->getLogger()->disable();
-      reply->setsubject("logging disabled");
     }
     else if (subject == "log to file") {
       Context::getInstance()->logToFile();
@@ -679,6 +585,102 @@ bool ClientConnection::handleMessage(Message& msg){
          body += "\n";
       }
       reply->setbody(body);
+    }
+    else if (name == "admin") {   //handle the admin commands
+      if (subject == "validateConnections") {
+        Context::getInstance()->getconnectionRegistry()->validateConnections();
+        delete reply;
+        return true;
+      }
+      else if (subject == "enable eavesdropping") {
+        Context::getInstance()->enableEavesDropping();
+        reply->setsubject("eavesdropping enabled");
+      }
+      else if (subject == "disable eavesdropping") {
+        Context::getInstance()->disableEavesDropping();
+        reply->setsubject("eavesdropping disabled");
+      }
+      else if (subject == "set max send queue size") {
+        int val = atoi(msg.getbody().c_str());
+        if (val > 0) {
+          char buffer[128];
+          sprintf(buffer, "Max send queue size changed from %d to %d",
+              Context::getInstance()->getMaxSendQueueSize(), val);
+          Context::getInstance()->setMaxSendQueueSize(val);
+          Context::getInstance()->getLogger()->log(buffer, Logger::LEVEL_DEBUG);
+          reply->setsubject(buffer);
+        }
+        else {
+          reply->setsubject("set max send queue size");
+          reply->setbody("invalid value specified");
+        }
+      }
+      else if (subject == "enable error messages") {
+        Context::getInstance()->enableErrorMessages();
+        reply->setsubject("error messages enabled");
+      }
+      else if (subject == "disable error messages") {
+        Context::getInstance()->disableErrorMessages();
+        reply->setsubject("error messages disabled");
+      }
+      else if (subject == "reset stats") {
+        ServerStats::getInstance()->resetStats();
+        reply->setsubject("stats reset");
+      }
+      else if (subject == "kill sender") {  //used for testing
+        reply->setbody(msg.getbody());
+        Context::getInstance()->getLogger()->log(msg.getfrom().c_str(), "SERVER", "Request to kill sender", msg.getbody().c_str(), Logger::LEVEL_DEBUG);
+        ClientConnection *cc = Context::getInstance()->getconnectionRegistry()->getConnection(msg.getbody());
+        if (cc != NULL) {
+          cc->sender->stop();
+          reply->setsubject("sender killed");
+        }
+        else {
+          reply->setsubject("unable to kill sender");
+        }
+      }
+      else if (subject == "kill connection") {  //used for testing
+        reply->setbody(msg.getbody());
+        Context::getInstance()->getLogger()->log(msg.getfrom().c_str(), "SERVER", "Request to kill connection", msg.getbody().c_str(), Logger::LEVEL_DEBUG);
+        ClientConnection *cc = Context::getInstance()->getconnectionRegistry()->getConnection(msg.getbody());
+        if (cc != NULL) {
+          cc->closeNow();
+          reply->setsubject("connection killed");
+        }
+        else {
+          reply->setsubject("unable to kill connection");
+        }
+      }
+      else if (subject == "enable logging") {
+        Context::getInstance()->getLogger()->enable();
+        reply->setsubject("logging enabled");
+      }
+      else if (subject == "disable logging") {
+        Context::getInstance()->getLogger()->disable();
+        reply->setsubject("logging disabled");
+      }
+      else if (subject.find("set log level", -1) == 0) {
+        if (subject.find("info", -1) != -1) {
+          Context::getInstance()->getLogger()->setLevel(Logger::LEVEL_INFO);
+          reply->setsubject("log level set to INFO");
+        }
+        else if (subject.find("warn", -1) != -1) {
+          Context::getInstance()->getLogger()->setLevel(Logger::LEVEL_WARN);
+          reply->setsubject("log level set to WARN");
+        }
+        else if (subject.find("debug", -1) != -1) {
+          Context::getInstance()->getLogger()->setLevel(Logger::LEVEL_DEBUG);
+          reply->setsubject("log level set to DEBUG");
+        }
+        else if (subject.find("shout", -1) != -1) {
+          Context::getInstance()->getLogger()->setLevel(Logger::LEVEL_SHOUT);
+          reply->setsubject("log level set to SHOUT");
+        }
+        else {
+          reply->setsubject("unknown log level");
+        }
+        reply->setto(msg.getfrom());
+      }   
     }
     else { //send an error reply
       if (Context::getInstance()->errorMessagesEnabled()) { //if error messaging is allowed
