@@ -38,29 +38,32 @@ void ClientConnectionMonitor::run(){
     msleep(2000);
     //cout << "Connection monitor waking up..." << endl << flush;
       //loop though the monitornList and delete connection objects whose threads are terminiated
-    monitorListLock.lock();
-    if (!monitorList.empty()) {
-      MonitorList::iterator pos;
-      pos = monitorList.begin();
-       do {
-        if (*pos == NULL) {
-          Context::getInstance()->getLogger()->log("NULL value detected in monitor list", Logger::LEVEL_WARN);
-          pos = monitorList.erase(pos);
-        }
-        else if (((ClientConnection*)(*pos))->isClosed == true) {
-          Context::getInstance()->getLogger()->log("Deleting Connection Object", ((ClientConnection*)(*pos))->name.c_str(), Logger::LEVEL_WARN);
-          ClientConnection *cc = (ClientConnection *)(*pos);
-          cc->wait(1000);  //make sure the thread is terminated
-          pos = monitorList.erase(pos); //first remove the reference to the connection from this monitor list
-          //shutdown the sender for this client
-          delete cc;  //now delete the ClientConnection object itself        
-        }
-        else {
-          pos++;
-        }
-      } while (pos != monitorList.end());
+    try {
+      monitorListLock.lock();
+      if (!monitorList.empty()) {
+        MonitorList::iterator pos;
+        pos = monitorList.begin();
+         do {
+          if (*pos == NULL) {
+            Context::getInstance()->getLogger()->log("NULL value detected in monitor list", Logger::LEVEL_WARN);
+            pos = monitorList.erase(pos);
+          }
+          else if (((ClientConnection*)(*pos))->isClosed == true) {
+            Context::getInstance()->getLogger()->log("Deleting Connection Object", ((ClientConnection*)(*pos))->name.c_str(), Logger::LEVEL_WARN);
+            ClientConnection *cc = (ClientConnection *)(*pos);
+            cc->wait(1000);  //make sure the thread is terminated
+            pos = monitorList.erase(pos); //first remove the reference to the connection from this monitor list
+            delete cc;  //now delete the ClientConnection object itself        
+          }
+          else {
+            pos++;
+          }
+        } while (pos != monitorList.end());
+      }
+      monitorListLock.unlock();
     }
-    //cout << "Connection monitor going back to sleep..." << endl << flush;
-    monitorListLock.unlock();
+    catch (...) {
+      Context::getInstance()->getLogger()->log("Unknown exception in ClientConnectionMonitor", "", Logger::LEVEL_DEBUG);
+    }
   }
 }
