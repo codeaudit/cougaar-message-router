@@ -32,12 +32,14 @@
  int main(int argc, char *argv[])
  {
 
+ Context::getInstance()->getLogger()->forceLog("Message Router started");
  bool block_read = false;
  if (argc > 1) {
    for (int i=1; i<argc; i++) {
      if (!strcmp(argv[i], "-b")) {
         block_read = true;
         cout << "block read enabled" << endl << flush;
+        
       }
       if (!strcmp(argv[i], "-d")) {
         Logger* logger = Context::getInstance()->getLogger();

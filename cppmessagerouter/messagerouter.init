@@ -14,7 +14,7 @@ start() {
     RETVAL=1
   else
     cd /usr/local/sbin
-    ./messageserver &>/var/log/messageserver &
+    ./messageserver >> /var/log/messagerouter &
      echo "$!" > messageserver.pid
      RETVAL=0
      echo

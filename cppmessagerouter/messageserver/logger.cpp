@@ -30,6 +30,20 @@ void Logger::log(string& msg) const {
   log(msg.c_str());
 }
 
+
+//does not check the enabled flag
+void Logger::forceLog(const char *msg) const {
+  time_t now;
+  struct tm *l_time;
+  char str[20];
+
+  time(&now);
+  l_time = localtime(&now);
+  strftime(str, sizeof str, "%d-%b-%y %H:%M:%S", l_time);
+  printf("%s  - %s\n", str, msg);
+  cout << flush;
+}
+   
 /** No descriptions */
 void Logger::log(const char *msg) const {
   if (!enabled) return;
