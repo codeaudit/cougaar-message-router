@@ -128,7 +128,7 @@ public class Client extends JFrame
     jTextFieldUser.setPreferredSize(new Dimension(75, 20));
     jTextFieldUser.setText("");
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-    this.setTitle("Message Clent");
+    this.setTitle("Message Client");
     jLabeltargetUser.setText("Target");
     jTextFieldTargetUser.setPreferredSize(new Dimension(75, 20));
     jTextFieldTargetUser.setText("");
@@ -405,6 +405,7 @@ public class Client extends JFrame
       }
     else {
       disconnect();
+      displayMessage("Disconnected\n", offlineClientAttrSet);
     }
 
   }

@@ -110,6 +110,8 @@ public class Session implements SyncMessageReceiverListener {
   }
 
   private void send(String from, String to, String subject, String thread, String body) {
+    if (connection == null) return;
+
     byte[] header = new byte[8];
     header[0] = (byte) (to.length() & 0xff);
     header[1] = (byte) (from.length() & 0xff);
@@ -163,6 +165,7 @@ public class Session implements SyncMessageReceiverListener {
       this.postMessage("", "disconnect", "");
       receiver.interrupt();
       connection.close();
+      connection = null;
     }
     catch (Exception e){
       e.printStackTrace();
@@ -175,6 +178,7 @@ public class Session implements SyncMessageReceiverListener {
    * @return boolean
    */
   public boolean isConnected() {
+    if (connection == null) return false;
     try {
       return connection.isConnected();
     }
