@@ -53,34 +53,64 @@ namespace WinMessageRouter
 					logger.enable();
 					Context.getInstance().getLogger().forceLog("Debugging Enabled at level SHOUT");
 				}
-				else if (args[i].Equals("-r")) 
+				if (args[i].Equals("-r")) 
 				{
 					Context.getInstance().setAllowDuplicateConnections(false);
 					Context.getInstance().getLogger().forceLog("Disabling duplicate connections");
 				}
-				else if (args[i].Equals("-e")) 
+				if (args[i].Equals("-e")) 
 				{
 					Context.getInstance().enableEavesDropping();
 					Context.getInstance().getLogger().forceLog("Eavesdropping enabled");
 				}
-				else if (args[i].Equals("-m")) 
+				if (args[i].Equals("-m")) 
 				{
 					Context.getInstance().enableErrorMessages();
 					Context.getInstance().getLogger().forceLog("error messages enabled");
 				}
-				else if (args[i].IndexOf("-l=") != -1) 
+				if (args[i].IndexOf("-l=") != -1) 
 				{
 					Context.getInstance().getLogger().setLogFilePath(args[i].Substring(3));
 				}
-				else if (args[i].Equals("-g")) 
+				if (args[i].Equals("-g")) 
 				{
 					Context.getInstance().getLogger().disable();
 					System.Console.WriteLine("Logging disabled");
 				}
-				else if (args[i].Equals("-l="))
+				if (args[i].Equals("-l="))
 				{
 					Context.getInstance().getLogger().setLogFilePath(args[i].Substring(3));
+					Context.getInstance().logToFile();
 					Context.getInstance().getLogger().forceLog("Log File Set: " + args[i].Substring(3));
+				}
+				if (args[i].Equals("-q=")) 
+				{
+					int val = Int32.Parse(args[i].Substring(3));
+					if (val > 0) 
+					{
+						Context.getInstance().setMaxSendQueueSize(val);
+						Context.getInstance().getLogger().forceLog("Max send queue size set to: " + val);
+					}
+					else 
+					{
+						Context.getInstance().getLogger().forceLog("Max send queue size option must be specified");
+						return;
+					}
+				}
+				if (args[i].Equals("-o")) 
+				{
+					Context.getInstance().logToStdOut();
+					System.Console.WriteLine("logging to stdout");
+				}
+				if (args[i].Equals("-c")) 
+				{
+					Context.getInstance().setSyncSend(true);
+					Context.getInstance().getLogger().forceLog("Synchronous sending enabled");
+				}
+				if (args[i].Equals("-f")) 
+				{
+					Context.getInstance().enableStatLogging();
+					Context.getInstance().getLogger().forceLog("Stastics logging enabled");
 				}
 				if (args[i].Equals("-h")) 
 				{

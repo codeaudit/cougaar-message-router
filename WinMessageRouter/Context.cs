@@ -15,6 +15,9 @@ namespace WinMessageRouter
 		private bool errorMessagesAllowed = false;
 		private bool eavesDroppingAllowed = false;
 		private bool allowDuplicateConnections = true;
+		private int maxSendQueueSize = 5000;
+		private bool syncSend = false;
+		private bool statLogging = false;
 
 		private Context() 
 		{
@@ -92,6 +95,42 @@ namespace WinMessageRouter
 		public bool errorMessageEnabled() 
 		{
 			return errorMessagesAllowed;
+		}
+		public void logToFile() 
+		{
+			logger.use_output_file = true;
+		}
+		public void logToStdOut() 
+		{
+			logger.use_output_file = false;
+		}
+		public int getMaxSendQueueSize() 
+		{
+			return maxSendQueueSize;
+		}
+		public void setMaxSendQueueSize(int val) 
+		{
+			maxSendQueueSize = val;
+		}
+		public void setSyncSend(bool b) 
+		{
+			syncSend = b;
+		}
+		public bool getSyncSend() 
+		{
+			return syncSend;
+		}
+		public void enableStatLogging() 
+		{
+			statLogging = true;
+		}
+		public void disableStatLogging() 
+		{
+			statLogging = false;
+		}
+		public bool getStatLogging() 
+		{
+			return statLogging;
 		}
 	}
 }

@@ -22,6 +22,7 @@ namespace WinMessageRouter
 		private Stack stack = new Stack();
 		private bool keepRunning = true;
 		private string logFilePath = "messagerouter.log";
+		public bool use_output_file = true;
 
 		public int CurrentLevel
 		{
