@@ -28,7 +28,7 @@ public class ServerTest {
         System.out.println("list command test passed");
       }
       else {
-        System.out.println("list command test failed");
+        System.out.println("list command test failed:  " + retMsg.getBody());
       }
       session.disconnect();
     }
@@ -47,7 +47,7 @@ public class ServerTest {
       expectedMsg.setBody("test2");
       Message retMsg = session1.sendMessage("", "register", "");
       if (!retMsg.getSubject().equals("registered")) {
-        System.out.println("register command test failed - invalid repsonse");
+        System.out.println("register command test failed - invalid repsonse: " + retMsg.getSubject());
         session1.disconnect();
         session2.disconnect();
         return;
@@ -65,7 +65,7 @@ public class ServerTest {
       session2.disconnect();
     }
     catch (ConnectionException ex) {
-      System.out.println("Exception in tet register command");
+      System.out.println("Exception in tet register command: "+ ex.toString());
     }
   }
 
@@ -89,7 +89,7 @@ public class ServerTest {
       }
       retMsg = session1.sendMessage("", "eavesdrop", "test2");
       if (!retMsg.getSubject().equals("eavesdrop enabled")) {
-        System.out.println("test eavesdrop command failed - invalid response");
+        System.out.println("test eavesdrop command failed - invalid response: " + retMsg.getSubject());
         session1.disconnect();
         session2.disconnect();
         session3.disconnect();
@@ -106,7 +106,10 @@ public class ServerTest {
       catch (InterruptedException ie) {
       }
       session1.removeListener(cl);
-      session1.sendMessage("", "disable eavesdropping", "");
+      retMsg = session1.sendMessage("", "disable eavesdropping", "");
+      if (!retMsg.getSubject().equals("eavesdropping disabled")) {
+        System.out.println("test disable avesdrop command failed - invalid response: " + retMsg.getSubject());
+      }
       session1.disconnect();
       session2.disconnect();
       session3.disconnect();
@@ -137,7 +140,7 @@ public class ServerTest {
       retMsg = session1.sendMessage("", "globaleavesdrop", "");
       if (!retMsg.getSubject().equals("globaleavesdrop enabled")) {
         System.out.println(
-            "test global eavesdrop command failed - invalid response");
+            "test global eavesdrop command failed - invalid response: " + retMsg.getSubject());
         session1.disconnect();
         session2.disconnect();
         session3.disconnect();
@@ -156,7 +159,10 @@ public class ServerTest {
       catch (InterruptedException ie) {
       }
       session1.removeListener(cl);
-      session1.sendMessage("", "disable eavesdropping", "");
+      retMsg = session1.sendMessage("", "disable eavesdropping", "");
+      if (!retMsg.getSubject().equals("eavesdropping disabled")) {
+        System.out.println("test disable avesdrop command failed - invalid response: " + retMsg.getSubject());
+      }
       session1.disconnect();
       session2.disconnect();
       session3.disconnect();
@@ -172,13 +178,13 @@ public class ServerTest {
       session.connect(server, "test1");
       Message retMsg = session.sendMessage("", "enable error messages", "");
       if (!retMsg.getSubject().equals("error messages enabled")) {
-        System.out.println("Test Enable error messages failed - invalid response");
+        System.out.println("Test Enable error messages failed - invalid response: " + retMsg.getSubject());
         session.disconnect();
         return;
       }
       retMsg = session.sendMessage("", "Bogus command", "");
       if (!retMsg.getSubject().equals("ERROR") || !retMsg.getBody().equals("Unknown command")) {
-        System.out.println("Test Enable error messages failed - invalid error response");
+        System.out.println("Test Enable error messages failed - invalid error response: " + retMsg.getSubject()+":"+retMsg.getBody());
         session.sendMessage("", "disable error messages", "");
         session.disconnect();
         return;
@@ -198,13 +204,13 @@ public class ServerTest {
       session.connect(server, "test1");
       Message retMsg = session.sendMessage("", "enable logging", "");
       if (!retMsg.getSubject().equals("logging enabled")) {
-        System.out.println("Test Logging failed - invalid response to enable logging");
+        System.out.println("Test Logging failed - invalid response to enable logging: " + retMsg.getSubject());
         session.disconnect();
         return;
       }
       retMsg = session.sendMessage("", "disable logging", "");
       if (!retMsg.getSubject().equals("logging disabled")) {
-        System.out.println("Test Logging failed - invalid response to disable logging");
+        System.out.println("Test Logging failed - invalid response to disable logging: " + retMsg.getSubject());
         session.disconnect();
         return;
       }
@@ -219,37 +225,43 @@ public class ServerTest {
   public void testLogLevelCmd() {
     Session session = new Session();
     try {
+      //System.out.println("start: testLogLevelCmd");
       session.connect(server, "test1");
       Message retMsg = session.sendMessage("", "enable logging", "");
        if (!retMsg.getSubject().equals("logging enabled")) {
-         System.out.println("Test Log Level failed - invalid response to enable logging");
+         System.out.println("Test Log Level failed - invalid response to enable logging: " + retMsg.getSubject());
          session.disconnect();
          return;
        }
+       //System.out.println("enabled logging");
        retMsg = session.sendMessage("", "set log level info", "");
        if (!retMsg.getSubject().equals("log level set to INFO")) {
-        System.out.println("Test Log Level failed - invalid response to set log level info");
+        System.out.println("Test Log Level failed - invalid response to set log level info: " + retMsg.getSubject());
         session.disconnect();
         return;
       }
+      //System.out.println("set log level info");
       retMsg = session.sendMessage("", "set log level warn", "");
       if (!retMsg.getSubject().equals("log level set to WARN")) {
-       System.out.println("Test Log Level failed - invalid response to set log level warn");
+       System.out.println("Test Log Level failed - invalid response to set log level warn: " + retMsg.getSubject());
        session.disconnect();
        return;
      }
+     //System.out.println("set log level warn");
      retMsg = session.sendMessage("", "set log level debug", "");
       if (!retMsg.getSubject().equals("log level set to DEBUG")) {
-       System.out.println("Test Log Level failed - invalid response to set log level debug");
+       System.out.println("Test Log Level failed - invalid response to set log level debug: " + retMsg.getSubject());
        session.disconnect();
        return;
      }
+     //System.out.println("set log level DEBUG");
      retMsg = session.sendMessage("", "set log level shout", "");
       if (!retMsg.getSubject().equals("log level set to SHOUT")) {
-       System.out.println("Test Log Level failed - invalid response to set log level shout");
+       System.out.println("Test Log Level failed - invalid response to set log level shout: " + retMsg.getSubject());
        session.disconnect();
        return;
      }
+     //System.out.println("set log level shout");
      System.out.println("Log level test passed");
      session.disconnect();
     }
