@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5096
-#define VERSION "MessageRouter 1.7.42"
+#define VERSION "MessageRouter 1.7.43"
  
 #include "clientconnection.h"
 #include <iostream.h>
@@ -66,7 +66,7 @@ static const string CMD_LIST[CMD_SIZE] = {"list - get a list of connected client
                     "disable logging - disable the logging subsystem",
                     "set log level <info|warn|debug|shout> - set the logging level",
                     "log to file - enable logging to file",
-                    "log to stdout - enable logging to stdout"
+                    "log to stdout - enable logging to stdout",
                     "to: <broadcast> - send a message addressed to <broadcast> to send a message to all connected clients",
                     "get connection stats - get the stats for all current connections",
                     "get connection profiles - get the routing profile for all connections",
