@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5096
-#define VERSION "MessageRouter 1.7.2"
+#define VERSION "MessageRouter 1.7.3"
  
 #include "clientconnection.h"
 #include <iostream.h>
@@ -417,7 +417,7 @@ bool ClientConnection::handleMessage(Message& msg){
      if (Context::getInstance()->isEavesDroppingEnabled()) {
         Context::getInstance()->getEavesDropRegistry()->deregisterAllEavesDroppers(this);
         reply->setto(msg.getfrom());
-        reply->setsubject("all eavesdropping disabled");
+        reply->setsubject("globaleavesdrop disabled");
       }
     }
     else if (subject == "unglobaleavesdrop") {
