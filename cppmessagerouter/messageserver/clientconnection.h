@@ -21,7 +21,7 @@
 #include <qthread.h>
 #include "ServerSocket.h"
 #include <map>
-#include <vector>
+#include <list>
 #include "message.h"
 #include "messagesender.h"
 
@@ -29,11 +29,11 @@
   *@author David Craine
   */
 
-typedef vector<Message *> MessageList;
+typedef list<Message *> MessageList;
 
 class ClientConnection : public QThread {
 public: 
-	ClientConnection(ServerSocket* ss);
+	ClientConnection(ServerSocket* ss, bool blockread);
 	~ClientConnection();
 
 /** No descriptions */
@@ -65,6 +65,10 @@ private: // Private attributes
   /**  */
   char * packetData;
   /**  */
+  int packetBufferSize;
+  /**  */
+  bool use_block_read;
+  /**  */
 private: // Private methods
   /** No descriptions */
   Message* getMessage();
@@ -78,6 +82,8 @@ private: // Private methods
   void handleMessage(Message& msg);
   /** No descriptions */
   void getData(char *buffer, int size);
+  /** No descriptions */
+  char * createSubStr(char *src, int start, int end);
 };
 
 

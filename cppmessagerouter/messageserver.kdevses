@@ -1,25 +1,26 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <LastCompileConfig>(Default)</LastCompileConfig>
+<LastCompileConfig>(Default)</LastCompileConfig>
  <Mainframe MaximizeMode="1" />
- <DocsAndViews NumberOfDocuments="4" >
-  <Doc0 CursorPosLine="190" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="83" FileName="/root/Desktop/cppmessagerouter/messageserver/clientconnection.cpp" >
-   <View0 Top="25" Width="400" Attach="1" Height="300" Left="3" Focus="0" Type="KWriteView" MinMaxMode="0" />
-  </Doc0>
-  <Doc1 CursorPosLine="54" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="20" FileName="/root/Desktop/cppmessagerouter/messageserver/messagesender.cpp" >
-   <View0 Top="48" Width="1016" Attach="1" Height="697" Left="26" Focus="0" Type="KWriteView" MinMaxMode="0" />
-  </Doc1>
-  <Doc2 CursorPosLine="150" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="40" FileName="/root/Desktop/cppmessagerouter/messageserver/Socket.cpp" >
-   <View0 Top="46" Width="1022" Attach="1" Height="725" Left="46" Focus="1" Type="KWriteView" MinMaxMode="2" />
-  </Doc2>
-  <Doc3 CursorPosLine="17" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="24" FileName="/root/Desktop/cppmessagerouter/messageserver/Socket.h" >
-   <View0 Top="94" Width="1016" Attach="1" Height="697" Left="72" Focus="0" Type="KWriteView" MinMaxMode="0" />
-  </Doc3>
- </DocsAndViews>
+ <DocsAndViews NumberOfDocuments="7" >
+<Doc0 CursorPosLine="70" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="7" FileName="/root/cppmessagerouter/messageserver/clientconnection.cpp" >
+<View0 Top="122" Width="406" Attach="1" Height="328" Left="15" Focus="1" Type="KWriteView" MinMaxMode="2" />  </Doc0>
+  <Doc1 CursorPosLine="54" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="4" FileName="/root/cppmessagerouter/messageserver/messagesender.cpp" >
+<View0 Top="48" Width="764" Attach="1" Height="408" Left="26" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc1>
+  <Doc2 CursorPosLine="82" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/clientconnection.h" >
+<View0 Top="71" Width="689" Attach="1" Height="390" Left="49" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc2>
+  <Doc3 CursorPosLine="168" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/Socket.cpp" >
+<View0 Top="94" Width="689" Attach="1" Height="390" Left="72" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc3>
+  <Doc4 CursorPosLine="39" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="29" FileName="/root/cppmessagerouter/messageserver/Socket.h" >
+<View0 Top="117" Width="764" Attach="1" Height="408" Left="95" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc4>
+  <Doc5 CursorPosLine="17" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="41" FileName="/root/cppmessagerouter/messageserver/ServerSocket.h" >
+<View0 Top="140" Width="764" Attach="1" Height="408" Left="118" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc5>
+  <Doc6 CursorPosLine="53" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="29" FileName="/root/cppmessagerouter/messageserver/ServerSocket.cpp" >
+<View0 Top="163" Width="764" Attach="1" Height="408" Left="141" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc6> </DocsAndViews>
  <CompileConfigs>
-  <Release>
-   <Architecture>i386</Architecture>
+<Release>
+<Architecture>i386</Architecture>
    <Platform>linux</Platform>
    <VPATHSubdir>/root/messageserver/Release</VPATHSubdir>
    <CFLAGS/>
@@ -27,7 +28,4 @@
    <CXXFLAGS> -O2</CXXFLAGS>
    <AdditCXXFLAGS/>
    <LDFLAGS/>
-   <ConfigureArgs> --build=i386-linux --host=i386-linux --target=i386-linux </ConfigureArgs>
-  </Release>
- </CompileConfigs>
-</KDevPrjSession>
+   <ConfigureArgs> --build=i386-linux --host=i386-linux --target=i386-linux </ConfigureArgs>  </Release> </CompileConfigs></KDevPrjSession>

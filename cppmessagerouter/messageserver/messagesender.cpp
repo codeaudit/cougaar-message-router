@@ -52,7 +52,7 @@ void MessageSender::addMessage(Message& msg){
 void MessageSender::sendMessage(Message& msg){
   char tmpbuf[20];
   sprintf(tmpbuf, "%d", tmpcount++);
-  cout << tmpbuf << " message sender for: " << name << " sending to: " << msg.getto() << endl << flush;
+  //cout << tmpbuf << " message sender for: " << name << " sending to: " << msg.getto() << endl << flush;
 
   *ss << msg.getMessageHeader() << msg.getMessageData();
   delete &msg;

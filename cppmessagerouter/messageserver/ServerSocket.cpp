@@ -50,10 +50,14 @@ const ServerSocket& ServerSocket::operator >> ( std::string& s ) const
   return *this;
 }
 
-const int ServerSocket::recv (char* c, int size ) const
+const int ServerSocket::recv (char* c, int size) const  {
+  this->recv(c, size, false);
+}
+
+const int ServerSocket::recv (char* c, int size, bool wait ) const
 {
   int ret=0;
-  ret = Socket::recv(c, size);
+  ret = Socket::recv(c, size, wait);
   if ( !ret )
     {
       throw SocketException ( "Could not read from socket." );

@@ -166,10 +166,21 @@ int Socket::recv ( std::string& s ) const
     }
 }
 
-int Socket::recv ( char* c, int size ) const
+int Socket::recv ( char* c, int size) const {
+  recv(c, size, true);
+}
+
+int Socket::recv ( char* c, int size, bool wait ) const
 {
     memset ( c, 0, size );
-    int status = ::recv ( m_sock, c, size, MSG_WAITALL );
+    int status=0;
+    if (wait) {
+      status = ::recv ( m_sock, c, size, MSG_WAITALL);
+    }
+    else {
+      status = ::recv ( m_sock, c, size, 0 );
+    }
+    
     if ( status == -1 )
     {
       std::cout << "status == -1   errno == " << errno << "  in Socket::recv(char*, size)\n";
@@ -180,10 +191,10 @@ int Socket::recv ( char* c, int size ) const
       std::cout << "status = 0" << endl;
       return 0;
     }
-    else if (status != size) {
+    /*else if (status != size) {
       printf("error: return size: %d - request size: %d\n", status, size);
       return 0;
-    }
+    }*/
     else
     {
       return status;

@@ -30,9 +30,15 @@
  
  int main(int argc, char *argv[])
  {
-   //use the find() method rather than the [] reference method to lookup values
-   //since the [] method will create an object if one can't be found
-   
+
+ bool block_read = false;
+ if (argc > 1) {
+   if (!strcmp(argv[1], "-b")) {
+     block_read = true;
+     cout << "block read enabled" << endl << flush;
+   }
+ }
+
   try
     {
       // Create the socket
@@ -44,7 +50,7 @@
         ServerSocket *new_sock = new ServerSocket();
         server.accept ( *new_sock );
         //cout << "accepted new socket connection" << endl;
-        ClientConnection* cc = new ClientConnection(new_sock);
+        ClientConnection* cc = new ClientConnection(new_sock, false);
         //cout << "created client connection object" << endl;
         cc->start();
         //cout << "started client connection" << endl;
