@@ -18,8 +18,8 @@ import java.util.List;
 
 public class Client extends JFrame
     implements AsyncMessageReceiverListener {
-  //SortedListModel onlineUsers = new SortedListModel();
-  DefaultListModel onlineUsers = new DefaultListModel();
+  SortedListModel onlineUsers = new SortedListModel();
+  //DefaultListModel onlineUsers = new DefaultListModel();
   History msgHistory = new History();
   History subjectHistory = new History();
   static Client currentInstance;
@@ -126,7 +126,7 @@ public class Client extends JFrame
   }
 
   class OnlineListCellRenderer
-      extends DefaultListCellRenderer {
+      implements ListCellRenderer {
     /**
      * Return a component that has been configured to display the specified value.
      *
@@ -142,19 +142,27 @@ public class Client extends JFrame
                                                   int index, boolean isSelected,
                                                   boolean cellHasFocus) {
       HostItem hi = (HostItem)value;
-      Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-      if (isSelected) {
-        c.setBackground(Color.blue);
+      JLabel c = new JLabel(hi.name);
+      if (isSelected && hi.eavesDroppingEnabled) {
+        c.setBackground(Color.magenta);
+        c.setForeground(list.getSelectionForeground());
       }
-      else {
-        c.setBackground(Color.white);
-      }
-      if (hi.eavesDroppingEnabled) {
+      else if (!isSelected && hi.eavesDroppingEnabled) {
         c.setBackground(Color.red);
+        c.setForeground(list.getForeground());
+      }
+      else if (isSelected) {
+        c.setBackground(list.getSelectionBackground());
+        c.setForeground(list.getSelectionForeground());
       }
       else {
-        c.setBackground(Color.white);
+        c.setBackground(list.getBackground());
+        c.setForeground(list.getForeground());
       }
+
+      c.setEnabled(list.isEnabled());
+      c.setFont(list.getFont());
+      c.setOpaque(true);
 
       return c;
     }
@@ -273,8 +281,10 @@ public class Client extends JFrame
     jMenuItemTestMultidisconnect.setText("Multidisconnect");
     jMenuItemTestMultidisconnect.addActionListener(new Client_jMenuItemTestMultidisconnect_actionAdapter(this));
     jMenuItemOptionsGlobalEavesdrop.setText("Global Eavesdrop");
+    jMenuItemOptionsGlobalEavesdrop.addActionListener(new Client_jMenuItemOptionsGlobalEavesdrop_actionAdapter(this));
     jMenuItemOptionsGlobalUneavesdrop.setEnabled(false);
     jMenuItemOptionsGlobalUneavesdrop.setText("Global Uneavesdrop");
+    jMenuItemOptionsGlobalUneavesdrop.addActionListener(new Client_jMenuItemOptionsGlobalUneavesdrop_actionAdapter(this));
     jPanelSendMessages.add(jTextFieldSendSubject, null);
     jPanelSendMessages.add(jTextFieldSendMessages, null);
     jSplitPane1.add(jSplitPane2, JSplitPane.TOP);
@@ -804,6 +814,15 @@ public class Client extends JFrame
   void jMenuItemTestMultidisconnect_actionPerformed(ActionEvent e) {
     multiConnect();
   }
+
+  void jMenuItemOptionsGlobalEavesdrop_actionPerformed(ActionEvent e) {
+    globalEavesDrop();
+  }
+
+  void jMenuItemOptionsGlobalUneavesdrop_actionPerformed(ActionEvent e) {
+    globalUneavesdrop();
+  }
+
 }
 
 class Flasher extends Thread {
@@ -1141,6 +1160,28 @@ class Client_jMenuItemTestMultidisconnect_actionAdapter implements java.awt.even
   }
   public void actionPerformed(ActionEvent e) {
     adaptee.jMenuItemTestMultidisconnect_actionPerformed(e);
+  }
+}
+
+class Client_jMenuItemOptionsGlobalEavesdrop_actionAdapter implements java.awt.event.ActionListener {
+  Client adaptee;
+
+  Client_jMenuItemOptionsGlobalEavesdrop_actionAdapter(Client adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jMenuItemOptionsGlobalEavesdrop_actionPerformed(e);
+  }
+}
+
+class Client_jMenuItemOptionsGlobalUneavesdrop_actionAdapter implements java.awt.event.ActionListener {
+  Client adaptee;
+
+  Client_jMenuItemOptionsGlobalUneavesdrop_actionAdapter(Client adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jMenuItemOptionsGlobalUneavesdrop_actionPerformed(e);
   }
 }
 
