@@ -67,14 +67,14 @@ void Logger::writeLogEntry(LogEntry *entry) {
 void Logger::run() {
   while (keepRunning) {
     msleep(5000);
-    listLock.lock();
+    //listLock.lock();
     while (keepRunning && (stack.size() > 0)) {
       LogEntry *entry = stack.front();
       stack.pop_front();
       writeLogEntry(entry);
       delete entry;
     }
-    listLock.unlock();
+    //listLock.unlock();
     
   }
 }
@@ -179,7 +179,7 @@ void Logger::disable() {
 }
 
 void Logger::addLogEntry(LogEntry* entry) {
-  listLock.lock();
+  //listLock.lock();
   stack.push_back((LogEntry *)entry);
-  listLock.unlock();
+  //listLock.unlock();
 }
