@@ -332,6 +332,7 @@ void ClientConnection::routeMessage(Message& msg){
       if (routingProfileMap.find(msg.getto()) == routingProfileMap.end()) {
         routingProfileMap[msg.getto()] = 0;
       }
+      targetConnection->sendMessage(msg);
       routingProfileMap[msg.getto()]++;
     }
     else {
