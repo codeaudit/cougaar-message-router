@@ -19,6 +19,7 @@
 #define CLIENTCONNECTION_H
 
 #include <qthread.h>
+#include <qmutex.h>
 #include "ServerSocket.h"
 #include <map>
 #include <list>
@@ -62,6 +63,7 @@ public:
   string name;
   bool keepRunning;
   bool isClosed;
+  bool isClosing;
 
 private: // Private attributes
   /**  */
@@ -82,6 +84,7 @@ private: // Private attributes
   bool use_block_read;
   /**  */
   bool validationCount;  //used to track outstanding validation requests
+  QMutex closeLock;
   
 private: // Private methods
   /** No descriptions */

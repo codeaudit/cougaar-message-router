@@ -49,6 +49,7 @@ ClientConnection::ClientConnection(ServerSocket* sock, bool blockread){
   packetBufferSize = 0;
   validationCount = 0;
   isClosed = false;
+  isClosing = false;
 }
 
 ClientConnection::~ClientConnection(){
@@ -119,6 +120,8 @@ void ClientConnection::closeNow() {
 }
 
 void ClientConnection::close() {
+  isClosing = true;
+  deregisterClient();
   Context::getInstance()->getLogger()->log(name.c_str(), "closing connection", Logger::LEVEL_INFO);
   /***** cleanup *****/
   //if (tmp_buffer != NULL) {
@@ -128,14 +131,15 @@ void ClientConnection::close() {
   Context::getInstance()->getlistenerRegistry()->deregisterListener(this);
 
   //deregister any eaves droppers for this connection
-  Context::getInstance()->getEavesDropRegistry()->deregisterAllEavesDroppers(this);
-  Context::getInstance()->getEavesDropRegistry()->deregisterGlobalEavesDropper(this);
-  Context::getInstance()->getEavesDropRegistry()->removeTarget(this->name);
-  
+  if (Context::getInstance()->isEavesDroppingEnabled()) {
+    Context::getInstance()->getEavesDropRegistry()->deregisterAllEavesDroppers(this);
+    Context::getInstance()->getEavesDropRegistry()->deregisterGlobalEavesDropper(this);
+    Context::getInstance()->getEavesDropRegistry()->removeTarget(this->name);
+  }
   //if (packetData != NULL) {
     //delete packetData;
   //}
-  deregisterClient();
+
   if (ss != NULL) {
     ss->shutdown();
     delete ss;
@@ -264,9 +268,14 @@ void ClientConnection::routeMessage(Message& msg){
   if (Context::getInstance()->isEavesDroppingEnabled()) {
     Context::getInstance()->getEavesDropRegistry()->checkMessage(msg);
   }
-  ClientConnection *targetConnection = Context::getInstance()->getconnectionRegistry()->findConnection(msg.getto());
+  ClientConnection *targetConnection = Context::getInstance()->getconnectionRegistry()->getConnection(msg.getto());
   if (targetConnection != NULL) {
-    targetConnection->sendMessage(msg);
+    if (!targetConnection->isClosing) {
+      targetConnection->sendMessage(msg);
+    }
+    else {
+      delete &msg;
+    }
   }
   else {
     Message* reply = new Message();
@@ -346,7 +355,7 @@ bool ClientConnection::handleMessage(Message& msg){
           return false;
         }
         else {  //othewrwise disconnect the existing connection and allow this request
-          ClientConnection *cc = Context::getInstance()->getconnectionRegistry()->findConnection(msg.getbody());
+          ClientConnection *cc = Context::getInstance()->getconnectionRegistry()->getConnection(msg.getbody());
           if (cc != NULL) {
             Context::getInstance()->getLogger()->log("Duplicate connection request...closing original connection.", msg.getbody().c_str(), Logger::LEVEL_WARN);
             cc->closeNow();

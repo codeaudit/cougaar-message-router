@@ -48,7 +48,7 @@ void ClientConnectionMonitor::run(){
           ClientConnection *cc = (ClientConnection *)(*pos);
           cc->wait(1000);  //make sure the thread is terminated
           pos = monitorList.erase(pos); //first remove the reference to the connection from this monitor list
-          delete cc;  //now delete the ClientConnection object itself          
+          delete cc;  //now delete the ClientConnection object itself        
         }
         else {
           pos++;

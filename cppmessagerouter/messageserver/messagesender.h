@@ -54,6 +54,7 @@ private: // Private attributes
   bool keepRunning;
   QMutex cleanupLock;
   QMutex sendLock;
+  QMutex stackLock;
 
 };
 

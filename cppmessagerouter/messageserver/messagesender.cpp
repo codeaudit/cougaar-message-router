@@ -37,22 +37,32 @@ MessageSender::~MessageSender(){
 void MessageSender::run() {
   try {
     while(keepRunning) {
+      stackLock.lock();
       while (this->stack.size() > 0) {
         sendMessage(*(this->stack.front()));
         this->stack.pop_front();
       }
+      stackLock.unlock();
       msleep(500);
     }
   }
   catch(SocketException& ex) {
+    keepRunning = false;
     Context::getInstance()->getLogger()->log(ex.description().c_str(), Logger::LEVEL_DEBUG);
+    stackLock.unlock();
     cleanupMessages();  
   }
 }
 
 /** No descriptions */
 void MessageSender::addMessage(Message& msg){
-  stack.push_back(&msg);  
+  if (!keepRunning) {  //if the message router has stopped running
+    delete &msg;  //delete the message
+    return;
+  }
+  stackLock.lock();
+  stack.push_back(&msg);
+  stackLock.unlock();  
 }
 
 /** No descriptions */
@@ -87,6 +97,7 @@ void MessageSender::stop(){
 /** No descriptions */
 void MessageSender::cleanupMessages(){
   cleanupLock.lock();
+  stackLock.lock();
   try {
     while (this->stack.size() > 0) {
       Message *msg = this->stack.front();
@@ -97,5 +108,7 @@ void MessageSender::cleanupMessages(){
   catch (...)  {
     Context::getInstance()->getLogger()->log("Error in cleanupMessages()", Logger::LEVEL_WARN);
   }
+  stackLock.unlock();
   cleanupLock.unlock();
+
 }
