@@ -52,9 +52,11 @@ private: // Private methods
 
 private: // Private attributes
   bool keepRunning;
+  bool isStopped;
   QMutex cleanupLock;
   QMutex sendLock;
   QMutex stackLock;
+  QMutex stopLock;
 
 };
 

@@ -35,13 +35,13 @@ void ConnectionRegistry::registerConnection(ClientConnection *cc, string& name) 
 }
  
 ClientConnection * ConnectionRegistry::getConnection(const string& name) {
-  //registryLock.lock();
+  registryLock.lock();
   if (clientMap.count(name) > 0) {  //make sure a connection exists
     ClientConnection* cc = clientMap[name];
     registryLock.unlock();
     return cc;
   }
-  //registryLock.unlock();
+  registryLock.unlock();
   return NULL;  
 }
 

@@ -28,6 +28,7 @@ MessageSender::MessageSender(ServerSocket* sock){
   this->ss = sock;
   this->name = name;
   this->keepRunning = true;
+  this->isStopped = false;
 }
 
 MessageSender::~MessageSender(){
@@ -50,7 +51,13 @@ void MessageSender::run() {
     keepRunning = false;
     Context::getInstance()->getLogger()->log(ex.description().c_str(), Logger::LEVEL_DEBUG);
     stackLock.unlock();
-    cleanupMessages();  
+    //set this sender in the stopped state
+    stopLock.lock();
+    if (!isStopped) {
+      cleanupMessages();
+      isStopped = TRUE;
+    }
+    stopLock.unlock();  
   }
 }
 
@@ -87,11 +94,16 @@ void MessageSender::sendMessage(Message& msg){
 
 /** No descriptions */
 void MessageSender::stop(){
-  keepRunning = false;
-  while (!this->finished()) {
-    msleep(500);
+  stopLock.lock();
+  if (!isStopped) {
+    keepRunning = false;
+    while (!this->finished()) {
+      msleep(500);
+    }
+    cleanupMessages();
+    isStopped = TRUE;
   }
-  cleanupMessages();
+  stopLock.unlock();
 }
 
 /** No descriptions */
