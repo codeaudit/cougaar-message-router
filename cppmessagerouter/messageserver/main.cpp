@@ -109,6 +109,10 @@
         Context::getInstance()->setSyncSend(true);
         Context::getInstance()->getLogger()->forceLog("Synchronous sending enabled");
       }
+      if (!strcmp(argv[i], "-f")) {
+        Context::getInstance()->enableStatLogging();
+        Context::getInstance()->getLogger()->forceLog("Statistics logging enabled");
+      }
       if (!strcmp(argv[i], "-h")) {
         cout << "Options are:" << endl;
         cout << "   -b Block Read enabled" << endl;
@@ -124,6 +128,7 @@
         cout << "   -g disable logging" << endl;
         cout << "   -o log to stdout" << endl;
         cout << "   -c use synchronous sending" << endl;
+        cout << "   -f enable stat logging" << endl;
         cout << "   -h This help message" << endl << flush;
         return EXIT_SUCCESS;
       }     

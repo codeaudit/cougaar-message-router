@@ -55,6 +55,9 @@ public:
   void setMaxSendQueueSize(int size);
   void setSyncSend(bool);
   bool getSyncSend();
+  void enableStatLogging();
+  void disableStatLogging();
+  bool getStatLogging();
   
 private:
 	Context();
@@ -77,6 +80,7 @@ private: // Private attributes
   bool errorMessagesAllowed;
   int maxSendQueueSize;
   bool syncSend;
+  bool statLogging;
 };
 
 #endif

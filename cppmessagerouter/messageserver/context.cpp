@@ -34,6 +34,7 @@ Context::Context(){
   ServerStats::getInstance();
   maxSendQueueSize=5000;      //default
   syncSend = false;  //default
+  statLogging = false;
 }
 
 Context::~Context(){
@@ -122,4 +123,16 @@ void Context::setSyncSend(bool b) {
 
 bool Context::getSyncSend() {
   return syncSend;
+}
+
+void Context::enableStatLogging() {
+  statLogging = true;
+}
+
+void Context::disableStatLogging() {
+  statLogging = false;
+}
+
+bool Context::getStatLogging() {
+  return statLogging;
 }

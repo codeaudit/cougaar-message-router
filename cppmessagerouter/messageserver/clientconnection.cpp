@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5124
-#define VERSION "MessageRouter 1.7.62"
+#define VERSION "MessageRouter 1.7.63"
 #define ADMIN_ID "admin"
 #define ADMIN_PWD "adminpwd"
  
@@ -43,7 +43,7 @@ void printbuffer(char *buf, int size) {
   }
 }
 
-static const int CMD_SIZE = 29;
+static const int CMD_SIZE = 34;
 static const string CMD_LIST[CMD_SIZE] = {"list - get a list of connected clients",
                     "register - register for online/offlien updates for all clients",
                     "deregister - deregister for online/offline updates",
@@ -72,6 +72,11 @@ static const string CMD_LIST[CMD_SIZE] = {"list - get a list of connected client
                     "to: <broadcast> - send a message addressed to <broadcast> to send a message to all connected clients",
                     "get connection stats - get the stats for all current connections",
                     "get connection profiles - get the routing profile for all connections",
+                    "enable stat logging - enables logging of stats to log file",
+                    "disable stat logging - disables logging of stats to file",
+                    "get stat logging - returns the current status of stat logging",
+                    "enable sync send - enables sync sending mode",
+                    "disable sync send - disables sync sending mode",
                     "help - get this message"
                     };
 
@@ -660,6 +665,15 @@ bool ClientConnection::handleMessage(Message& msg){
         reply->setbody("disabled");
       }
     }
+    else if (subject == "get stat logging") {
+      reply->setsubject("stat logging status");
+      if (Context::getInstance()->getStatLogging()) {
+        reply->setbody("enabled");
+      }
+      else {
+        reply->setbody("disabled");
+      }
+    }
     else if (subject == "help") {
       reply->setsubject("COMMAND LIST");
       string body = "\n";
@@ -771,6 +785,14 @@ bool ClientConnection::handleMessage(Message& msg){
       else if (subject == "disable sync send") {
         Context::getInstance()->setSyncSend(false);
         reply->setsubject("sync send disabled");
+      }
+      else if (subject == "enable stat logging") {
+        Context::getInstance()->enableStatLogging();
+        reply->setsubject("stat logging enabled");
+      }
+      else if (subject == "disable stat loggin") {
+        Context::getInstance()->disableStatLogging();
+        reply->setsubject("stat logging disabled");
       }
       else { //send an error reply
         if (Context::getInstance()->errorMessagesEnabled()) { //if error messaging is allowed

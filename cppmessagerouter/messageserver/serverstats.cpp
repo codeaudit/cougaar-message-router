@@ -148,8 +148,11 @@ void ServerStats::run() {
     //cout << "Server stats going back to sleep..." << endl << flush;
 
     //dump the stats every 5 minutes
-    if (!(cycleCount % 60))
-      logStats();
+    if (!(cycleCount % 60))  {
+      if (Context::getInstance()->getStatLogging()) {
+        logStats();
+      }
+    }
       
     resetLock.unlock();
   }
