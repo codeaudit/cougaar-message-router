@@ -971,7 +971,7 @@ public class Client extends JFrame
         if (st.countTokens() == 2) {
           String command = st.nextToken();
           long interval = Long.parseLong(st.nextToken());
-          CommandScheduler.create(command, interval);
+          CommandScheduler.create(command, interval*1000);
         }
       }
     }
