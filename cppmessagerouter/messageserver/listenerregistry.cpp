@@ -18,9 +18,6 @@
 #include "listenerregistry.h"
 #include <list>
 
-typedef list<ClientConnection*> ListenerList;
-ListenerList listeners;
-
 ListenerRegistry::ListenerRegistry(){
 }
 
@@ -44,7 +41,10 @@ void ListenerRegistry::notifyListeners(Message &msg)  {
     //since a call to sendMessage will end up deleting the message
     //we need to make a copy of it before we send it to each recipient
     Message *tmpMsg = new Message(msg);
-    ((ClientConnection *)*iter)->sendMessage(*tmpMsg);
+    ClientConnection *cc = (ClientConnection *)(*iter);
+    if (cc != NULL) {
+      cc->sendMessage(*tmpMsg);
+    }
   }
   //now we can delete the original message
   delete &msg;

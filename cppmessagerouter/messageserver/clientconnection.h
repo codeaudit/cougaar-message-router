@@ -57,6 +57,7 @@ public:
 public:
   /**  */
   string name;
+  bool keepRunning;
 
 private: // Private attributes
   /**  */

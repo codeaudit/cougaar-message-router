@@ -21,9 +21,9 @@ addcxxflags=
 bin_program=messageserver
 cflags=
 cppflags=
-cxxflags=\s-O0 -pg -g1 -Wall
+cxxflags=\s-O1 -pg -Wall
 ldadd=$(LIB_QPE) $(LIB_QT)
-ldflags=\s             \s
+ldflags=\s               \s
 
 [General]
 AMChanged=false
@@ -108,7 +108,7 @@ install_location=
 type=HEADER
 
 [messageserver/Makefile.am]
-files=messageserver/clientconnection.cpp,messageserver/clientconnection.h,messageserver/ClientSocket.cpp,messageserver/ClientSocket.h,messageserver/ServerSocket.cpp,messageserver/ServerSocket.h,messageserver/Socket.cpp,messageserver/SocketException.h,messageserver/Socket.h,messageserver/main.cpp,messageserver/message.cpp,messageserver/message.h,messageserver/context.cpp,messageserver/context.h,messageserver/connectionregistry.cpp,messageserver/connectionregistry.h,messageserver/messagesender.cpp,messageserver/messagesender.h,messageserver/listenerregistry.cpp,messageserver/listenerregistry.h,messageserver/logger.cpp,messageserver/logger.h,messageserver/connectionvalidator.cpp,messageserver/connectionvalidator.h
+files=messageserver/clientconnection.cpp,messageserver/clientconnection.h,messageserver/ClientSocket.cpp,messageserver/ClientSocket.h,messageserver/ServerSocket.cpp,messageserver/ServerSocket.h,messageserver/Socket.cpp,messageserver/SocketException.h,messageserver/Socket.h,messageserver/main.cpp,messageserver/message.cpp,messageserver/message.h,messageserver/context.cpp,messageserver/context.h,messageserver/connectionregistry.cpp,messageserver/connectionregistry.h,messageserver/messagesender.cpp,messageserver/messagesender.h,messageserver/listenerregistry.cpp,messageserver/listenerregistry.h,messageserver/logger.cpp,messageserver/logger.h,messageserver/connectionvalidator.cpp,messageserver/connectionvalidator.h,messageserver/clientconnectionfactory.cpp,messageserver/clientconnectionfactory.h,messageserver/clientconnectionmonitor.cpp,messageserver/clientconnectionmonitor.h
 sub_dirs=
 type=prog_main
 
@@ -149,6 +149,30 @@ install_location=
 type=SOURCE
 
 [messageserver/clientconnection.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[messageserver/clientconnectionfactory.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[messageserver/clientconnectionfactory.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[messageserver/clientconnectionmonitor.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[messageserver/clientconnectionmonitor.h]
 dist=true
 install=false
 install_location=

@@ -68,7 +68,7 @@ void ClientConnection::resetValidationCount() {
 void ClientConnection::run() {
   Message * msg;                                           
   sender->start();
-  bool keepRunning = true;
+  keepRunning = true;
   try
   {
     while ( keepRunning )
@@ -122,7 +122,7 @@ void ClientConnection::close() {
     sender->wait(2000);
     delete sender;
   }
-  delete this;
+  //delete this;
 
   return;
 }

@@ -41,7 +41,7 @@ available_tags=" CXX GCJ"
 
 # ### BEGIN LIBTOOL CONFIG
 
-# Libtool was configured on host localhost.localdomain:
+# Libtool was configured on host davevmhp:
 
 # Shell to use when invoking shell scripts.
 SHELL="/bin/sh"
@@ -5890,7 +5890,7 @@ build_old_libs=`case $build_libtool_libs in yes) echo no;; *) echo yes;; esac`
 # End:
 # ### BEGIN LIBTOOL TAG CONFIG: CXX
 
-# Libtool was configured on host localhost.localdomain:
+# Libtool was configured on host davevmhp:
 
 # Shell to use when invoking shell scripts.
 SHELL="/bin/sh"
@@ -5974,14 +5974,14 @@ libext="a"
 exeext=""
 
 # Additional compiler flags for building library objects.
-pic_flag=" -DPIC"
+pic_flag=" -fPIC -DPIC"
 pic_mode=default
 
 # What is the maximum length of a command?
 max_cmd_len=32768
 
 # Does compiler simultaneously support -c and -o options?
-compiler_c_o="no"
+compiler_c_o="yes"
 
 # Must we lock files when doing compilation ?
 need_locks="no"
@@ -6053,11 +6053,11 @@ striplib="strip --strip-unneeded"
 
 # Dependencies to place before the objects being linked to create a
 # shared library.
-predep_objects="/usr/lib/gcc-lib/i386-redhat-linux/3.3.2/../../../crti.o /usr/lib/gcc-lib/i386-redhat-linux/3.3.2/crtbeginS.o"
+predep_objects="/usr/lib/gcc-lib/i386-redhat-linux/3.2/../../../crti.o /usr/lib/gcc-lib/i386-redhat-linux/3.2/crtbeginS.o"
 
 # Dependencies to place after the objects being linked to create a
 # shared library.
-postdep_objects="/usr/lib/gcc-lib/i386-redhat-linux/3.3.2/crtendS.o /usr/lib/gcc-lib/i386-redhat-linux/3.3.2/../../../crtn.o"
+postdep_objects="/usr/lib/gcc-lib/i386-redhat-linux/3.2/crtendS.o /usr/lib/gcc-lib/i386-redhat-linux/3.2/../../../crtn.o"
 
 # Dependencies to place before the objects being linked to create a
 # shared library.
@@ -6069,7 +6069,7 @@ postdeps="-lstdc++ -lm -lgcc_s -lc -lgcc_s"
 
 # The library search path used internally by the compiler when linking
 # a shared library.
-compiler_lib_search_path="-L/usr/lib/gcc-lib/i386-redhat-linux/3.3.2 -L/usr/lib/gcc-lib/i386-redhat-linux/3.3.2/../../.."
+compiler_lib_search_path="-L/usr/lib/gcc-lib/i386-redhat-linux/3.2 -L/usr/lib/gcc-lib/i386-redhat-linux/3.2/../../.."
 
 # Method to check whether dependent libraries are shared objects.
 deplibs_check_method="pass_all"
@@ -6167,7 +6167,7 @@ include_expsyms=""
 
 # ### BEGIN LIBTOOL TAG CONFIG: GCJ
 
-# Libtool was configured on host localhost.localdomain:
+# Libtool was configured on host davevmhp:
 
 # Shell to use when invoking shell scripts.
 SHELL="/bin/sh"

@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.12 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.14 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -331,7 +331,7 @@ uninstall-info-am:
 #     (which will cause the Makefiles to be regenerated when you run `make');
 # (2) otherwise, pass the desired values on the `make' command line.
 $(RECURSIVE_TARGETS):
-	@set fnord $$MAKEFLAGS; amf=$$2; \
+	@set fnord $(MAKEFLAGS); amf=$$2; \
 	dot_seen=no; \
 	target=`echo $@ | sed s/-recursive//`; \
 	list='$(SUBDIRS)'; for subdir in $$list; do \
@@ -351,7 +351,7 @@ $(RECURSIVE_TARGETS):
 
 mostlyclean-recursive clean-recursive distclean-recursive \
 	maintainer-clean-recursive:
-	@set fnord $$MAKEFLAGS; amf=$$2; \
+	@set fnord $(MAKEFLAGS); amf=$$2; \
 	dot_seen=no; \
 	case "$@" in \
 	distclean-* | maintainer-clean-*) list='$(DIST_SUBDIRS)' ;; \
@@ -418,7 +418,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=Makefile.dist messageserver.kdevses messageserver.spec messagerouter.init subdirs messagerouter.spec TODO.txt 
+KDE_DIST=messageserver.kdevprj messagerouter.init subdirs messagerouter.spec TODO.txt Makefile.dist messageserver.kdevses messageserver.spec 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 

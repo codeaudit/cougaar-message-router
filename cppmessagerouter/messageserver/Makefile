@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.12 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.14 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -161,7 +161,7 @@ MCOPIDL = @MCOPIDL@
 MEINPROC = @MEINPROC@
 MICO_INCLUDES = @MICO_INCLUDES@
 MICO_LDFLAGS = @MICO_LDFLAGS@
-MOC = /usr/lib/qt-3.1/bin/moc
+MOC = /usr/lib/qt3-gcc3.2/bin/moc
 MSGFMT = /usr/bin/msgfmt
 NOOPT_CFLAGS = -O0
 NOOPT_CXXFLAGS = -O0
@@ -177,15 +177,15 @@ PYTHONMODDIR = @PYTHONMODDIR@
 QTDOCDIR = @QTDOCDIR@
 QTE_NORTTI = 
 QTOPIA_INCLUDES = @QTOPIA_INCLUDES@
-QT_INCLUDES = -I/usr/lib/qt-3.1/include
-QT_LDFLAGS = -L/usr/lib/qt-3.1/lib
+QT_INCLUDES = -I/usr/lib/qt3-gcc3.2/include
+QT_LDFLAGS = -L/usr/lib/qt3-gcc3.2/lib
 RANLIB = ranlib
 RC = @RC@
 REPO = -frepo
 SETUIDFLAGS = @SETUIDFLAGS@
 STRIP = strip
 TOPSUBDIRS =  autom4te-2.53.cache messageserver
-UIC = /usr/lib/qt-3.1/bin/uic -L $(kde_widgetdir) -nounload
+UIC = /usr/lib/qt3-gcc3.2/bin/uic -L $(kde_widgetdir) -nounload
 UIC_TR = tr2i18n
 USER_INCLUDES = 
 USER_LDFLAGS = 
@@ -201,8 +201,8 @@ X_EXTRA_LIBS =  -lresolv
 X_INCLUDES = -I/usr/X11R6/include
 X_LDFLAGS = -L/usr/X11R6/lib
 X_PRE_LIBS = 
-all_includes = -I/usr/lib/qt-3.1/include -I/usr/X11R6/include
-all_libraries = -L/usr/X11R6/lib -L/usr/lib/qt-3.1/lib
+all_includes = -I/usr/lib/qt3-gcc3.2/include -I/usr/X11R6/include
+all_libraries = -L/usr/X11R6/lib -L/usr/lib/qt3-gcc3.2/lib
 am__include = include
 am__quote = 
 idldir = @idldir@
@@ -230,21 +230,21 @@ kde_templatesdir = @kde_templatesdir@
 kde_wallpaperdir = @kde_wallpaperdir@
 kde_widgetdir = @kde_widgetdir@
 micodir = @micodir@
-qt_includes = /usr/lib/qt-3.1/include
-qt_libraries = /usr/lib/qt-3.1/lib
+qt_includes = /usr/lib/qt3-gcc3.2/include
+qt_libraries = /usr/lib/qt3-gcc3.2/lib
 x_includes = /usr/X11R6/include
 x_libraries = /usr/X11R6/lib
 
 bin_PROGRAMS = messageserver
 
-messageserver_SOURCES = connectionvalidator.cpp logger.cpp listenerregistry.cpp messagesender.cpp connectionregistry.cpp context.cpp message.cpp main.cpp Socket.cpp ServerSocket.cpp ClientSocket.cpp clientconnection.cpp 
-SOURCES = connectionvalidator.cpp logger.cpp listenerregistry.cpp messagesender.cpp connectionregistry.cpp context.cpp message.cpp main.cpp Socket.cpp ServerSocket.cpp ClientSocket.cpp clientconnection.cpp 
+messageserver_SOURCES = clientconnectionmonitor.cpp clientconnectionfactory.cpp connectionvalidator.cpp logger.cpp listenerregistry.cpp messagesender.cpp connectionregistry.cpp context.cpp message.cpp main.cpp Socket.cpp ServerSocket.cpp ClientSocket.cpp clientconnection.cpp 
+SOURCES = clientconnectionmonitor.cpp clientconnectionfactory.cpp connectionvalidator.cpp logger.cpp listenerregistry.cpp messagesender.cpp connectionregistry.cpp context.cpp message.cpp main.cpp Socket.cpp ServerSocket.cpp ClientSocket.cpp clientconnection.cpp 
 INTERFACES = 
 TRANSLATIONS = 
 KDE_OPTIONS = qtonly
 messageserver_LDADD = $(LIB_QPE) $(LIB_QT) $(LIBSOCKET)
 
-EXTRA_DIST = clientconnection.cpp clientconnection.h ClientSocket.cpp ClientSocket.h ServerSocket.cpp ServerSocket.h Socket.cpp SocketException.h Socket.h main.cpp message.cpp message.h context.cpp context.h connectionregistry.cpp connectionregistry.h messagesender.cpp messagesender.h listenerregistry.cpp listenerregistry.h logger.cpp logger.h connectionvalidator.cpp connectionvalidator.h 
+EXTRA_DIST = clientconnection.cpp clientconnection.h ClientSocket.cpp ClientSocket.h ServerSocket.cpp ServerSocket.h Socket.cpp SocketException.h Socket.h main.cpp message.cpp message.h context.cpp context.h connectionregistry.cpp connectionregistry.h messagesender.cpp messagesender.h listenerregistry.cpp listenerregistry.h logger.cpp logger.h connectionvalidator.cpp connectionvalidator.h clientconnectionfactory.cpp clientconnectionfactory.h clientconnectionmonitor.cpp clientconnectionmonitor.h 
 
 ####### kdevelop will overwrite this part!!! (end)############
 
@@ -265,16 +265,18 @@ CONFIG_CLEAN_FILES =
 bin_PROGRAMS = messageserver$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
-am_messageserver_OBJECTS = connectionvalidator.$(OBJEXT) \
+am_messageserver_OBJECTS = clientconnectionmonitor.$(OBJEXT) \
+	clientconnectionfactory.$(OBJEXT) connectionvalidator.$(OBJEXT) \
 	logger.$(OBJEXT) listenerregistry.$(OBJEXT) \
 	messagesender.$(OBJEXT) connectionregistry.$(OBJEXT) \
 	context.$(OBJEXT) message.$(OBJEXT) main.$(OBJEXT) \
 	Socket.$(OBJEXT) ServerSocket.$(OBJEXT) ClientSocket.$(OBJEXT) \
 	clientconnection.$(OBJEXT)
 #>- messageserver_OBJECTS = $(am_messageserver_OBJECTS)
-#>+ 9
+#>+ 10
 messageserver_final_OBJECTS = messageserver.all_cpp.o 
-messageserver_nofinal_OBJECTS = connectionvalidator.$(OBJEXT) \
+messageserver_nofinal_OBJECTS = clientconnectionmonitor.$(OBJEXT) \
+	clientconnectionfactory.$(OBJEXT) connectionvalidator.$(OBJEXT) \
 	logger.$(OBJEXT) listenerregistry.$(OBJEXT) \
 	messagesender.$(OBJEXT) connectionregistry.$(OBJEXT) \
 	context.$(OBJEXT) message.$(OBJEXT) main.$(OBJEXT) \
@@ -293,15 +295,19 @@ depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
 #>- DEP_FILES = $(DEPDIR)/ClientSocket.Po \
 #>- 	$(DEPDIR)/ServerSocket.Po $(DEPDIR)/Socket.Po \
 #>- 	$(DEPDIR)/clientconnection.Po \
+#>- 	$(DEPDIR)/clientconnectionfactory.Po \
+#>- 	$(DEPDIR)/clientconnectionmonitor.Po \
 #>- 	$(DEPDIR)/connectionregistry.Po \
 #>- 	$(DEPDIR)/connectionvalidator.Po \
 #>- 	$(DEPDIR)/context.Po $(DEPDIR)/listenerregistry.Po \
 #>- 	$(DEPDIR)/logger.Po $(DEPDIR)/main.Po \
 #>- 	$(DEPDIR)/message.Po $(DEPDIR)/messagesender.Po
-#>+ 17
+#>+ 21
 #DEP_FILES =   $(DEPDIR)/messageserver.all_cpp.P  $(DEPDIR)/ClientSocket.Po \
 		$(DEPDIR)/ServerSocket.Po $(DEPDIR)/Socket.Po \
 		$(DEPDIR)/clientconnection.Po \
+		$(DEPDIR)/clientconnectionfactory.Po \
+		$(DEPDIR)/clientconnectionmonitor.Po \
 		$(DEPDIR)/connectionregistry.Po \
 		$(DEPDIR)/connectionvalidator.Po \
 		$(DEPDIR)/context.Po $(DEPDIR)/listenerregistry.Po \
@@ -310,6 +316,8 @@ depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
 DEP_FILES =   $(DEPDIR)/ClientSocket.Po \
 		$(DEPDIR)/ServerSocket.Po $(DEPDIR)/Socket.Po \
 		$(DEPDIR)/clientconnection.Po \
+		$(DEPDIR)/clientconnectionfactory.Po \
+		$(DEPDIR)/clientconnectionmonitor.Po \
 		$(DEPDIR)/connectionregistry.Po \
 		$(DEPDIR)/connectionvalidator.Po \
 		$(DEPDIR)/context.Po $(DEPDIR)/listenerregistry.Po \
@@ -337,7 +345,7 @@ CXXLINK = $(LIBTOOL) --mode=link --tag=CXX $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $
 CXXFLAGS = -Wnon-virtual-dtor -Wno-long-long -Wbad-function-cast -Wundef -Wall -pedantic -W -Wpointer-arith -Wmissing-prototypes -Wwrite-strings -ansi -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -Wcast-align -Wconversion -O2 -O1 -Wall -fno-exceptions -fno-check-new -fexceptions
 DIST_SOURCES = $(messageserver_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = connectionvalidator.cpp logger.cpp listenerregistry.cpp messagesender.cpp connectionregistry.cpp context.cpp message.cpp main.cpp Socket.cpp ServerSocket.cpp ClientSocket.cpp clientconnection.cpp 
+SOURCES = clientconnectionmonitor.cpp clientconnectionfactory.cpp connectionvalidator.cpp logger.cpp listenerregistry.cpp messagesender.cpp connectionregistry.cpp context.cpp message.cpp main.cpp Socket.cpp ServerSocket.cpp ClientSocket.cpp clientconnection.cpp 
 
 #>- all: all-am
 #>+ 1
@@ -403,6 +411,8 @@ include $(DEPDIR)/ClientSocket.Po
 include $(DEPDIR)/ServerSocket.Po
 include $(DEPDIR)/Socket.Po
 include $(DEPDIR)/clientconnection.Po
+include $(DEPDIR)/clientconnectionfactory.Po
+include $(DEPDIR)/clientconnectionmonitor.Po
 include $(DEPDIR)/connectionregistry.Po
 include $(DEPDIR)/connectionvalidator.Po
 include $(DEPDIR)/context.Po
@@ -593,11 +603,11 @@ force-reedit:
 
 
 #>+ 11
-messageserver.all_cpp.cpp: $(srcdir)/Makefile.in  $(srcdir)/connectionvalidator.cpp $(srcdir)/logger.cpp $(srcdir)/listenerregistry.cpp $(srcdir)/messagesender.cpp $(srcdir)/connectionregistry.cpp $(srcdir)/context.cpp $(srcdir)/message.cpp $(srcdir)/main.cpp $(srcdir)/Socket.cpp $(srcdir)/ServerSocket.cpp $(srcdir)/ClientSocket.cpp $(srcdir)/clientconnection.cpp 
+messageserver.all_cpp.cpp: $(srcdir)/Makefile.in  $(srcdir)/clientconnectionmonitor.cpp $(srcdir)/clientconnectionfactory.cpp $(srcdir)/connectionvalidator.cpp $(srcdir)/logger.cpp $(srcdir)/listenerregistry.cpp $(srcdir)/messagesender.cpp $(srcdir)/connectionregistry.cpp $(srcdir)/context.cpp $(srcdir)/message.cpp $(srcdir)/main.cpp $(srcdir)/Socket.cpp $(srcdir)/ServerSocket.cpp $(srcdir)/ClientSocket.cpp $(srcdir)/clientconnection.cpp 
 	@echo 'creating messageserver.all_cpp.cpp ...'; \
 	rm -f messageserver.all_cpp.files messageserver.all_cpp.final; \
 	echo "#define KDE_USE_FINAL 1" >> messageserver.all_cpp.final; \
-	for file in connectionvalidator.cpp logger.cpp listenerregistry.cpp messagesender.cpp connectionregistry.cpp context.cpp message.cpp main.cpp Socket.cpp ServerSocket.cpp ClientSocket.cpp clientconnection.cpp ; do \
+	for file in clientconnectionmonitor.cpp clientconnectionfactory.cpp connectionvalidator.cpp logger.cpp listenerregistry.cpp messagesender.cpp connectionregistry.cpp context.cpp message.cpp main.cpp Socket.cpp ServerSocket.cpp ClientSocket.cpp clientconnection.cpp ; do \
 	  echo "#include \"$$file\"" >> messageserver.all_cpp.files; \
 	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> messageserver.all_cpp.final; \
 	done; \

@@ -24,6 +24,7 @@
  #include "ServerSocket.h"
  #include "SocketException.h"
  #include "clientconnection.h"
+ #include "clientconnectionfactory.h"
  #include <string>
  #include <map.h>
  #include "context.h"
@@ -53,12 +54,14 @@
     {
       // Create the socket
       ServerSocket server ( 6667 );
-      
+      //create the connection factory
+      ClientConnectionFactory *ccf = new ClientConnectionFactory();
       while ( true )
       {
         ServerSocket *new_sock = new ServerSocket();
         server.accept ( *new_sock );
-        ClientConnection* cc = new ClientConnection(new_sock, false);
+        //ClientConnection* cc = new ClientConnection(new_sock, false);
+        ClientConnection *cc = ccf->createClientConnection(new_sock, false);
         cc->start();
       }
     }
