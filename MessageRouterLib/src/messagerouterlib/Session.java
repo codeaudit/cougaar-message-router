@@ -1,7 +1,6 @@
 package messagerouterlib;
 
-import java.io.IOException;
-import java.net.Socket;
+import java.io.*;
 import java.net.*;
 
 public class Session implements MessageReceiverListener {
@@ -28,8 +27,9 @@ public class Session implements MessageReceiverListener {
     try {
       connection = new Socket(serverName, PORT);
       receiver = new MessageReceiver(connection, userName);
+      receiver.start();
       Message reply = this.sendMessage("", "connect", userName);
-      if ((reply != null) && (reply.body.equals("connected"))) {
+      if ((reply != null) && (reply.subject.equals("connected"))) {
         return true;
       }
     }
@@ -83,7 +83,7 @@ public class Session implements MessageReceiverListener {
     header[6] = (byte) (bodyLength & 0x0000ff00);
     header[7] = (byte) (bodyLength & 0x000000ff);
 
-    byte[] msg = new byte[8 + to.length() + from.length() + subject.length() +
+    byte[] msg = new byte[8 + to.length() + thread.length() + from.length() + subject.length() +
         body.length()];
     int index = 0;
     System.arraycopy(header, 0, msg, 0, 8);
@@ -113,5 +113,11 @@ public class Session implements MessageReceiverListener {
     }
     catch (IOException ex) {
     }
+  }
+
+  /**
+   * disconnect
+   */
+  public void disconnect() {
   }
 }

@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MessageReceiver {
+public class MessageReceiver extends Thread {
   private static final long MESSAGE_TIMEOUT = 60000;  //60 seconds
   Socket s;
   String name;
@@ -96,19 +96,19 @@ public class MessageReceiver {
         index = 0;
         if (toLength != 0) {
           msg.to = new String(data, index, toLength);
-          index++;
+          index+=toLength;
         }
         if (fromLength != 0) {
           msg.from = new String(data, index, fromLength);
-          index++;
+          index+=fromLength;
         }
         if (threadLength != 0) {
           msg.thread = new String(data, index, threadLength);
-          index++;
+          index+=threadLength;
         }
         if (subjectLength != 0) {
           msg.subject = new String(data, index, subjectLength);
-          index++;
+          index+=subjectLength;
         }
         if (bodyLength != 0) {
           msg.body = new String(data, index, bodyLength);
