@@ -1,0 +1,470 @@
+package WinMessageRouterClient;
+
+import System.Drawing.*;
+import System.Collections.*;
+import System.ComponentModel.*;
+import System.Windows.Forms.*;
+import WinMessageRouterLib.*;
+
+/**
+ * Summary description for Client.
+ */
+public class Client extends System.Windows.Forms.Form implements AsyncMessageReceiverListener 
+{
+	private System.Windows.Forms.Label labelServer;
+	private System.Windows.Forms.Button buttonRegister;
+	private System.Windows.Forms.Button buttonDisconnect;
+	private System.Windows.Forms.Button buttonConnect;
+	private System.Windows.Forms.TextBox textBoxTarget;
+	private System.Windows.Forms.Label labelTarget;
+	private System.Windows.Forms.TextBox textBoxUserId;
+	private System.Windows.Forms.Label labelUserId;
+	private System.Windows.Forms.TextBox textBoxServer;
+	private System.Windows.Forms.Panel panelTopMain;
+	private System.Windows.Forms.Panel panelCenterMain;
+	private System.Windows.Forms.Panel panelBottomMain;
+	private System.Windows.Forms.Panel panelCenterRightMain;
+	private System.Windows.Forms.Panel panelCenterLeftMain;
+	private System.Windows.Forms.Label labelMessages;
+	private System.Windows.Forms.RichTextBox richTextBoxMessages;
+	private System.Windows.Forms.Label labelUserList;
+	private System.Windows.Forms.ListBox listBoxUsers;
+	private System.Windows.Forms.Panel panelBottomLeftMain;
+	private System.Windows.Forms.Panel panelBottomRightMain;
+	private System.Windows.Forms.TextBox textBoxSubject;
+	private System.Windows.Forms.TextBox textBoxSendMessage;
+	private System.Windows.Forms.Label labelSendSubject;
+	private System.Windows.Forms.Label labelSendMessage;
+	/**
+	 * Required designer variable.
+	 */
+	private System.ComponentModel.Container components = null;
+	private Session session;
+
+	public Client()
+	{
+		//
+		// Required for Windows Form Designer support
+		//
+		InitializeComponent();
+
+		//
+		// TODO: Add any constructor code after InitializeComponent call
+		//
+	}
+
+	/**
+	 * Clean up any resources being used.
+	 */
+	protected void Dispose(boolean disposing)
+	{
+		if (disposing)
+		{
+			if (components != null)
+			{
+				components.Dispose();
+			}
+		}
+		super.Dispose(disposing);
+	}
+
+	public static void main(String[] args) 
+	{
+		Client c = new Client();
+		c.ShowDialog();
+	}
+
+	#region Windows Form Designer generated code
+	/**
+	 * Required method for Designer support - do not modify
+	 * the contents of this method with the code editor.
+	 */
+	private void InitializeComponent()
+	{
+		this.labelServer = new System.Windows.Forms.Label();
+		this.buttonRegister = new System.Windows.Forms.Button();
+		this.buttonDisconnect = new System.Windows.Forms.Button();
+		this.buttonConnect = new System.Windows.Forms.Button();
+		this.textBoxTarget = new System.Windows.Forms.TextBox();
+		this.labelTarget = new System.Windows.Forms.Label();
+		this.textBoxUserId = new System.Windows.Forms.TextBox();
+		this.labelUserId = new System.Windows.Forms.Label();
+		this.textBoxServer = new System.Windows.Forms.TextBox();
+		this.panelTopMain = new System.Windows.Forms.Panel();
+		this.panelCenterMain = new System.Windows.Forms.Panel();
+		this.panelCenterLeftMain = new System.Windows.Forms.Panel();
+		this.richTextBoxMessages = new System.Windows.Forms.RichTextBox();
+		this.labelMessages = new System.Windows.Forms.Label();
+		this.panelCenterRightMain = new System.Windows.Forms.Panel();
+		this.listBoxUsers = new System.Windows.Forms.ListBox();
+		this.labelUserList = new System.Windows.Forms.Label();
+		this.panelBottomMain = new System.Windows.Forms.Panel();
+		this.panelBottomRightMain = new System.Windows.Forms.Panel();
+		this.textBoxSendMessage = new System.Windows.Forms.TextBox();
+		this.textBoxSubject = new System.Windows.Forms.TextBox();
+		this.panelBottomLeftMain = new System.Windows.Forms.Panel();
+		this.labelSendMessage = new System.Windows.Forms.Label();
+		this.labelSendSubject = new System.Windows.Forms.Label();
+		this.panelTopMain.SuspendLayout();
+		this.panelCenterMain.SuspendLayout();
+		this.panelCenterLeftMain.SuspendLayout();
+		this.panelCenterRightMain.SuspendLayout();
+		this.panelBottomMain.SuspendLayout();
+		this.panelBottomRightMain.SuspendLayout();
+		this.panelBottomLeftMain.SuspendLayout();
+		this.SuspendLayout();
+		// 
+		// labelServer
+		// 
+		this.labelServer.set_Location(new System.Drawing.Point(24, 24));
+		this.labelServer.set_Name("labelServer");
+		this.labelServer.set_Size(new System.Drawing.Size(40, 16));
+		this.labelServer.set_TabIndex(0);
+		this.labelServer.set_Text("Server");
+		// 
+		// buttonRegister
+		// 
+		this.buttonRegister.set_Location(new System.Drawing.Point(320, 64));
+		this.buttonRegister.set_Name("buttonRegister");
+		this.buttonRegister.set_TabIndex(8);
+		this.buttonRegister.set_Text("Register");
+		this.buttonRegister.add_Click( new System.EventHandler(this.buttonRegister_Click) );
+		// 
+		// buttonDisconnect
+		// 
+		this.buttonDisconnect.set_Location(new System.Drawing.Point(224, 64));
+		this.buttonDisconnect.set_Name("buttonDisconnect");
+		this.buttonDisconnect.set_TabIndex(7);
+		this.buttonDisconnect.set_Text("Disconnect");
+		this.buttonDisconnect.add_Click( new System.EventHandler(this.buttonDisconnect_Click) );
+		// 
+		// buttonConnect
+		// 
+		this.buttonConnect.set_Location(new System.Drawing.Point(128, 64));
+		this.buttonConnect.set_Name("buttonConnect");
+		this.buttonConnect.set_TabIndex(6);
+		this.buttonConnect.set_Text("Connect");
+		this.buttonConnect.add_Click( new System.EventHandler(this.buttonConnect_Click) );
+		// 
+		// textBoxTarget
+		// 
+		this.textBoxTarget.set_Location(new System.Drawing.Point(360, 24));
+		this.textBoxTarget.set_Name("textBoxTarget");
+		this.textBoxTarget.set_Size(new System.Drawing.Size(72, 20));
+		this.textBoxTarget.set_TabIndex(5);
+		this.textBoxTarget.set_Text("");
+		// 
+		// labelTarget
+		// 
+		this.labelTarget.set_Location(new System.Drawing.Point(320, 24));
+		this.labelTarget.set_Name("labelTarget");
+		this.labelTarget.set_Size(new System.Drawing.Size(56, 16));
+		this.labelTarget.set_TabIndex(4);
+		this.labelTarget.set_Text("Target");
+		// 
+		// textBoxUserId
+		// 
+		this.textBoxUserId.set_Location(new System.Drawing.Point(224, 24));
+		this.textBoxUserId.set_Name("textBoxUserId");
+		this.textBoxUserId.set_Size(new System.Drawing.Size(72, 20));
+		this.textBoxUserId.set_TabIndex(3);
+		this.textBoxUserId.set_Text("");
+		// 
+		// labelUserId
+		// 
+		this.labelUserId.set_Location(new System.Drawing.Point(168, 24));
+		this.labelUserId.set_Name("labelUserId");
+		this.labelUserId.set_Size(new System.Drawing.Size(56, 16));
+		this.labelUserId.set_TabIndex(2);
+		this.labelUserId.set_Text("User Id");
+		// 
+		// textBoxServer
+		// 
+		this.textBoxServer.set_Location(new System.Drawing.Point(72, 24));
+		this.textBoxServer.set_Name("textBoxServer");
+		this.textBoxServer.set_Size(new System.Drawing.Size(72, 20));
+		this.textBoxServer.set_TabIndex(1);
+		this.textBoxServer.set_Text("");
+		// 
+		// panelTopMain
+		// 
+		this.panelTopMain.set_BorderStyle(System.Windows.Forms.BorderStyle.FixedSingle);
+		this.panelTopMain.get_Controls().Add(this.labelServer);
+		this.panelTopMain.get_Controls().Add(this.buttonRegister);
+		this.panelTopMain.get_Controls().Add(this.buttonDisconnect);
+		this.panelTopMain.get_Controls().Add(this.buttonConnect);
+		this.panelTopMain.get_Controls().Add(this.textBoxTarget);
+		this.panelTopMain.get_Controls().Add(this.labelTarget);
+		this.panelTopMain.get_Controls().Add(this.textBoxUserId);
+		this.panelTopMain.get_Controls().Add(this.labelUserId);
+		this.panelTopMain.get_Controls().Add(this.textBoxServer);
+		this.panelTopMain.set_Dock(System.Windows.Forms.DockStyle.Top);
+		this.panelTopMain.set_Location(new System.Drawing.Point(0, 0));
+		this.panelTopMain.set_Name("panelTopMain");
+		this.panelTopMain.set_Size(new System.Drawing.Size(856, 100));
+		this.panelTopMain.set_TabIndex(11);
+		// 
+		// panelCenterMain
+		// 
+		this.panelCenterMain.get_Controls().Add(this.panelCenterLeftMain);
+		this.panelCenterMain.get_Controls().Add(this.panelCenterRightMain);
+		this.panelCenterMain.set_Dock(System.Windows.Forms.DockStyle.Fill);
+		this.panelCenterMain.set_Location(new System.Drawing.Point(0, 100));
+		this.panelCenterMain.set_Name("panelCenterMain");
+		this.panelCenterMain.set_Size(new System.Drawing.Size(856, 306));
+		this.panelCenterMain.set_TabIndex(22);
+		// 
+		// panelCenterLeftMain
+		// 
+		this.panelCenterLeftMain.get_Controls().Add(this.richTextBoxMessages);
+		this.panelCenterLeftMain.get_Controls().Add(this.labelMessages);
+		this.panelCenterLeftMain.set_Dock(System.Windows.Forms.DockStyle.Fill);
+		this.panelCenterLeftMain.set_Location(new System.Drawing.Point(0, 0));
+		this.panelCenterLeftMain.set_Name("panelCenterLeftMain");
+		this.panelCenterLeftMain.set_Size(new System.Drawing.Size(648, 306));
+		this.panelCenterLeftMain.set_TabIndex(1);
+		// 
+		// richTextBoxMessages
+		// 
+		this.richTextBoxMessages.set_Dock(System.Windows.Forms.DockStyle.Fill);
+		this.richTextBoxMessages.set_Location(new System.Drawing.Point(0, 23));
+		this.richTextBoxMessages.set_Name("richTextBoxMessages");
+		this.richTextBoxMessages.set_Size(new System.Drawing.Size(648, 283));
+		this.richTextBoxMessages.set_TabIndex(2);
+		this.richTextBoxMessages.set_Text("");
+		// 
+		// labelMessages
+		// 
+		this.labelMessages.set_Dock(System.Windows.Forms.DockStyle.Top);
+		this.labelMessages.set_Location(new System.Drawing.Point(0, 0));
+		this.labelMessages.set_Name("labelMessages");
+		this.labelMessages.set_Size(new System.Drawing.Size(648, 23));
+		this.labelMessages.set_TabIndex(1);
+		this.labelMessages.set_Text("Messages");
+		// 
+		// panelCenterRightMain
+		// 
+		this.panelCenterRightMain.get_Controls().Add(this.listBoxUsers);
+		this.panelCenterRightMain.get_Controls().Add(this.labelUserList);
+		this.panelCenterRightMain.set_Dock(System.Windows.Forms.DockStyle.Right);
+		this.panelCenterRightMain.set_Location(new System.Drawing.Point(648, 0));
+		this.panelCenterRightMain.set_Name("panelCenterRightMain");
+		this.panelCenterRightMain.set_Size(new System.Drawing.Size(208, 306));
+		this.panelCenterRightMain.set_TabIndex(0);
+		// 
+		// listBoxUsers
+		// 
+		this.listBoxUsers.set_Dock(System.Windows.Forms.DockStyle.Fill);
+		this.listBoxUsers.set_Location(new System.Drawing.Point(0, 23));
+		this.listBoxUsers.set_Name("listBoxUsers");
+		this.listBoxUsers.set_Size(new System.Drawing.Size(208, 277));
+		this.listBoxUsers.set_TabIndex(1);
+		// 
+		// labelUserList
+		// 
+		this.labelUserList.set_Dock(System.Windows.Forms.DockStyle.Top);
+		this.labelUserList.set_Location(new System.Drawing.Point(0, 0));
+		this.labelUserList.set_Name("labelUserList");
+		this.labelUserList.set_Size(new System.Drawing.Size(208, 23));
+		this.labelUserList.set_TabIndex(0);
+		this.labelUserList.set_Text("Users");
+		// 
+		// panelBottomMain
+		// 
+		this.panelBottomMain.get_Controls().Add(this.panelBottomRightMain);
+		this.panelBottomMain.get_Controls().Add(this.panelBottomLeftMain);
+		this.panelBottomMain.set_Dock(System.Windows.Forms.DockStyle.Bottom);
+		this.panelBottomMain.set_Location(new System.Drawing.Point(0, 326));
+		this.panelBottomMain.set_Name("panelBottomMain");
+		this.panelBottomMain.set_Size(new System.Drawing.Size(856, 80));
+		this.panelBottomMain.set_TabIndex(23);
+		// 
+		// panelBottomRightMain
+		// 
+		this.panelBottomRightMain.get_Controls().Add(this.textBoxSendMessage);
+		this.panelBottomRightMain.get_Controls().Add(this.textBoxSubject);
+		this.panelBottomRightMain.set_Dock(System.Windows.Forms.DockStyle.Fill);
+		this.panelBottomRightMain.set_Location(new System.Drawing.Point(72, 0));
+		this.panelBottomRightMain.set_Name("panelBottomRightMain");
+		this.panelBottomRightMain.set_Size(new System.Drawing.Size(784, 80));
+		this.panelBottomRightMain.set_TabIndex(1);
+		// 
+		// textBoxSendMessage
+		// 
+		this.textBoxSendMessage.set_Dock(System.Windows.Forms.DockStyle.Fill);
+		this.textBoxSendMessage.set_Location(new System.Drawing.Point(0, 20));
+		this.textBoxSendMessage.set_Multiline(true);
+		this.textBoxSendMessage.set_Name("textBoxSendMessage");
+		this.textBoxSendMessage.set_Size(new System.Drawing.Size(784, 60));
+		this.textBoxSendMessage.set_TabIndex(1);
+		this.textBoxSendMessage.set_Text("");
+		this.textBoxSendMessage.add_KeyPress( new System.Windows.Forms.KeyPressEventHandler(this.textBoxSendMessage_KeyPress) );
+		// 
+		// textBoxSubject
+		// 
+		this.textBoxSubject.set_Dock(System.Windows.Forms.DockStyle.Top);
+		this.textBoxSubject.set_Location(new System.Drawing.Point(0, 0));
+		this.textBoxSubject.set_Name("textBoxSubject");
+		this.textBoxSubject.set_Size(new System.Drawing.Size(784, 20));
+		this.textBoxSubject.set_TabIndex(0);
+		this.textBoxSubject.set_Text("");
+		// 
+		// panelBottomLeftMain
+		// 
+		this.panelBottomLeftMain.get_Controls().Add(this.labelSendMessage);
+		this.panelBottomLeftMain.get_Controls().Add(this.labelSendSubject);
+		this.panelBottomLeftMain.set_Dock(System.Windows.Forms.DockStyle.Left);
+		this.panelBottomLeftMain.set_Location(new System.Drawing.Point(0, 0));
+		this.panelBottomLeftMain.set_Name("panelBottomLeftMain");
+		this.panelBottomLeftMain.set_Size(new System.Drawing.Size(72, 80));
+		this.panelBottomLeftMain.set_TabIndex(0);
+		// 
+		// labelSendMessage
+		// 
+		this.labelSendMessage.set_Dock(System.Windows.Forms.DockStyle.Fill);
+		this.labelSendMessage.set_Location(new System.Drawing.Point(0, 23));
+		this.labelSendMessage.set_Name("labelSendMessage");
+		this.labelSendMessage.set_Size(new System.Drawing.Size(72, 57));
+		this.labelSendMessage.set_TabIndex(1);
+		this.labelSendMessage.set_Text("Message");
+		// 
+		// labelSendSubject
+		// 
+		this.labelSendSubject.set_Dock(System.Windows.Forms.DockStyle.Top);
+		this.labelSendSubject.set_Location(new System.Drawing.Point(0, 0));
+		this.labelSendSubject.set_Name("labelSendSubject");
+		this.labelSendSubject.set_Size(new System.Drawing.Size(72, 23));
+		this.labelSendSubject.set_TabIndex(0);
+		this.labelSendSubject.set_Text("Subject");
+		// 
+		// Client
+		// 
+		this.set_AutoScaleBaseSize(new System.Drawing.Size(5, 13));
+		this.set_ClientSize(new System.Drawing.Size(856, 406));
+		this.get_Controls().Add(this.panelBottomMain);
+		this.get_Controls().Add(this.panelCenterMain);
+		this.get_Controls().Add(this.panelTopMain);
+		this.set_Name("Client");
+		this.set_Text("Client");
+		this.add_Closing( new System.ComponentModel.CancelEventHandler(this.Client_Closing) );
+		this.panelTopMain.ResumeLayout(false);
+		this.panelCenterMain.ResumeLayout(false);
+		this.panelCenterLeftMain.ResumeLayout(false);
+		this.panelCenterRightMain.ResumeLayout(false);
+		this.panelBottomMain.ResumeLayout(false);
+		this.panelBottomRightMain.ResumeLayout(false);
+		this.panelBottomLeftMain.ResumeLayout(false);
+		this.ResumeLayout(false);
+
+	}
+	#endregion
+	
+	private void register() 
+	{
+		if (session != null && session.isConnected()) 
+		{
+			listBoxUsers.get_Items().Clear();
+			//get the current list
+			WinMessageRouterLib.Message msg = session.sendMessage("", "list", "");
+			String[] list = msg.getBody().Split(new char[] {'\n'});
+			for (int i=0; i<list.length; i++) 
+			{
+				listBoxUsers.get_Items().Add(list[i]);
+			}
+			
+			session.postMessage("", "register", "");
+		}
+	}
+
+	private void deregister() 
+	{
+		listBoxUsers.get_Items().Clear();
+		if (session != null && session.isConnected()) 
+		{
+			session.postMessage("", "deregister", "");
+		}
+	}
+
+	private void displayMsg(String from, String subject, String body) 
+	{
+		richTextBoxMessages.AppendText(from + " - " + subject + ": " + body+ "\n");
+	}
+
+	private void displayToMsg(String to, String subject, String body) 
+	{
+		richTextBoxMessages.AppendText("TO: " + to + " - " + subject + ": " + body + "\n");
+	}
+
+	public void receiveMsg(WinMessageRouterLib.Message msg) 
+	{
+		displayMsg(msg.getFrom(), msg.getSubject(), msg.getBody());
+	}
+
+
+
+	private void buttonConnect_Click (Object sender, System.EventArgs e)
+	{
+		session = new Session();
+		if (session.connect(textBoxServer.get_Text(), textBoxUserId.get_Text())) 
+		{
+			displayMsg("Server", "Connected\n", "");
+			session.addListener(this);
+		}
+		else 
+		{
+			displayMsg("Server", "Unable to connect\n", "");
+		}
+	}
+
+	private void Client_Closing (Object sender, System.ComponentModel.CancelEventArgs e)
+	{
+		disconnect();
+		System.exit(0);
+	}
+
+	private void buttonDisconnect_Click (Object sender, System.EventArgs e)
+	{
+		disconnect();
+	}
+
+	private void disconnect() 
+	{
+		if (session != null) 
+		{
+			session.removeListener(this);
+			session.disconnect();
+		}
+	}
+
+
+	private void buttonRegister_Click (Object sender, System.EventArgs e)
+	{
+		if (session == null || !session.isConnected()) 
+		{
+			return;
+		}
+		if (buttonRegister.get_Text().equals("Register")) 
+		{
+			register();
+			buttonRegister.set_Text("Deregister");
+		}
+		else 
+		{
+			deregister();
+			buttonRegister.set_Text("Register");
+		}
+	}
+
+	private void textBoxSendMessage_KeyPress (Object sender, System.Windows.Forms.KeyPressEventArgs e)
+	{
+		if (e.get_KeyChar() == 13) 
+		{
+			displayToMsg(textBoxTarget.get_Text(), textBoxSubject.get_Text(), textBoxSendMessage.get_Text());
+			if (session != null) 
+			{
+				session.postMessage(textBoxTarget.get_Text(), textBoxSubject.get_Text(), textBoxSendMessage.get_Text());
+			}
+		}
+	}	
+
+}

@@ -1,0 +1,4 @@
+package WinMessageRouterLib;
+
+public interface MessageReceiverListener {
+}
