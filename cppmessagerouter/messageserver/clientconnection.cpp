@@ -17,8 +17,8 @@
  using namespace std;
  
 #define PACKET_HEADER_SIZE 8
-#define MAX_BUF_SIZE 128
-#define VERSION "MessageRouter 1.7.56"
+#define MAX_BUF_SIZE 5124
+#define VERSION "MessageRouter 1.7.58"
  
 #include "clientconnection.h"
 #include <iostream.h>
