@@ -24,6 +24,23 @@ start() {
   return $RETVAL
 }
 
+debug(){
+  ps -ef > /tmp/$$  
+  if grep "messageserver" /tmp/$$> /dev/null ; then
+    echo "messageserver already running.  Use service messageserver stop first."
+    RETVAL=1
+  else
+    cd /usr/local/sbin
+    ./messageserver -d &>/var/log/messageserver &
+     echo "$!" > messageserver.pid
+     RETVAL=0
+     echo
+     echo_success
+  fi
+  rm /tmp/$$
+  return $RETVAL
+}
+
 stop() {
   cd /usr/local/sbin
   if [ -f messageserver.pid ] ; then
@@ -66,6 +83,9 @@ case "$1" in
         ;;
   reload)
 	reload
+        ;;
+  debug)
+        debug
         ;;
   status)
         status snmpd
