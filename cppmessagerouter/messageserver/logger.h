@@ -52,6 +52,7 @@ public:
   const bool isenabled();
   virtual void run();
   void stop();
+  void setLogFilePath(const char *);
   
 public:  // Public attributes
   static const int LEVEL_INFO =1;

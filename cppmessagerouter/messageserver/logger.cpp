@@ -28,7 +28,7 @@ Logger::Logger(){
   LEVEL_DEBUG_STR = "DEBUG";
   LEVEL_SHOUT_STR = "SHOUT";
   keepRunning = true;
-  pLogFileName = "/var/log/messagerouter.log";
+  pLogFileName = "/var/log/messagerouter.log";  //default path
 }
 
 Logger::~Logger(){
@@ -182,4 +182,8 @@ void Logger::addLogEntry(LogEntry* entry) {
   //listLock.lock();
   stack.push_back((LogEntry *)entry);
   //listLock.unlock();
+}
+
+void Logger::setLogFilePath(const char *path) {
+  pLogFileName = path;
 }

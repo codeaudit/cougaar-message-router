@@ -33,14 +33,12 @@
  int main(int argc, char *argv[])
  {
 
- Context::getInstance()->getLogger()->forceLog("Message Router started");
  bool block_read = false;
  if (argc > 1) {
    for (int i=1; i<argc; i++) {
      if (!strcmp(argv[i], "-b")) {
         block_read = true;
-        Context::getInstance()->getLogger()->forceLog("block read enabled");
-        
+        Context::getInstance()->getLogger()->forceLog("block read enabled");   
       }
       if (!strcmp(argv[i], "-i")) {
         Logger* logger = Context::getInstance()->getLogger();
@@ -78,21 +76,36 @@
         Context::getInstance()->enableErrorMessages();
         Context::getInstance()->getLogger()->forceLog("error messages enabled");
       }
+      if (strstr(argv[i], "-l=") != NULL) {
+        char *option = strstr(argv[i], "-l=");
+        Context::getInstance()->getLogger()->setLogFilePath(argv[i]+3);
+        string msg = "Log File Set: ";
+        msg += argv[i]+3;
+        Context::getInstance()->getLogger()->forceLog(msg.c_str());
+      }
+      if (!strcmp(argv[i], "-g")) {
+        Context::getInstance()->getLogger()->disable();
+        cout << "Logging disabled" << endl << flush;
+      }
       if (!strcmp(argv[i], "-h")) {
-        cout << "Options are:" << endl << flush;
-        cout << "   -b Block Read enabled" << endl << flush;
-        cout << "   -i Info-level logging enabled" << endl << flush;
-        cout << "   -w Warn-level logging enabled" << endl << flush;
-        cout << "   -d Debug-level logging enabled" << endl << flush;
-        cout << "   -s Shout-level logging enabled" << endl << flush;
-        cout << "   -r Refuse duplicate connections" << endl << flush;
-        cout << "   -e Enable eavesdropping" << endl << flush;
-        cout << "   -m Enable error messages" << endl << flush;
+        cout << "Options are:" << endl;
+        cout << "   -b Block Read enabled" << endl;
+        cout << "   -i Info-level logging enabled" << endl;
+        cout << "   -w Warn-level logging enabled" << endl;
+        cout << "   -d Debug-level logging enabled" << endl;
+        cout << "   -s Shout-level logging enabled" << endl;
+        cout << "   -r Refuse duplicate connections" << endl;
+        cout << "   -e Enable eavesdropping" << endl;
+        cout << "   -m Enable error messages" << endl;
+        cout << "   -l=<path> Set path to log file" << endl;
+        cout << "   -g disable logging" << endl;
+        cout << "   -h This help message" << endl << flush;
         return EXIT_SUCCESS;
       }     
    }
  }
 
+ Context::getInstance()->getLogger()->forceLog("Message Router started");
   try
     {
       // Create the socket
