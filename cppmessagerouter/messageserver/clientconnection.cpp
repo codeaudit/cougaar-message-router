@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5096
-#define VERSION "MessageRouter 1.7.46"
+#define VERSION "MessageRouter 1.7.47"
  
 #include "clientconnection.h"
 #include <iostream.h>
@@ -203,6 +203,9 @@ void ClientConnection::close() {
     ss = NULL;
     //Context::getInstance()->getLogger()->log(name.c_str(), "shutdown server socket", Logger::LEVEL_WARN);
   }
+
+  //clear the routingProfileMap
+  routingProfileMap.clear();
 
   Context::getInstance()->getLogger()->log(name.c_str(), "shutdown complete", Logger::LEVEL_WARN);
   isClosed = true;
