@@ -38,7 +38,7 @@
   <property category="sys" name="Version" value="1.0"/>
   <property category="sys" name="VersionLabel" value="@version"/>
   <property category="sys" name="WorkingDirectory" value="."/>
-  <property category="sys" name="uidesign.size.messagerouterlib.Client" value="659,355"/>
+  <property category="sys" name="uidesign.size.messagerouterlib.Client" value="737,355"/>
   <node name="MessageRouterLib" type="Archive">
     <property category="archiving" name="contentRules.1" value="I:**/*.*"/>
     <property category="archiving" name="targetPath" value="MessageRouterLib.jar"/>

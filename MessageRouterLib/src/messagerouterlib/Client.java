@@ -23,6 +23,7 @@ public class Client extends JFrame
   JButton jButtonConnect = new JButton();
 
   Session session;
+  Session[] MultiSessions;
   Border border1;
   JButton jButtonDisconnect = new JButton();
   JLabel jLabeltargetUser = new JLabel();
@@ -49,6 +50,7 @@ public class Client extends JFrame
   Border border8;
   TitledBorder titledBorder6;
   JToggleButton jToggleButtonRegister = new JToggleButton();
+  JButton jButtonMultiConnect = new JButton();
 
   public Client() {
     try {
@@ -113,6 +115,8 @@ public class Client extends JFrame
     jScrollPane2.setBorder(titledBorder6);
     jToggleButtonRegister.setText("Register");
     jToggleButtonRegister.addActionListener(new Client_jToggleButtonRegister_actionAdapter(this));
+    jButtonMultiConnect.setText("Multi-Connect");
+    jButtonMultiConnect.addActionListener(new Client_jButtonMultiConnect_actionAdapter(this));
     jPanelSendMessages.add(jTextFieldSendSubject, BorderLayout.NORTH);
     jPanelSendMessages.add(jScrollPaneSendMessages, BorderLayout.CENTER);
     jSplitPane1.add(jSplitPane2, JSplitPane.TOP);
@@ -133,6 +137,7 @@ public class Client extends JFrame
     jPanel1.add(jButtonConnect, null);
     jPanel1.add(jButtonDisconnect, null);
     jPanel1.add(jToggleButtonRegister, null);
+    jPanel1.add(jButtonMultiConnect, null);
     jSplitPane1.setDividerLocation(200);
     jSplitPane2.setDividerLocation(600);
   }
@@ -187,7 +192,7 @@ public class Client extends JFrame
   }
 
   public void receiveMsg(Message msg) {
-    System.out.println(msg.getSubject() + " : " + msg.getBody());
+    //System.out.println(msg.getSubject() + " : " + msg.getBody());
     String subject = msg.getSubject();
     if (subject != null && subject.equals("online")) {
       onlineUsers.addElement(msg.getBody());
@@ -228,6 +233,7 @@ public class Client extends JFrame
       onlineUsers.clear();
       //get the current list
       Message msg = session.sendMessage("", "list", "");
+      System.out.println("LIST: " + msg.getBody());
       StringTokenizer st = new StringTokenizer(msg.getBody(), "\n");
       while (st.hasMoreTokens()) {
         onlineUsers.addElement(st.nextToken());
@@ -241,6 +247,19 @@ public class Client extends JFrame
     if (session != null && session.isConnected()) {
      session.postMessage("", "deregister", "");
    }
+  }
+
+  void jButtonMultiConnect_actionPerformed(ActionEvent e) {
+    String res = JOptionPane.showInputDialog(this, "Enter number of connections", "Multi-Connect");
+    if (res != null) {
+      int count = Integer.parseInt(res);
+      MultiSessions = new Session[count];
+      for (int i=0; i<count; i++) {
+        MultiSessions[i] = new Session();
+        MultiSessions[i].connect(this.jTextFieldServer.getText(), this.jTextFieldUser.getText()+String.valueOf(i));
+      }
+
+    }
   }
 
 }
@@ -299,5 +318,16 @@ class Client_jToggleButtonRegister_actionAdapter implements java.awt.event.Actio
   }
   public void actionPerformed(ActionEvent e) {
     adaptee.jToggleButtonRegister_actionPerformed(e);
+  }
+}
+
+class Client_jButtonMultiConnect_actionAdapter implements java.awt.event.ActionListener {
+  Client adaptee;
+
+  Client_jButtonMultiConnect_actionAdapter(Client adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jButtonMultiConnect_actionPerformed(e);
   }
 }

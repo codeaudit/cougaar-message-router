@@ -94,13 +94,10 @@ public class MessageReceiver extends Thread {
         int threadLength = header[2] & 0xff;
         int subjectLength = header[3] & 0xff;
         int bodyLength = 0;
-        bodyLength = header[4] & 0xff;
-        bodyLength <<= 8;
-        bodyLength = header[5] & 0xff;
-        bodyLength <<= 8;
-        bodyLength = header[6] & 0xff;
-        bodyLength <<= 8;
-        bodyLength = header[7] & 0xff;
+        bodyLength += ((header[4] & 0xff)<<24);
+        bodyLength += ((header[5] & 0xff)<<16);
+        bodyLength += ((header[6] & 0xff)<<8);
+        bodyLength += header[7] & 0xff;
 
         int totalLength = toLength + fromLength + threadLength + subjectLength +
             bodyLength;

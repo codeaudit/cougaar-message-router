@@ -105,9 +105,9 @@ public class Session implements SyncMessageReceiverListener {
     header[2] = (byte) (thread.length() & 0xff);
     header[3] = (byte) (subject.length() & 0xff);
     int bodyLength = body.length();
-    header[4] = (byte) (bodyLength & 0xff000000);
-    header[5] = (byte) (bodyLength & 0x00ff0000);
-    header[6] = (byte) (bodyLength & 0x0000ff00);
+    header[4] = (byte) ((bodyLength & 0xff000000)>>24);
+    header[5] = (byte) ((bodyLength & 0x00ff0000)>>16);
+    header[6] = (byte) ((bodyLength & 0x0000ff00)>>8);
     header[7] = (byte) (bodyLength & 0x000000ff);
 
     byte[] msg = new byte[8 + to.length() + thread.length() + from.length() + subject.length() +
