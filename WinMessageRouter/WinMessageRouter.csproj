@@ -108,6 +108,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "EavesDropRegistry.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "ListenerRegistry.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -129,6 +134,11 @@
                 />
                 <File
                     RelPath = "MessageSender.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ServerStats.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

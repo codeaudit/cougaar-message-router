@@ -15,7 +15,7 @@ namespace WinMessageRouter
 	{
 		public static int PACKET_HEADER_SIZE = 8;
 		public static int MAX_BUF_SIZE = 2048;
-		public static string VERSION = "Windows Message Router 1.1";
+		public static string VERSION = "Windows Message Router 1.2";
 
 		private Socket ss;
 		private MessageSender sender;
@@ -27,6 +27,30 @@ namespace WinMessageRouter
 		private bool use_block_read;
 		private string name;
 		private Thread threadRunner;
+
+		private static const string CMD_LIST = 
+		"list - get a list of connected clients\n"+
+		"register - register for online/offlien updates for all clients\n"+
+		"deregister - deregister for online/offline updates\n"+
+		"validateConnections - force valdiation of all connected clients\n"+
+		"version - get the version of the server\n"+
+		"enable eavesdropping - enable eavesdropping mode\n"+
+		"disable eavesdropping - disable eavesdropping mode\n"+
+		"eavesdrop - eavesdrop on a designated client (body of message must have client name)\n"+
+		"uneavesdrop - uneavesdrop on designated client (body of message must have client name)\n"+
+		"uneavesdropall - uneavesdrop on all clients currently being eavesdropped on\n"+
+		"gloabaleavesdrop - eavesdrop on all clients\n"+
+		"unglobaleavesdrop - uneavesdrop on all clients\n"+
+		"enable error messages - enable error messages to be returned to clients\n"+
+		"disable error messages - prevent error messages from being returned to clients\n"+
+		"get stats - get current server statistics\n"+
+		"reset stats - reset server statistics\n"+
+		"kill sender - kill the send queue of a designated client (body of message must have client name)\n"+
+		"kill connection - kill the designated client connection (body of message must have client name)\n"+
+		"enable logging - enable the logging subsystem\n"+
+		"disable logging - disable the logging subsystem\n"+
+		"set log level <info|warn|debug|shout> - set the logging level\n"+
+		"help - get this message";
 
 		public ClientConnection(Socket sock, bool blockread)
 		{
@@ -194,6 +218,88 @@ namespace WinMessageRouter
 					reply.To = msg.From;
 					reply.Subject = "version";
 					reply.Body = VERSION;
+				}
+				else if (subject == "eavesdrop") 
+				{
+				}
+				else if (subject == "globaleavesdrop") 
+				{
+				}
+				else if (subject == "uneavesdrop") 
+				{
+				}
+				else if(subject == "uneavesdropall") 
+				{
+				}
+				else if (subject == "unglobaleavesdrop")
+				{
+				}
+				else if (subject == "enable eavesdropping") 
+				{
+				}
+				else if (subject == "disable eavesdropping")
+				{
+				}
+				else if (subject == "enable error messages") 
+				{
+				}
+				else if (subject == "disable error messages") 
+				{
+				}
+				else if (subject == "get stats") 
+				{
+				}
+				else if (subject == "reset stats") 
+				{
+				}
+				else if (subject == "kill connection") 
+				{
+				}
+				else if (subject == "set log level") 
+				{
+					if (subject.IndexOf("info") >= 0) 
+					{
+						Context.getInstance().getLogger().CurrentLevel = Logger.LEVEL_INFO;
+						reply.Subject = "log level set to INFO";
+					}
+					else if (subject.IndexOf("warn") >= 0) 
+					{
+						Context.getInstance().getLogger().CurrentLevel = Logger.LEVEL_WARN;
+						reply.Subject = "log level set to WARN";
+					}
+					else if (subject.IndexOf("debug") >= 0) 
+					{
+						Context.getInstance().getLogger().CurrentLevel = Logger.LEVEL_DEBUG;
+						reply.Subject = "log level set to DEBUG";
+					}
+					else if (subject.IndexOf("shout") >= 0) 
+					{
+						Context.getInstance().getLogger().CurrentLevel = Logger.LEVEL_SHOUT;
+						reply.Subject = "log level set to SHOUT";
+					}
+					else 
+					{
+						reply.Subject = "unknown log level";
+					}
+					 reply.To = msg.From;
+				}
+				else if (subject == "enable logging") 
+				{
+					Context.getInstance().getLogger().enable();
+					reply.Subject = "logging enabled";
+					reply.To = msg.From;
+				}
+				else if (subject == "disable logging") 
+				{
+					Context.getInstance().getLogger().disable();
+					reply.Subject = "logging disabled";
+					reply.To = msg.From;
+				}
+				else if (subject == "help") 
+				{
+					reply.To = msg.From;
+					reply.Subject = "Command List";
+					reply.Body = CMD_LIST;
 				}
 				else 
 				{ //send an error reply
