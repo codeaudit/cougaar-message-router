@@ -18,7 +18,10 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5124
-#define VERSION "MessageRouter 1.7.60"
+#define VERSION "MessageRouter 1.7.61"
+#define ADMIN_PREFIX "admin:"
+#define ADMIN_ID "admin"
+#define ADMIN_PWD "adminpwd"
  
 #include "clientconnection.h"
 #include <iostream.h>
@@ -438,6 +441,20 @@ void ClientConnection::deregisterClient(){
   Context::getInstance()->getlistenerRegistry()->notifyListeners(*msg);  
 }
 
+void ClientConnection::checkForAdmin(string data,  bool& isAdmin, bool& validPwd) {
+  isAdmin = false;
+  validPwd = false;
+  
+  string::size_type pos = data.find(ADMIN_PREFIX, 0);
+  if (pos == 0) {  //logging in as admin user
+    isAdmin = true;
+    if (data.substr(pos, data.length()-6) == ADMIN_PWD) {
+      validPwd = true;
+    }
+  }
+  return;
+}
+
 /** No descriptions */
 bool ClientConnection::handleMessage(Message& msg){
   if (Context::getInstance()->isEavesDroppingEnabled()) {
@@ -451,6 +468,9 @@ bool ClientConnection::handleMessage(Message& msg){
     reply->setto(msg.getfrom());
     reply->setthread(msg.getthread());
     if (subject == "connect") {  //handle the connect request
+       bool isAdmin;
+       bool validPwd;
+
       //check if a connection with this uer name already exists
       if (Context::getInstance()->getconnectionRegistry()->checkForExistingConnection(msg.getbody())) {
         //if duplicate connections aren't allowed then refuse this current request
@@ -468,15 +488,48 @@ bool ClientConnection::handleMessage(Message& msg){
             cc->closeNow();
             cc->wait(2000);
           }
-          reply->setsubject("connected");
-          reply->setto(msg.getbody());
-          registerClient(msg.getbody());
+          //check to see if this is an admin login attempt
+          checkForAdmin(msg.body, isAdmin, validPwd);
+          if (isAdmin) {
+            if (validPwd) {
+              reply->setsubject("connected");
+              string adminid = ADMIN_ID;
+              reply->setto(adminid);
+              registerClient(adminid);
+            }
+            else {
+              reply->setsubject("invalid admin pwd");
+              return false;
+            }
+          }
+          else {
+            reply->setsubject("connected");
+            reply->setto(msg.getbody());
+            registerClient(msg.getbody());
+          }
         }
       }
       else {
-        reply->setsubject("connected");
-        reply->setto(msg.getbody());
-        registerClient(msg.getbody());
+          //check to see if this is an admin login attempt
+          bool isAdmin, validPwd;
+          checkForAdmin(msg.body, isAdmin, validPwd);
+          if (isAdmin) {
+            if (validPwd) {
+              reply->setsubject("connected");
+              string adminid = ADMIN_ID;
+              reply->setto(adminid);
+              registerClient(adminid);
+            }
+            else {
+              reply->setsubject("invalid admin pwd");
+              return false;
+            }
+          }
+          else {
+            reply->setsubject("connected");
+            reply->setto(msg.getbody());
+            registerClient(msg.getbody());
+          }
       }
     }
     else if (subject == "disconnect") { //handle the disconnect request

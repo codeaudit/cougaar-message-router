@@ -119,6 +119,7 @@ private: // Private methods
   /** debug helper method */
   void dumpPacket(char * packet, int pos, int packetLength);
   void cleanupMessages(MessageList * ml);
+  void checkForAdmin(string data,  bool& isAdmin, bool& validPwd);
 };
 
 
