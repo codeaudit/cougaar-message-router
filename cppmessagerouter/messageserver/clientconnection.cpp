@@ -389,7 +389,7 @@ bool ClientConnection::processMessage(Message& msg){
   }
   if (msg.getto() != "") {
     Context::getInstance()->getLogger()->log(msg.getfrom().c_str(), msg.getto().c_str(),
-      "Routing Message", msg.getbody().c_str(), Logger::LEVEL_INFO);
+      "Routing Message", (msg.getthread() + ":" + msg.getsubject() + ":"+msg.getbody()).c_str(), Logger::LEVEL_INFO);
     routeMessage(msg);
     return true;
   }
