@@ -3,7 +3,7 @@
 Summary: RPM for installing the Cougaar society message server
 Name: messagerouter
 Version: 1
-Release: 7.30
+Release: 7.36
 Copyright: Cougaar
 Group: Applications/UltraLog
 Source: messagerouter
