@@ -39,7 +39,7 @@ void Logger::forceLog(const char *msg) const {
 
   time(&now);
   l_time = localtime(&now);
-  strftime(str, sizeof str, "%d-%b-%y %H:%M:%S", l_time);
+  strftime(str, sizeof str, "%d-%b-%Y %H:%M:%S", l_time);
   printf("%s  - %s\n", str, msg);
   cout << flush;
 }
@@ -54,8 +54,8 @@ void Logger::log(const char *msg) const {
 
   time(&now);
   l_time = localtime(&now);
-  strftime(str, sizeof str, "%d-%b-%y %H:%M:%S", l_time);
-  printf("%s  - %s : %s\n", str, msg);
+  strftime(str, sizeof str, "%d-%b-%Y %H:%M:%S", l_time);
+  printf("%s  - %s\n", str, msg);
   cout << flush;
 }
 
@@ -68,7 +68,7 @@ void Logger::log(const char  *subject, const char *msg) const {
 
   time(&now);
   l_time = localtime(&now);
-  strftime(str, sizeof str, "%d-%b-%y %H:%M:%S", l_time);
+  strftime(str, sizeof str, "%d-%b-%Y %H:%M:%S", l_time);
   printf("%s  - %s : %s\n", str, subject, msg);
   cout << flush;
 }
@@ -82,7 +82,7 @@ void Logger::log(const char *from, const char* to, const char *subject, const ch
 
   time(&now);
   l_time = localtime(&now);
-  strftime(str, sizeof str, "%d-%b-%y %H:%M:%S", l_time);
+  strftime(str, sizeof str, "%d-%b-%Y %H:%M:%S", l_time);
   printf("%s  - from: %s - to: %s - %s : %s\n", str, from, to, subject, msg);
   cout << flush;
 }
