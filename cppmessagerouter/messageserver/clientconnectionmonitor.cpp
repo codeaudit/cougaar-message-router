@@ -49,19 +49,6 @@ void ClientConnectionMonitor::run(){
           cc->wait(1000);  //make sure the thread is terminated
           pos = monitorList.erase(pos); //first remove the reference to the connection from this monitor list
           //shutdown the sender for this client
-          if (cc->sender != NULL) {
-            Context::getInstance()->getLogger()->log(cc->name.c_str(), "shutting down sender", Logger::LEVEL_WARN);
-            cc->sender->stop();
-            Context::getInstance()->getLogger()->log(cc->name.c_str(), "closed sender", Logger::LEVEL_WARN);
-            if (!cc->sender->wait(2000)) {
-              Context::getInstance()->getLogger()->log(cc->name.c_str(), "unable to shutdown sender", Logger::LEVEL_WARN);
-            }
-            else {
-              Context::getInstance()->getLogger()->log(cc->name.c_str(), "deleting sender", Logger::LEVEL_WARN);
-              delete cc->sender;
-              Context::getInstance()->getLogger()->log(cc->name.c_str(), "shutdown sender", Logger::LEVEL_WARN);
-            }
-          }
           delete cc;  //now delete the ClientConnection object itself        
         }
         else {

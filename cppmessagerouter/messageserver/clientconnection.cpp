@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5096
-#define VERSION "MessageRouter 1.7.17"
+#define VERSION "MessageRouter 1.7.19"
  
 #include "clientconnection.h"
 #include <iostream.h>
@@ -128,6 +128,20 @@ void ClientConnection::close() {
   //if (tmp_buffer != NULL) {
     //delete tmp_buffer;
   //}
+  if (sender != NULL) {
+    Context::getInstance()->getLogger()->log(name.c_str(), "shutting down sender", Logger::LEVEL_WARN);
+    sender->stop();
+    Context::getInstance()->getLogger()->log(name.c_str(), "closed sender", Logger::LEVEL_WARN);
+    if (!sender->wait(2000)) {
+      Context::getInstance()->getLogger()->log(name.c_str(), "unable to shutdown sender", Logger::LEVEL_WARN);
+    }
+    else {
+      Context::getInstance()->getLogger()->log(name.c_str(), "deleting sender", Logger::LEVEL_WARN);
+      delete sender;
+      Context::getInstance()->getLogger()->log(name.c_str(), "shutdown sender", Logger::LEVEL_WARN);
+    }
+  }
+
   //deregister any listeners for this client connection
   Context::getInstance()->getlistenerRegistry()->deregisterListener(this);
   //Context::getInstance()->getLogger()->log(name.c_str(), "deregistered Listeners", Logger::LEVEL_WARN);

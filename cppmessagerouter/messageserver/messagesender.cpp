@@ -43,7 +43,7 @@ void MessageSender::run() {
   try {
     while(keepRunning) {
       stackLock.lock();
-      while (this->stack.size() > 0) {
+      while (keepRunning && (stack.size() > 0)) {
         Message *msg = stack.front();
         stack.pop_front();
         sendMessage(*msg);
@@ -53,8 +53,15 @@ void MessageSender::run() {
     }
   }
   catch(SocketException& ex) {
-    keepRunning = false;
+    stackLock.unlock();
+    keepRunning = FALSE;
     Context::getInstance()->getLogger()->log(name.c_str(), ex.description().c_str(), Logger::LEVEL_DEBUG);  
+    stopLock.lock();
+    if (!isStopped) {
+      cleanupMessages();
+      isStopped = TRUE;
+    }
+    stopLock.unlock();
   }
 }
 
@@ -95,7 +102,7 @@ void MessageSender::stop(){
   //Context::getInstance()->getLogger()->log("close: got stop lock", Logger::LEVEL_WARN);
   if (!isStopped) {
     //Context::getInstance()->getLogger()->log("close:stopping", Logger::LEVEL_WARN);
-    keepRunning = false;
+    keepRunning = FALSE;
     while (!this->finished()) {
       msleep(500);
     }
