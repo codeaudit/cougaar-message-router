@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5096
-#define VERSION "MessageRouter 1.7.24"
+#define VERSION "MessageRouter 1.7.25"
  
 #include "clientconnection.h"
 #include <iostream.h>

@@ -54,6 +54,7 @@ bool Socket::create()
 
 
 int Socket::shutdown() {
+
   return ::shutdown(m_sock, SHUT_RDWR);
 }
 
@@ -187,7 +188,7 @@ int Socket::recv ( char* c, int size, bool wait ) const
     
     if ( status == -1 )
     {
-      std::cout << "status == -1   errno == " << errno << "  in Socket::recv(char*, size)\n";
+      //std::cout << "status == -1   errno == " << errno << "  in Socket::recv(char*, size)\n";
       return 0;
     }
     else if ( status == 0 )
