@@ -90,6 +90,7 @@ public class Client extends JFrame
   JLabel jLabelPwd = new JLabel();
   JPasswordField jPasswordFieldPwd = new JPasswordField();
   JMenuItem jMenuItemScheduleCommand = new JMenuItem();
+  JMenuItem jMenuItemEditScheduledCommands = new JMenuItem();
 
   class HostItem implements Comparable {
     String name;
@@ -298,6 +299,8 @@ public class Client extends JFrame
     jPasswordFieldPwd.setText("");
     jMenuItemScheduleCommand.setText("Schedule Command");
     jMenuItemScheduleCommand.addActionListener(new Client_jMenuItemScheduleCommand_actionAdapter(this));
+    jMenuItemEditScheduledCommands.setText("Edit Scheduled Commands");
+    jMenuItemEditScheduledCommands.addActionListener(new Client_jMenuItemEditScheduledCommands_actionAdapter(this));
     jPanelSendMessages.add(jTextFieldSendSubject, null);
     jPanelSendMessages.add(jTextFieldSendMessages, null);
     jSplitPane1.add(jSplitPane2, JSplitPane.TOP);
@@ -336,6 +339,7 @@ public class Client extends JFrame
     jMenuTest.add(jMenuItemTestMultidisconnect);
     jMenuTest.add(jMenuItemTestMessageStresser);
     jMenuTest.add(jMenuItemScheduleCommand);
+    jMenuTest.add(jMenuItemEditScheduledCommands);
     jSplitPane1.setDividerLocation(200);
     jSplitPane2.setDividerLocation(600);
     jListOnlineUsers.setCellRenderer(new OnlineListCellRenderer());
@@ -969,6 +973,11 @@ public class Client extends JFrame
     catch (Exception ex){
     }
   }
+
+  void jMenuItemEditScheduledCommands_actionPerformed(ActionEvent e) {
+    CommandSchedulerDialog csd = new CommandSchedulerDialog();
+    csd.show();
+  }
 }
 
 class Flasher extends Thread {
@@ -1372,6 +1381,17 @@ class CommandScheduler extends Thread {
       }
 
     }
+  }
+}
+
+class Client_jMenuItemEditScheduledCommands_actionAdapter implements java.awt.event.ActionListener {
+  Client adaptee;
+
+  Client_jMenuItemEditScheduledCommands_actionAdapter(Client adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jMenuItemEditScheduledCommands_actionPerformed(e);
   }
 }
 
