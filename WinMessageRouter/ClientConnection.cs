@@ -124,16 +124,17 @@ namespace WinMessageRouter
 			}
 		}
 
-		private void processMessage(Message msg) 
+		private bool processMessage(Message msg) 
 		{
 			if ((msg.To != null) && (msg.To != ""))
 			{
 				Context.getInstance().getLogger().log(msg.From, msg.To, msg.Subject, msg.Body);
 				routeMessage(msg);
+				return true;
 			}
 			else 
 			{
-				handleMessage(msg);
+				return handleMessage(msg);
 			}
 		}
 
@@ -149,7 +150,7 @@ namespace WinMessageRouter
 			Context.getInstance().getListenerRegistry().notifyListeners(msg);
 		}
 
-		private void handleMessage(Message msg) 
+		private bool handleMessage(Message msg) 
 		{
 			string subject = msg.Subject;
 			Context.getInstance().getLogger().log(msg.From, "server", msg.Subject, msg.Body);
@@ -162,6 +163,10 @@ namespace WinMessageRouter
 					reply.Subject = "connected";
 					reply.To = msg.Body;
 					registerClient(msg.Body);
+				}
+				else if (subject == "disconnect") 
+				{
+					return false;
 				}
 				else if (subject == "list") 
 				{  //handle the list request
@@ -195,6 +200,7 @@ namespace WinMessageRouter
 			{
 				Context.getInstance().getLogger().forceLog(ex.Message);
 			}
+			return true;
 
 		}
 
@@ -225,10 +231,11 @@ namespace WinMessageRouter
 		public void run() 
 		{
 			Message msg;
+			bool keepRunning = true;
 			
 			try 
 			{
-				while (true) 
+				while (keepRunning) 
 				{
 					if (use_block_read) 
 					{
@@ -236,7 +243,11 @@ namespace WinMessageRouter
 						while (messages.Count > 0) 
 						{
 							msg = (Message)messages.Dequeue();
-							processMessage(msg);
+							keepRunning = processMessage(msg);
+							if (!keepRunning) 
+							{
+								break;
+							}
 						}
 					}
 					else 
@@ -244,7 +255,7 @@ namespace WinMessageRouter
 						msg = getMessage();
 						if (msg != null) 
 						{
-							processMessage(msg);
+							keepRunning = processMessage(msg);
 						}
 					}
 				}
