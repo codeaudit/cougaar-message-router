@@ -82,7 +82,7 @@ namespace WinMessageRouter
 					System.Console.WriteLine("Options are:");
 					System.Console.WriteLine("   -b Block Read enabled");
 					System.Console.WriteLine("   -i Info-level logging enabled");
-					System.Console.WriteLine("   -w Wanr-level logging enabled");
+					System.Console.WriteLine("   -w Warn-level logging enabled");
 					System.Console.WriteLine("   -d Debug-level logging enabled");
 					System.Console.WriteLine("   -s Shout-level logging enabled");
 					System.Console.WriteLine("   -r Refuse duplicate connections");
