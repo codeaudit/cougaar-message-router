@@ -42,6 +42,7 @@ public:
 
 private:
   ConnectionMap clientMap;
+  QMutex registryLock;
 
 };
 

@@ -27,7 +27,11 @@ ConnectionRegistry::~ConnectionRegistry(){
 }
 
 void ConnectionRegistry::registerConnection(ClientConnection *cc, string& name) {
+   registryLock.lock();
+   
    clientMap[name]=cc;
+   
+   registryLock.unlock();
 }
  
 ClientConnection * ConnectionRegistry::findConnection(const string& name) {
@@ -41,7 +45,11 @@ ClientConnection * ConnectionRegistry::findConnection(const string& name) {
 
 /** No descriptions */
 void ConnectionRegistry::deregisterConnection(string &name){
+  registryLock.lock();
+  
   clientMap.erase(name);
+  
+  registryLock.unlock();
 }
 
 /** No descriptions */
@@ -69,8 +77,8 @@ string& ConnectionRegistry::listConnections() {
 void ConnectionRegistry::validateConnections() {
   ConnectionMap::iterator pos;
   for (pos = clientMap.begin(); pos != clientMap.end(); ++pos) {
-    printf("scheduling validation for host: %s\n", (pos->first).c_str());
-    cout<<flush;
+    //printf("scheduling validation for host: %s\n", (pos->first).c_str());
+    //cout<<flush;
     ClientConnection* cc = clientMap[pos->first];
     Context::getInstance()->getConnectionValidator()->validateConnection(cc);
   }
