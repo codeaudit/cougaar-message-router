@@ -428,7 +428,7 @@ namespace WinMessageRouter
 				}
 				else if (subject == "get max send queue size") 
 				{
-					reply.Body = "Current max send queue size: " + Context.getInstance().getMaxSendQueueSize;
+					reply.Body = "Current max send queue size: " + Context.getInstance().getMaxSendQueueSize();
 				}
 				else if (subject == "set max send queue size") 
 				{
@@ -454,7 +454,7 @@ namespace WinMessageRouter
 					Context.getInstance().logToStdOut();
 					reply.Subject = "logging to stdout";
 				}
-				else if (subect == "get sync send status") 
+				else if (subject == "get sync send status") 
 				{
 					reply.Subject = "sync send status";
 					if (Context.getInstance().getSyncSend()) 
@@ -465,6 +465,16 @@ namespace WinMessageRouter
 					{
 						reply.Body = "disabled";
 					}
+				}
+				else if (subject == "enable sync send") 
+				{
+					Context.getInstance().setSyncSend(true);
+					reply.Subject = "sync send enabled";
+				}
+				else if (subject == "disable sync send") 
+				{
+					Context.getInstance().setSyncSend(false);
+					reply.Subject = "sync send disabled";
 				}
 				else if (subject == "get stat logging") 
 				{
@@ -477,6 +487,16 @@ namespace WinMessageRouter
 					{
 						reply.Body = "disabled";
 					}
+				}
+				else if (subject == "enable stat logging") 
+				{
+					Context.getInstance().enableStatLogging();
+					reply.Subject = "stat logging enabled";
+				}
+				else if (subject == "disable stat logging") 
+				{
+					Context.getInstance().disableStatLogging();
+					reply.Subject = "stat logging disabled";
 				}
 				else 
 				{ 
