@@ -116,6 +116,7 @@ public class Client extends JFrame
     jButtonMultiConnect.addActionListener(new Client_jButtonMultiConnect_actionAdapter(this));
     jTextAreaDisplayMessages.setEditable(false);
     jTextAreaDisplayMessages.setText("");
+    jListOnlineUsers.addMouseListener(new Client_jListOnlineUsers_mouseAdapter(this));
     jPanelSendMessages.add(jTextFieldSendSubject, BorderLayout.NORTH);
     jPanelSendMessages.add(jScrollPaneSendMessages, BorderLayout.CENTER);
     jSplitPane1.add(jSplitPane2, JSplitPane.TOP);
@@ -207,6 +208,7 @@ public class Client extends JFrame
       String body = msg.getBody()!=null?msg.getBody():"";
       jTextAreaDisplayMessages.append("FROM: " + from + " - " + subject + " : " + body);
       if (!body.endsWith("\n")) jTextAreaDisplayMessages.append("\n");
+      jTextAreaDisplayMessages.setCaretPosition(jTextAreaDisplayMessages.getText().length());
     }
   }
 
@@ -282,6 +284,14 @@ public class Client extends JFrame
     }
   }
 
+
+  void jListOnlineUsers_mouseClicked(MouseEvent e) {
+    if (e.getClickCount() == 2) {
+      jTextFieldTargetUser.setText((String)jListOnlineUsers.getSelectedValue());
+      jTextAreaSendMessages.requestFocus();
+    }
+  }
+
 }
 
 
@@ -349,5 +359,16 @@ class Client_jButtonMultiConnect_actionAdapter implements java.awt.event.ActionL
   }
   public void actionPerformed(ActionEvent e) {
     adaptee.jButtonMultiConnect_actionPerformed(e);
+  }
+}
+
+class Client_jListOnlineUsers_mouseAdapter extends java.awt.event.MouseAdapter {
+  Client adaptee;
+
+  Client_jListOnlineUsers_mouseAdapter(Client adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void mouseClicked(MouseEvent e) {
+    adaptee.jListOnlineUsers_mouseClicked(e);
   }
 }
