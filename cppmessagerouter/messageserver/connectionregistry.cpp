@@ -135,3 +135,7 @@ void ConnectionRegistry::broadcastMessage(Message& msg) {
     }
   }
 }
+
+int ConnectionRegistry::getConnectionCount() {
+  return clientMap.size();
+}

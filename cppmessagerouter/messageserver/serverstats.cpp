@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "serverstats.h"
+#include "context.h"
 #include <stdio.h>
 #include <iostream.h>
 
@@ -86,10 +87,11 @@ string& ServerStats::getStatsStr() {
   hours = (uptime%86400)/3600;
   mins = (uptime%3600)/60;
   secs = uptime % 60;
-  
+
+  int connectionCount = Context::getInstance()->getconnectionRegistry()->getConnectionCount();
   strftime(timestr, sizeof timestr, "%d-%b-%Y %H:%M:%S", l_time);  
-  sprintf(tmpBuffer, "\nstart time: %s\nup time: %d days, %d hours, %d mins, %d secs\nincoming msg count: %u\noutgoing msg count: %u\nraw: %g\n1min: %g\n5min: %g\n15min: %g\nmax: %g\n",
-   timestr, days, hours, mins, secs, incomingMsgCount, outgoingMsgCount, raw, avg1, avg2, avg3, max);
+  sprintf(tmpBuffer, "\nstart time: %s\nup time: %d days, %d hours, %d mins, %d secs\nincoming msg count: %u\noutgoing msg count: %u\nconnection count: %d\nraw: %g\n1min: %g\n5min: %g\n15min: %g\nmax: %g\n",
+   timestr, days, hours, mins, secs, incomingMsgCount, outgoingMsgCount, connectionCount, raw, avg1, avg2, avg3, max);
 
   return *(new string(tmpBuffer));
 }

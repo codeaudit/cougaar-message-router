@@ -42,6 +42,7 @@ public:
   void validateConnections();
   string& getSendQueueStats();
   void broadcastMessage(Message& msg);
+  int getConnectionCount();
 
 private:
   ConnectionMap clientMap;
