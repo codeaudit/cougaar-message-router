@@ -77,8 +77,8 @@ void ClientConnection::run() {
     }
   }
   catch ( SocketException& ex) {
-    cout << "Socket exception" << endl;
-    cout << ex.description() << endl;
+    Logger *logger = Context::getInstance()->getLogger();
+    logger->log("Socket exception", ex.description().c_str());
   }
 
   /***** cleanup *****/
@@ -223,8 +223,8 @@ void ClientConnection::routeMessage(Message& msg){
 void ClientConnection::processMessage(Message& msg){
   if (msg.getto() != "") {
     //cout << "routing msg from: " << name << " to: " << msg.getto() << endl << flush;
-    string logmsg = "routing msg - FROM:"+name+" TO:"+msg.getto();
-    Context::getInstance()->getLogger()->log(logmsg);
+    Context::getInstance()->getLogger()->log(msg.getfrom().c_str(), msg.getto().c_str(),
+      msg.getsubject().c_str(), msg.getbody().c_str());
     routeMessage(msg);
   }
   else {
@@ -284,7 +284,8 @@ void ClientConnection::deregisterClient(){
 /** No descriptions */
 void ClientConnection::handleMessage(Message& msg){
   string& subject = msg.getsubject();
-  Context::getInstance()->getLogger()->log((const char *)"handling message", subject.c_str());
+  Context::getInstance()->getLogger()->log(msg.getfrom().c_str(), (const char *)"server",
+    msg.getsubject().c_str(), msg.getbody().c_str());
   try {  
     Message* reply = new Message();
     reply->setthread(msg.getthread());

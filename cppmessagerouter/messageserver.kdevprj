@@ -26,7 +26,7 @@ ldadd=$(LIB_QPE) $(LIB_QT)
 ldflags=\s           \s
 
 [General]
-AMChanged=true
+AMChanged=false
 author=David Craine
 configure_args=\s--build=i386-linux --host=i386-linux --target=i386-linux\s
 email=dcraine@infotether.com

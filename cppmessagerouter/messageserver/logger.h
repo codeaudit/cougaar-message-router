@@ -36,6 +36,7 @@ public:
   /** No descriptions */
   void log(const char *) const;
   void log(const char *subject, const char *msg) const;
+  void log(const char *from, const char* to, const char *subject, const char* msg) const;
   /** Write property of bool enabled. */
   void enable();
   void disable();

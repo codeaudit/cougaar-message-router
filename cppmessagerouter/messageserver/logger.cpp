@@ -59,6 +59,20 @@ void Logger::log(const char  *subject, const char *msg) const {
   cout << flush;
 }
 
+void Logger::log(const char *from, const char* to, const char *subject, const char* msg) const {
+  if (!enabled) return;
+
+  time_t now;
+  struct tm *l_time;
+  char str[20];
+
+  time(&now);
+  l_time = localtime(&now);
+  strftime(str, sizeof str, "%d-%b-%y %H:%M:%S", l_time);
+  printf("%s  - from: %s - to: %s - %s : %s\n", str, from, to, subject, msg);
+  cout << flush;
+}
+
 const bool Logger::isenabled() {
 	return enabled;
 }
