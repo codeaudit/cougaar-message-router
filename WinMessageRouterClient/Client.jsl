@@ -39,6 +39,8 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 	 * Required designer variable.
 	 */
 	private System.ComponentModel.Container components = null;
+	private System.Windows.Forms.Splitter splitter1;
+	private System.Windows.Forms.PictureBox pictureBox1;
 	private Session session;
 
 	public Client()
@@ -81,6 +83,7 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 	 */
 	private void InitializeComponent()
 	{
+		System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Client.class.ToType());
 		this.labelServer = new System.Windows.Forms.Label();
 		this.buttonRegister = new System.Windows.Forms.Button();
 		this.buttonDisconnect = new System.Windows.Forms.Button();
@@ -105,6 +108,8 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 		this.panelBottomLeftMain = new System.Windows.Forms.Panel();
 		this.labelSendMessage = new System.Windows.Forms.Label();
 		this.labelSendSubject = new System.Windows.Forms.Label();
+		this.splitter1 = new System.Windows.Forms.Splitter();
+		this.pictureBox1 = new System.Windows.Forms.PictureBox();
 		this.panelTopMain.SuspendLayout();
 		this.panelCenterMain.SuspendLayout();
 		this.panelCenterLeftMain.SuspendLayout();
@@ -206,6 +211,7 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 		// 
 		// panelCenterMain
 		// 
+		this.panelCenterMain.set_BorderStyle(System.Windows.Forms.BorderStyle.Fixed3D);
 		this.panelCenterMain.get_Controls().Add(this.panelCenterLeftMain);
 		this.panelCenterMain.get_Controls().Add(this.panelCenterRightMain);
 		this.panelCenterMain.set_Dock(System.Windows.Forms.DockStyle.Fill);
@@ -216,12 +222,13 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 		// 
 		// panelCenterLeftMain
 		// 
+		this.panelCenterLeftMain.get_Controls().Add(this.splitter1);
 		this.panelCenterLeftMain.get_Controls().Add(this.richTextBoxMessages);
 		this.panelCenterLeftMain.get_Controls().Add(this.labelMessages);
 		this.panelCenterLeftMain.set_Dock(System.Windows.Forms.DockStyle.Fill);
 		this.panelCenterLeftMain.set_Location(new System.Drawing.Point(0, 0));
 		this.panelCenterLeftMain.set_Name("panelCenterLeftMain");
-		this.panelCenterLeftMain.set_Size(new System.Drawing.Size(648, 306));
+		this.panelCenterLeftMain.set_Size(new System.Drawing.Size(644, 302));
 		this.panelCenterLeftMain.set_TabIndex(1);
 		// 
 		// richTextBoxMessages
@@ -229,7 +236,7 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 		this.richTextBoxMessages.set_Dock(System.Windows.Forms.DockStyle.Fill);
 		this.richTextBoxMessages.set_Location(new System.Drawing.Point(0, 23));
 		this.richTextBoxMessages.set_Name("richTextBoxMessages");
-		this.richTextBoxMessages.set_Size(new System.Drawing.Size(648, 283));
+		this.richTextBoxMessages.set_Size(new System.Drawing.Size(644, 279));
 		this.richTextBoxMessages.set_TabIndex(2);
 		this.richTextBoxMessages.set_Text("");
 		// 
@@ -238,7 +245,7 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 		this.labelMessages.set_Dock(System.Windows.Forms.DockStyle.Top);
 		this.labelMessages.set_Location(new System.Drawing.Point(0, 0));
 		this.labelMessages.set_Name("labelMessages");
-		this.labelMessages.set_Size(new System.Drawing.Size(648, 23));
+		this.labelMessages.set_Size(new System.Drawing.Size(644, 23));
 		this.labelMessages.set_TabIndex(1);
 		this.labelMessages.set_Text("Messages");
 		// 
@@ -247,9 +254,9 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 		this.panelCenterRightMain.get_Controls().Add(this.listBoxUsers);
 		this.panelCenterRightMain.get_Controls().Add(this.labelUserList);
 		this.panelCenterRightMain.set_Dock(System.Windows.Forms.DockStyle.Right);
-		this.panelCenterRightMain.set_Location(new System.Drawing.Point(648, 0));
+		this.panelCenterRightMain.set_Location(new System.Drawing.Point(644, 0));
 		this.panelCenterRightMain.set_Name("panelCenterRightMain");
-		this.panelCenterRightMain.set_Size(new System.Drawing.Size(208, 306));
+		this.panelCenterRightMain.set_Size(new System.Drawing.Size(208, 302));
 		this.panelCenterRightMain.set_TabIndex(0);
 		// 
 		// listBoxUsers
@@ -281,6 +288,7 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 		// 
 		// panelBottomRightMain
 		// 
+		this.panelBottomRightMain.get_Controls().Add(this.pictureBox1);
 		this.panelBottomRightMain.get_Controls().Add(this.textBoxSendMessage);
 		this.panelBottomRightMain.get_Controls().Add(this.textBoxSubject);
 		this.panelBottomRightMain.set_Dock(System.Windows.Forms.DockStyle.Fill);
@@ -291,19 +299,18 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 		// 
 		// textBoxSendMessage
 		// 
-		this.textBoxSendMessage.set_Dock(System.Windows.Forms.DockStyle.Fill);
-		this.textBoxSendMessage.set_Location(new System.Drawing.Point(0, 20));
-		this.textBoxSendMessage.set_Multiline(true);
+		this.textBoxSendMessage.set_Dock(System.Windows.Forms.DockStyle.Bottom);
+		this.textBoxSendMessage.set_Location(new System.Drawing.Point(0, 40));
 		this.textBoxSendMessage.set_Name("textBoxSendMessage");
-		this.textBoxSendMessage.set_Size(new System.Drawing.Size(784, 60));
+		this.textBoxSendMessage.set_Size(new System.Drawing.Size(784, 20));
 		this.textBoxSendMessage.set_TabIndex(1);
 		this.textBoxSendMessage.set_Text("");
 		this.textBoxSendMessage.add_KeyPress( new System.Windows.Forms.KeyPressEventHandler(this.textBoxSendMessage_KeyPress) );
 		// 
 		// textBoxSubject
 		// 
-		this.textBoxSubject.set_Dock(System.Windows.Forms.DockStyle.Top);
-		this.textBoxSubject.set_Location(new System.Drawing.Point(0, 0));
+		this.textBoxSubject.set_Dock(System.Windows.Forms.DockStyle.Bottom);
+		this.textBoxSubject.set_Location(new System.Drawing.Point(0, 60));
 		this.textBoxSubject.set_Name("textBoxSubject");
 		this.textBoxSubject.set_Size(new System.Drawing.Size(784, 20));
 		this.textBoxSubject.set_TabIndex(0);
@@ -321,21 +328,45 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 		// 
 		// labelSendMessage
 		// 
-		this.labelSendMessage.set_Dock(System.Windows.Forms.DockStyle.Fill);
-		this.labelSendMessage.set_Location(new System.Drawing.Point(0, 23));
+		this.labelSendMessage.set_Dock(System.Windows.Forms.DockStyle.Top);
+		this.labelSendMessage.set_Location(new System.Drawing.Point(0, 0));
 		this.labelSendMessage.set_Name("labelSendMessage");
 		this.labelSendMessage.set_Size(new System.Drawing.Size(72, 57));
 		this.labelSendMessage.set_TabIndex(1);
 		this.labelSendMessage.set_Text("Message");
+		this.labelSendMessage.set_TextAlign(System.Drawing.ContentAlignment.BottomLeft);
+		this.labelSendMessage.add_Click( new System.EventHandler(this.labelSendMessage_Click) );
 		// 
 		// labelSendSubject
 		// 
-		this.labelSendSubject.set_Dock(System.Windows.Forms.DockStyle.Top);
-		this.labelSendSubject.set_Location(new System.Drawing.Point(0, 0));
+		this.labelSendSubject.set_Dock(System.Windows.Forms.DockStyle.Bottom);
+		this.labelSendSubject.set_Location(new System.Drawing.Point(0, 57));
 		this.labelSendSubject.set_Name("labelSendSubject");
 		this.labelSendSubject.set_Size(new System.Drawing.Size(72, 23));
 		this.labelSendSubject.set_TabIndex(0);
 		this.labelSendSubject.set_Text("Subject");
+		this.labelSendSubject.set_TextAlign(System.Drawing.ContentAlignment.MiddleLeft);
+		// 
+		// splitter1
+		// 
+		this.splitter1.set_Dock(System.Windows.Forms.DockStyle.Right);
+		this.splitter1.set_Location(new System.Drawing.Point(641, 23));
+		this.splitter1.set_Name("splitter1");
+		this.splitter1.set_Size(new System.Drawing.Size(3, 279));
+		this.splitter1.set_TabIndex(3);
+		this.splitter1.set_TabStop(false);
+		// 
+		// pictureBox1
+		// 
+		this.pictureBox1.set_BorderStyle(System.Windows.Forms.BorderStyle.Fixed3D);
+		this.pictureBox1.set_Dock(System.Windows.Forms.DockStyle.Fill);
+		this.pictureBox1.set_Image(((System.Drawing.Image)(resources.GetObject("pictureBox1.Image"))));
+		this.pictureBox1.set_Location(new System.Drawing.Point(0, 0));
+		this.pictureBox1.set_Name("pictureBox1");
+		this.pictureBox1.set_Size(new System.Drawing.Size(784, 40));
+		this.pictureBox1.set_SizeMode(System.Windows.Forms.PictureBoxSizeMode.StretchImage);
+		this.pictureBox1.set_TabIndex(2);
+		this.pictureBox1.set_TabStop(false);
 		// 
 		// Client
 		// 
@@ -464,7 +495,14 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 			{
 				session.postMessage(textBoxTarget.get_Text(), textBoxSubject.get_Text(), textBoxSendMessage.get_Text());
 			}
+			textBoxSubject.Clear();
+			textBoxSendMessage.Clear();
 		}
+	}
+
+	private void labelSendMessage_Click (Object sender, System.EventArgs e)
+	{
+	
 	}	
 
 }
