@@ -14,4 +14,12 @@ public class Util {
     }
     return retStr;
   }
+
+  public static String fixedString(int size) {
+    char[] tmp = new char[size];
+    for (int i=0; i<size; i++) {
+      tmp[i] += 'f';
+    }
+    return String.valueOf(tmp);
+  }
 }

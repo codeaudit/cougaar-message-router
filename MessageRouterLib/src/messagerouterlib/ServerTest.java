@@ -276,6 +276,15 @@ public class ServerTest {
     }
   }
 
+  public void testMessageCounts() {
+    Session session1 = new Session();
+    Session session2 = new Session();
+    try {
+
+    }
+    catch (Exception ex) {}
+  }
+
   public void runTests() {
     testConnection();
     testListCmd();
@@ -329,6 +338,22 @@ public class ServerTest {
      * @todo Implement this messagerouterlib.AsyncMessageReceiverListener method
      */
     public void messageReceiverClosed(MessageReceiver mr) {
+    }
+  }
+  class CountListener implements AsyncMessageReceiverListener {
+    private int count = 0;
+
+    public CountListener() {}
+
+    public void receiveMsg(Message msg) {
+      count++;
+    }
+
+    public void messageReceiverClosed(MessageReceiver mr) {
+    }
+
+    public int getCount() {
+      return count;
     }
   }
 }

@@ -399,6 +399,77 @@ public class Client extends JFrame
             Thread.currentThread().sleep(2000);
           }
         }
+        else if (args[0].equals("-stress4")) {
+          String userName = args[1];
+          String server = args[2];
+          String targetUser = args[3];
+          int rate = Integer.parseInt(args[4]);
+          Session session = new Session();
+          long msgCount = 0;
+          while (true) {
+            if (session.connect(server, userName)) {
+              for (int i = 0; i < rate; i++) {
+                msgCount++;
+                session.postMessage(targetUser,
+                                    ("subject " + String.valueOf(msgCount)),
+                                    Util.fixedString(300000));
+              }
+              session.dropConnection();
+            }
+            Thread.currentThread().sleep(5000);
+          }
+
+        }
+        else if (args[0].equals("-monitor")) {
+          String userName = args[1];
+          String server = args[2];
+          long interval = Long.parseLong(args[3]);
+          Session session = new Session();
+          long msgCount = 0;
+          if (session.connect(server, userName)) {
+            while (true) {
+              Message msg = session.sendMessage("", "get send queue stats", "");
+              System.out.println("SEND QUEUE STATS");
+              System.out.println(msg.getBody());
+              Thread.currentThread().sleep(interval);
+            }
+          }
+        }
+        else if (args[0].equals("-responder")) {
+          String userName = args[1];
+          String server = args[2];
+          long interval = Long.parseLong(args[3]);
+          final Session session = new Session();
+          if (session.connect(server, userName)) {
+            session.addListener(new AsyncMessageReceiverListener() {
+                                public void receiveMsg(Message msg){
+                                  session.postMessage(msg.getFrom(), "RE: " + msg.getFrom(), msg.getThread(), msg.getBody());
+                                }
+                                public void messageReceiverClosed(MessageReceiver mr){}
+            });
+            while (true) { Thread.currentThread().sleep(interval);}
+          }
+        }
+        else if (args[0].equals("-threaded-sender")) {
+          String userName = args[1];
+          String server = args[2];
+          String targetUser = args[3];
+          int rate = Integer.parseInt(args[4]);
+          Session session = new Session();
+          long msgCount = 0;
+          while (true) {
+            if (session.connect(server, userName)) {
+              for (int i = 0; i < rate; i++) {
+                msgCount++;
+                Message reply = session.sendMessage(targetUser,
+                                    ("subject " + String.valueOf(msgCount)),
+                                    "body");
+              }
+              session.dropConnection();
+            }
+            Thread.currentThread().sleep(5000);
+          }
+        }
       }
 
       catch (Exception e) {
