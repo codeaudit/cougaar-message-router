@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5096
-#define VERSION "MessageRouter 1.7.5"
+#define VERSION "MessageRouter 1.7.6"
  
 #include "clientconnection.h"
 #include <iostream.h>
@@ -152,11 +152,18 @@ void ClientConnection::close() {
   }
 
   if (sender != NULL) {
+    Context::getInstance()->getLogger()->log(name.c_str(), "shutting down sender", Logger::LEVEL_WARN);
     sender->stop();
-    sender->wait(2000);
-    delete sender;
-    Context::getInstance()->getLogger()->log(name.c_str(), "shutdown sender", Logger::LEVEL_WARN);
+    if (!sender->wait(2000)) {
+      Context::getInstance()->getLogger()->log(name.c_str(), "unable to shutdown sender", Logger::LEVEL_WARN);
+    }
+    else {
+      delete sender;
+      Context::getInstance()->getLogger()->log(name.c_str(), "shutdown sender", Logger::LEVEL_WARN);
+    }
   }
+
+  Context::getInstance()->getLogger()->log(name.c_str(), "shutdown complete", Logger::LEVEL_WARN);
   isClosed = true;
   return;
 }
