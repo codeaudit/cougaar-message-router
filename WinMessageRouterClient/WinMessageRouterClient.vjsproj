@@ -85,6 +85,11 @@
                     Project = "{92B3B445-7D29-4825-8882-A262977E8DA0}"
                     Package = "{E6FDF86B-F3D1-11D4-8576-0002A516ECE8}"
                 />
+                <Reference
+                    Name = "ExRichTextBox"
+                    Project = "{1A63B1D0-D2F0-4F8C-B242-863E83E1419C}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
             </References>
         </Build>
         <Files>

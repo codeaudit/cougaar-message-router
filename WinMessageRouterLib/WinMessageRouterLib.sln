@@ -7,6 +7,10 @@ Project("{E6FDF86B-F3D1-11D4-8576-0002A516ECE8}") = "WinMessageRouterClient", ".
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExRichTextBox", "..\rtb\ExRichTextBox\ExRichTextBox.csproj", "{1A63B1D0-D2F0-4F8C-B242-863E83E1419C}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -21,6 +25,10 @@ Global
 		{FAC495E9-8873-48B9-8644-B13F54FCBC6A}.Debug.Build.0 = Debug|.NET
 		{FAC495E9-8873-48B9-8644-B13F54FCBC6A}.Release.ActiveCfg = Release|.NET
 		{FAC495E9-8873-48B9-8644-B13F54FCBC6A}.Release.Build.0 = Release|.NET
+		{1A63B1D0-D2F0-4F8C-B242-863E83E1419C}.Debug.ActiveCfg = Debug|.NET
+		{1A63B1D0-D2F0-4F8C-B242-863E83E1419C}.Debug.Build.0 = Debug|.NET
+		{1A63B1D0-D2F0-4F8C-B242-863E83E1419C}.Release.ActiveCfg = Release|.NET
+		{1A63B1D0-D2F0-4F8C-B242-863E83E1419C}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

@@ -5,12 +5,17 @@ import System.Collections.*;
 import System.ComponentModel.*;
 import System.Windows.Forms.*;
 import WinMessageRouterLib.*;
+import Khendys.Controls.*;
 
 /**
  * Summary description for Client.
  */
 public class Client extends System.Windows.Forms.Form implements AsyncMessageReceiverListener 
 {
+	private final static int COLOR_NORMAL = 0;
+	private final static int COLOR_RED = 1;
+	private static final int COLOR_BLUE = 2;
+
 	private System.Windows.Forms.Label labelServer;
 	private System.Windows.Forms.Button buttonRegister;
 	private System.Windows.Forms.Button buttonDisconnect;
@@ -26,7 +31,7 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 	private System.Windows.Forms.Panel panelCenterRightMain;
 	private System.Windows.Forms.Panel panelCenterLeftMain;
 	private System.Windows.Forms.Label labelMessages;
-	private System.Windows.Forms.RichTextBox richTextBoxMessages;
+	private ExRichTextBox richTextBoxMessages;
 	private System.Windows.Forms.Label labelUserList;
 	private System.Windows.Forms.ListBox listBoxUsers;
 	private System.Windows.Forms.Panel panelBottomLeftMain;
@@ -96,20 +101,20 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 		this.panelTopMain = new System.Windows.Forms.Panel();
 		this.panelCenterMain = new System.Windows.Forms.Panel();
 		this.panelCenterLeftMain = new System.Windows.Forms.Panel();
-		this.richTextBoxMessages = new System.Windows.Forms.RichTextBox();
+		this.splitter1 = new System.Windows.Forms.Splitter();
+		this.richTextBoxMessages = new ExRichTextBox();
 		this.labelMessages = new System.Windows.Forms.Label();
 		this.panelCenterRightMain = new System.Windows.Forms.Panel();
 		this.listBoxUsers = new System.Windows.Forms.ListBox();
 		this.labelUserList = new System.Windows.Forms.Label();
 		this.panelBottomMain = new System.Windows.Forms.Panel();
 		this.panelBottomRightMain = new System.Windows.Forms.Panel();
+		this.pictureBox1 = new System.Windows.Forms.PictureBox();
 		this.textBoxSendMessage = new System.Windows.Forms.TextBox();
 		this.textBoxSubject = new System.Windows.Forms.TextBox();
 		this.panelBottomLeftMain = new System.Windows.Forms.Panel();
 		this.labelSendMessage = new System.Windows.Forms.Label();
 		this.labelSendSubject = new System.Windows.Forms.Label();
-		this.splitter1 = new System.Windows.Forms.Splitter();
-		this.pictureBox1 = new System.Windows.Forms.PictureBox();
 		this.panelTopMain.SuspendLayout();
 		this.panelCenterMain.SuspendLayout();
 		this.panelCenterLeftMain.SuspendLayout();
@@ -231,6 +236,15 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 		this.panelCenterLeftMain.set_Size(new System.Drawing.Size(644, 302));
 		this.panelCenterLeftMain.set_TabIndex(1);
 		// 
+		// splitter1
+		// 
+		this.splitter1.set_Dock(System.Windows.Forms.DockStyle.Right);
+		this.splitter1.set_Location(new System.Drawing.Point(641, 23));
+		this.splitter1.set_Name("splitter1");
+		this.splitter1.set_Size(new System.Drawing.Size(3, 279));
+		this.splitter1.set_TabIndex(3);
+		this.splitter1.set_TabStop(false);
+		// 
 		// richTextBoxMessages
 		// 
 		this.richTextBoxMessages.set_Dock(System.Windows.Forms.DockStyle.Fill);
@@ -297,6 +311,18 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 		this.panelBottomRightMain.set_Size(new System.Drawing.Size(784, 80));
 		this.panelBottomRightMain.set_TabIndex(1);
 		// 
+		// pictureBox1
+		// 
+		this.pictureBox1.set_BorderStyle(System.Windows.Forms.BorderStyle.Fixed3D);
+		this.pictureBox1.set_Dock(System.Windows.Forms.DockStyle.Fill);
+		this.pictureBox1.set_Image(((System.Drawing.Image)(resources.GetObject("pictureBox1.Image"))));
+		this.pictureBox1.set_Location(new System.Drawing.Point(0, 0));
+		this.pictureBox1.set_Name("pictureBox1");
+		this.pictureBox1.set_Size(new System.Drawing.Size(784, 40));
+		this.pictureBox1.set_SizeMode(System.Windows.Forms.PictureBoxSizeMode.StretchImage);
+		this.pictureBox1.set_TabIndex(2);
+		this.pictureBox1.set_TabStop(false);
+		// 
 		// textBoxSendMessage
 		// 
 		this.textBoxSendMessage.set_Dock(System.Windows.Forms.DockStyle.Bottom);
@@ -335,7 +361,6 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 		this.labelSendMessage.set_TabIndex(1);
 		this.labelSendMessage.set_Text("Message");
 		this.labelSendMessage.set_TextAlign(System.Drawing.ContentAlignment.BottomLeft);
-		this.labelSendMessage.add_Click( new System.EventHandler(this.labelSendMessage_Click) );
 		// 
 		// labelSendSubject
 		// 
@@ -346,27 +371,6 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 		this.labelSendSubject.set_TabIndex(0);
 		this.labelSendSubject.set_Text("Subject");
 		this.labelSendSubject.set_TextAlign(System.Drawing.ContentAlignment.MiddleLeft);
-		// 
-		// splitter1
-		// 
-		this.splitter1.set_Dock(System.Windows.Forms.DockStyle.Right);
-		this.splitter1.set_Location(new System.Drawing.Point(641, 23));
-		this.splitter1.set_Name("splitter1");
-		this.splitter1.set_Size(new System.Drawing.Size(3, 279));
-		this.splitter1.set_TabIndex(3);
-		this.splitter1.set_TabStop(false);
-		// 
-		// pictureBox1
-		// 
-		this.pictureBox1.set_BorderStyle(System.Windows.Forms.BorderStyle.Fixed3D);
-		this.pictureBox1.set_Dock(System.Windows.Forms.DockStyle.Fill);
-		this.pictureBox1.set_Image(((System.Drawing.Image)(resources.GetObject("pictureBox1.Image"))));
-		this.pictureBox1.set_Location(new System.Drawing.Point(0, 0));
-		this.pictureBox1.set_Name("pictureBox1");
-		this.pictureBox1.set_Size(new System.Drawing.Size(784, 40));
-		this.pictureBox1.set_SizeMode(System.Windows.Forms.PictureBoxSizeMode.StretchImage);
-		this.pictureBox1.set_TabIndex(2);
-		this.pictureBox1.set_TabStop(false);
 		// 
 		// Client
 		// 
@@ -416,22 +420,39 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 		}
 	}
 
+	private void displayMsg(String from, String subject, String body, RtfColor color) 
+	{
+		richTextBoxMessages.AppendTextAsRtf(from + " - " + subject + ": " + body+ "\n", 
+			richTextBoxMessages.get_Font(),
+			color,
+			RtfColor.White);
+	}
+
 	private void displayMsg(String from, String subject, String body) 
 	{
-		richTextBoxMessages.AppendText(from + " - " + subject + ": " + body+ "\n");
+		richTextBoxMessages.AppendText(from + " - " + subject + ": " + body+ "\n");		
 	}
 
 	private void displayToMsg(String to, String subject, String body) 
 	{
-		richTextBoxMessages.AppendText("TO: " + to + " - " + subject + ": " + body + "\n");
+		richTextBoxMessages.AppendTextAsRtf("TO: " + to + " - " + subject + ": " + body + "\n",
+			richTextBoxMessages.get_Font(),
+			RtfColor.Blue,
+			RtfColor.White);
 	}
 
 	public void receiveMsg(WinMessageRouterLib.Message msg) 
 	{
-		displayMsg(msg.getFrom(), msg.getSubject(), msg.getBody());
+		if (msg.getFrom() == null) 
+		{
+			displayMsg("SERVER", msg.getSubject(), msg.getBody());
+		}
+		else 
+		{
+			displayMsg(msg.getFrom(), msg.getSubject(), msg.getBody());
+		}
+	
 	}
-
-
 
 	private void buttonConnect_Click (Object sender, System.EventArgs e)
 	{
@@ -443,7 +464,7 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 		}
 		else 
 		{
-			displayMsg("Server", "Unable to connect\n", "");
+			displayMsg("Server", "Unable to connect\n", "", RtfColor.Red);
 		}
 	}
 
@@ -456,6 +477,7 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 	private void buttonDisconnect_Click (Object sender, System.EventArgs e)
 	{
 		disconnect();
+		displayMsg("","","Disconnected", RtfColor.Red);
 	}
 
 	private void disconnect() 
@@ -499,10 +521,4 @@ public class Client extends System.Windows.Forms.Form implements AsyncMessageRec
 			textBoxSendMessage.Clear();
 		}
 	}
-
-	private void labelSendMessage_Click (Object sender, System.EventArgs e)
-	{
-	
-	}	
-
 }
