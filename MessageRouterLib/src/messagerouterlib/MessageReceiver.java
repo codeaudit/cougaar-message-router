@@ -54,7 +54,7 @@ public class MessageReceiver extends Thread {
         listener.wait(timeout);
         msg = (Message) syncMessageMap.get(threadId);
         if (msg != null) {
-          syncMessageMap.remove(msg);
+          syncMessageMap.remove(threadId);
           return msg;
         }
         throw new MessageException("Timeout occurred");
