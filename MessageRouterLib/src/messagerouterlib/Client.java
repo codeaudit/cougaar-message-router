@@ -18,8 +18,8 @@ import java.util.List;
 
 public class Client extends JFrame
     implements AsyncMessageReceiverListener {
-  //SortedListModel onlineUsers = new SortedListModel();
-  DefaultListModel onlineUsers = new DefaultListModel();
+  SortedListModel onlineUsers = new SortedListModel();
+  //DefaultListModel onlineUsers = new DefaultListModel();
   History msgHistory = new History();
   History subjectHistory = new History();
   static Client currentInstance;
@@ -187,10 +187,38 @@ public class Client extends JFrame
   }
 
   public static void main(String[] args) {
-    Client client = new Client();
-    client.setSize(800,400);
-    center(client);
-    client.show();
+    if (args.length > 0) {
+      try {
+        if (args[0].equals("-stress")) {
+          String userName = args[1];
+          String server = args[2];
+          String targetUser = args[3];
+          int rate = Integer.parseInt(args[4]);
+          Session session = new Session();
+          if (session.connect(server, userName)) {
+            long msgCount = 0;
+            while (true) {
+              for (int i=0; i<rate; i++) {
+                msgCount++;
+                session.postMessage(targetUser, ("subject " + String.valueOf(msgCount)),
+                                    Util.randomString(1000));
+              }
+              Thread.currentThread().sleep(2000);
+            }
+          }
+        }
+      }
+
+      catch (Exception e) {
+        System.out.println("Unable to start stress test.  Format: -stress <user name> <server> <target user> <msg rate>");
+      }
+    }
+    else {
+      Client client = new Client();
+      client.setSize(800, 400);
+      center(client);
+      client.show();
+    }
   }
 
   public static void center (Window w) {

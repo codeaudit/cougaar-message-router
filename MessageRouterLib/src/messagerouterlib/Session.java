@@ -68,7 +68,7 @@ public class Session implements SyncMessageReceiverListener {
    * @param body String
    */
   public Message sendMessage(String toUser, String subject, String body, long timeout) {
-    String thread = String.valueOf(msgCount++);
+    String thread = this.userName + "-"+String.valueOf(msgCount++);
     send(userName, toUser, subject, thread, body);
     try {
       Message msg;
