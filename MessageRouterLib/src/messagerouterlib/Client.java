@@ -18,8 +18,8 @@ import java.util.List;
 
 public class Client extends JFrame
     implements AsyncMessageReceiverListener {
-  SortedListModel onlineUsers = new SortedListModel();
-  //DefaultListModel onlineUsers = new DefaultListModel();
+  //SortedListModel onlineUsers = new SortedListModel();
+  DefaultListModel onlineUsers = new DefaultListModel();
   History msgHistory = new History();
   History subjectHistory = new History();
   static Client currentInstance;
@@ -84,6 +84,8 @@ public class Client extends JFrame
   JMenuItem jMenuItemTestMulticonnect = new JMenuItem();
   JMenuItem jMenuItemTestMessageStresser = new JMenuItem();
   JMenuItem jMenuItemTestMultidisconnect = new JMenuItem();
+  JMenuItem jMenuItemOptionsGlobalEavesdrop = new JMenuItem();
+  JMenuItem jMenuItemOptionsGlobalUneavesdrop = new JMenuItem();
 
   class HostItem implements Comparable {
     String name;
@@ -124,7 +126,7 @@ public class Client extends JFrame
   }
 
   class OnlineListCellRenderer
-      implements ListCellRenderer {
+      extends DefaultListCellRenderer {
     /**
      * Return a component that has been configured to display the specified value.
      *
@@ -140,7 +142,13 @@ public class Client extends JFrame
                                                   int index, boolean isSelected,
                                                   boolean cellHasFocus) {
       HostItem hi = (HostItem)value;
-      JLabel c = new JLabel(hi.name);
+      Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+      if (isSelected) {
+        c.setBackground(Color.blue);
+      }
+      else {
+        c.setBackground(Color.white);
+      }
       if (hi.eavesDroppingEnabled) {
         c.setBackground(Color.red);
       }
@@ -264,6 +272,9 @@ public class Client extends JFrame
     jMenuItemTestMessageStresser.addActionListener(new Client_jMenuItemTestMessageStresser_actionAdapter(this));
     jMenuItemTestMultidisconnect.setText("Multidisconnect");
     jMenuItemTestMultidisconnect.addActionListener(new Client_jMenuItemTestMultidisconnect_actionAdapter(this));
+    jMenuItemOptionsGlobalEavesdrop.setText("Global Eavesdrop");
+    jMenuItemOptionsGlobalUneavesdrop.setEnabled(false);
+    jMenuItemOptionsGlobalUneavesdrop.setText("Global Uneavesdrop");
     jPanelSendMessages.add(jTextFieldSendSubject, null);
     jPanelSendMessages.add(jTextFieldSendMessages, null);
     jSplitPane1.add(jSplitPane2, JSplitPane.TOP);
@@ -294,12 +305,15 @@ public class Client extends JFrame
     jMenuOptions.add(jMenuItemOptionsDeregister);
     jMenuOptions.add(jMenuItemOptionsEavesdrop);
     jMenuOptions.add(jMenuItemOptionsUneavesdrop);
+    jMenuOptions.add(jMenuItemOptionsGlobalEavesdrop);
+    jMenuOptions.add(jMenuItemOptionsGlobalUneavesdrop);
     jMenuTest.add(jMenuItemTestMulticonnect);
     jMenuTest.add(jMenuItemTestMultidisconnect);
     jMenuTest.add(jMenuItemTestMessageStresser);
     jSplitPane1.setDividerLocation(200);
     jSplitPane2.setDividerLocation(600);
     jListOnlineUsers.setCellRenderer(new OnlineListCellRenderer());
+    jListOnlineUsers.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
     jMenuItemTestMulticonnect.setEnabled(true);
     jMenuItemTestMultidisconnect.setEnabled(false);
@@ -411,10 +425,18 @@ public class Client extends JFrame
         displayMessage(msg.getBody() + " : Offline", offlineClientAttrSet);
       }
       else if (subject.equals("eavesdrop enabled")) {
-
+        Object[] values = jListOnlineUsers.getSelectedValues();
+        if (values == null) return;
+        for (int i=0; i<values.length; i++) {
+          ((HostItem)values[i]).eavesDroppingEnabled = true;
+        }
       }
       else if (subject.equals("eavesdrop disabled")) {
-
+        Object[] values = jListOnlineUsers.getSelectedValues();
+        if (values == null) return;
+        for (int i=0; i<values.length; i++) {
+          ((HostItem)values[i]).eavesDroppingEnabled = false;
+        }
       }
       else if (subject.equals("globaleavesdrop enabled")) {
 
@@ -554,7 +576,7 @@ public class Client extends JFrame
 
   void jListOnlineUsers_mouseClicked(MouseEvent e) {
     if (e.getClickCount() == 2) {
-      jTextFieldTargetUser.setText((String)jListOnlineUsers.getSelectedValue());
+      jTextFieldTargetUser.setText(((HostItem)jListOnlineUsers.getSelectedValue()).name);
       Flasher.instance().flashBackground(jTextFieldTargetUser, Color.yellow, 2);
       jTextFieldSendMessages.requestFocus();
     }
@@ -616,20 +638,50 @@ public class Client extends JFrame
   }
 
   private void eavesdrop() {
+    if (session == null || !session.isConnected()) return;
+
     //get the list of selected hosts from the online list
+    Object[] values = jListOnlineUsers.getSelectedValues();
+    if (values == null) return;
 
     //iterate through the list of hosts
+    for (int i =0; i<values.length; i++) {
       //if a host is already being eavesdropped on, skip it
-
+      HostItem hi = (HostItem)values[i];
+      if (!hi.eavesDroppingEnabled) {
+        session.postMessage("", "eavesdrop", hi.name);
+      }
+    }
   }
 
   private void uneavesdrop() {
+    if (session == null || !session.isConnected()) return;
     //get the list of selected hosts from the online list
+    Object[] values = jListOnlineUsers.getSelectedValues();
+    if (values == null) return;
 
     //iterate through the list of hosts
+    for (int i =0; i<values.length; i++) {
       //if a host is not being eavesdropped on, skip it
+      HostItem hi = (HostItem) values[i];
+      if (hi.eavesDroppingEnabled) {
+        session.postMessage("", "uneavesdrop", hi.name);
+      }
+    }
+  }
 
+  private void globalEavesDrop() {
+    if (session == null || !session.isConnected()) return;
+    jMenuItemOptionsGlobalEavesdrop.setEnabled(false);
+    jMenuItemOptionsGlobalUneavesdrop.setEnabled(true);
+    session.postMessage("", "globaleavesdrop", "");
+  }
 
+  private void globalUneavesdrop() {
+    if (session == null || !session.isConnected()) return;
+    jMenuItemOptionsGlobalEavesdrop.setEnabled(true);
+    jMenuItemOptionsGlobalUneavesdrop.setEnabled(false);
+    session.postMessage("", "unglobaleavesdrop", "");
   }
 
   void jTextFieldSendMessages_keyPressed(KeyEvent e) {
@@ -734,11 +786,11 @@ public class Client extends JFrame
   }
 
   void jMenuItemOptionsEavesdrop_actionPerformed(ActionEvent e) {
-
+    eavesdrop();
   }
 
   void jMenuItemOptionsUneavesdrop_actionPerformed(ActionEvent e) {
-
+    uneavesdrop();
   }
 
   void jMenuItemTestMulticonnect_actionPerformed(ActionEvent e) {
