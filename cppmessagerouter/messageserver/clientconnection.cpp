@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5096
-#define VERSION "MessageRouter 1.7.21"
+#define VERSION "MessageRouter 1.7.22"
  
 #include "clientconnection.h"
 #include <iostream.h>
@@ -149,12 +149,12 @@ void ClientConnection::close() {
   //Context::getInstance()->getLogger()->log(name.c_str(), "deregistered Listeners", Logger::LEVEL_WARN);
 
   //deregister any eaves droppers for this connection
-  if (Context::getInstance()->isEavesDroppingEnabled()) {
+  //if (Context::getInstance()->isEavesDroppingEnabled()) {
     Context::getInstance()->getEavesDropRegistry()->deregisterAllEavesDroppers(this);
     Context::getInstance()->getEavesDropRegistry()->deregisterGlobalEavesDropper(this);
     Context::getInstance()->getEavesDropRegistry()->removeTarget(this->name);
     //Context::getInstance()->getLogger()->log(name.c_str(), "cleared out eavesdropped", Logger::LEVEL_WARN);
-  }
+  //}
   
   //if (packetData != NULL) {
     //delete packetData;
