@@ -32,6 +32,7 @@ public:
 	~ConnectionRegistry();
 
   void registerConnection(ClientConnection *cc, string& name);
+  bool checkForExistingConnection(const string& name);
   ClientConnection * findConnection(const string& name);
   /** No descriptions */
   void deregisterConnection(string &name);

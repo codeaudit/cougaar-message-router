@@ -268,9 +268,14 @@ void ClientConnection::registerClient(string& name){
   Context::getInstance()->getlistenerRegistry()->notifyListeners(*msg);
 }
 
-/** No descriptions */
+/** Adds a message to the message sender queue */
 void ClientConnection::sendMessage(Message& msg){
   sender->addMessage(msg);
+}
+
+/** Bypasses the message sender queue and sends the message directly**/
+void ClientConnection::sendMessageNow(Message& msg) {
+  sender->sendMessage(msg);
 }
 
 /** No descriptions */
@@ -292,9 +297,19 @@ bool ClientConnection::handleMessage(Message& msg){
     Message* reply = new Message();
     reply->setthread(msg.getthread());
     if (subject == "connect") {  //handle the connect request
-      reply->setsubject("connected");
-      reply->setto(msg.getbody());
-      registerClient(msg.getbody());
+      //if a connection with this uer name already exists then disconnect
+      if (Context::getInstance()->getconnectionRegistry()->checkForExistingConnection(msg.getbody())) {
+        reply->setsubject("ERROR");
+        reply->setbody("user name already registered");
+        Context::getInstance()->getLogger()->log("Attempt to login under duplicate user name", msg.getbody().c_str(), Logger::LEVEL_WARN);
+        sendMessageNow(*reply);
+        return false;
+      }
+      else {
+        reply->setsubject("connected");
+        reply->setto(msg.getbody());
+        registerClient(msg.getbody());
+      }
     }
     else if (subject == "disconnect") { //handle the disconnect request
       delete reply;

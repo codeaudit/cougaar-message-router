@@ -39,6 +39,7 @@ public:
   void run();
   /** No descriptions */
   void stop();
+  void sendMessage(Message &);
 public: // Public attributes
   /**  */
   ServerSocket* ss;
@@ -47,12 +48,12 @@ public: // Public attributes
   
 private: // Private methods
   /** No descriptions */
-  void sendMessage(Message &);
   void cleanupMessages();
 
 private: // Private attributes
   bool keepRunning;
   QMutex cleanupLock;
+  QMutex sendLock;
 
 };
 

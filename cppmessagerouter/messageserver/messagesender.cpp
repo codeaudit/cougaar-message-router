@@ -57,8 +57,10 @@ void MessageSender::addMessage(Message& msg){
 
 /** No descriptions */
 void MessageSender::sendMessage(Message& msg){
+  sendLock.lock();
   *ss << msg.getMessageHeader() << msg.getMessageData();
   delete &msg;
+  sendLock.unlock();
 }
 
 /** No descriptions */

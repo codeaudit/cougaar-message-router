@@ -41,6 +41,7 @@ public:
 
   /** No descriptions */
   void sendMessage(Message& msg);
+  void sendMessageNow(Message& msg);
   /** No descriptions */
   void deregisterClient();
   /** No descriptions */

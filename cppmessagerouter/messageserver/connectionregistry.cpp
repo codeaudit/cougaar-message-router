@@ -72,3 +72,12 @@ void ConnectionRegistry::validateConnections() {
     Context::getInstance()->getConnectionValidator()->validateConnection(cc);
   }
 }
+
+bool ConnectionRegistry::checkForExistingConnection(const string& name) {
+   if (clientMap.count(name) == 0) {
+     return FALSE;
+   }
+   else {
+     return TRUE;
+   }
+}
