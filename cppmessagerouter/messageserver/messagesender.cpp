@@ -73,7 +73,7 @@ void MessageSender::addMessage(Message& msg){
   }
   stackLock.lock();
   stack.push_back(&msg);
-  stackLock.unlock();  
+  stackLock.unlock();
 }
 
 /** No descriptions */

@@ -55,6 +55,7 @@ bool Socket::create()
 
 int Socket::shutdown() {
 
+
   return ::shutdown(m_sock, SHUT_RDWR);
 }
 
@@ -120,7 +121,7 @@ bool Socket::accept ( Socket& new_socket ) const
 
 bool Socket::send ( const std::string s ) const
 {
-  int status = ::send ( m_sock, s.c_str(), s.size(), MSG_NOSIGNAL );
+  int status = ::send ( m_sock, s.c_str(), s.size(), /*MSG_NOSIGNAL*/0 );
   if ( status == -1 )
     {
       return false;
@@ -133,7 +134,7 @@ bool Socket::send ( const std::string s ) const
 
 bool Socket::send ( const char* c ) const
 {
-  int status = ::send ( m_sock, c, sizeof(c)*2, MSG_NOSIGNAL );
+  int status = ::send ( m_sock, c, sizeof(c)*2, /*MSG_NOSIGNAL*/0 );
   if ( status == -1 )
     {
       return false;
@@ -178,6 +179,7 @@ int Socket::recv ( char* c, int size) const {
 int Socket::recv ( char* c, int size, bool wait ) const
 {
     memset ( c, 0, size );
+
     int status=0;
     if (wait) {
       status = ::recv ( m_sock, c, size, MSG_WAITALL);
