@@ -17,7 +17,7 @@
  using namespace std;
  
 #define PACKET_HEADER_SIZE 8
-#define MAX_BUF_SIZE 5096
+#define MAX_BUF_SIZE 128
 #define VERSION "MessageRouter 1.7.56"
  
 #include "clientconnection.h"
@@ -80,6 +80,7 @@ ClientConnection::ClientConnection(ServerSocket* sock, bool blockread){
   sender = new MessageSender(sock);
   packetBufferPos = 0;
   packetBufferSize = 0;
+  packetBuffer = NULL;
   validationCount = 0;
   isClosed = false;
   isClosing = false;
@@ -164,9 +165,9 @@ void ClientConnection::close() {
   deregisterClient();
   Context::getInstance()->getLogger()->log(name.c_str(), "shutting down connection", Logger::LEVEL_WARN);
   /***** cleanup *****/
-  //if (tmp_buffer != NULL) {
-    //delete tmp_buffer;
-  //}
+  if (packetBuffer != NULL) {
+    delete [] packetBuffer;
+  }
   if (sender != NULL) {
     //Context::getInstance()->getLogger()->log(name.c_str(), "shutting down sender", Logger::LEVEL_WARN);
     sender->stop();
@@ -685,7 +686,7 @@ bool ClientConnection::handleMessage(Message& msg){
 
 void ClientConnection::pack(char *src, int srcStartPos, int srcLength, char *dest, int destStartPos) {
   int index = destStartPos;
-  for (int i=srcStartPos; i<srcLength; i++) {
+  for (int i=srcStartPos; i<(srcLength+srcStartPos); i++) {
     dest[index] = src[i];
     index++;
   }
@@ -693,7 +694,7 @@ void ClientConnection::pack(char *src, int srcStartPos, int srcLength, char *des
 
 void ClientConnection::pack(char *src, int srcStartPos, int srcLength, unsigned char *dest, int destStartPos) {
   int index = destStartPos;
-  for (int i=srcStartPos; i<srcLength; i++) {
+  for (int i=srcStartPos; i<(srcLength+srcStartPos); i++) {
     dest[index] = (unsigned char)src[i];
     index++;
   }
@@ -706,15 +707,22 @@ MessageList& ClientConnection::getMessages(){
   MessageList *messages = new MessageList();
   //we want to fill the packetBuffer with as much data as we can get
   int actualSize = ss->recv(readBuffer, MAX_BUF_SIZE, false);
-  cout << "actual size: " << actualSize << endl << flush;
+  //cout << name << " actual size: " << actualSize << endl << flush;
   int residualPacketLength = packetBufferSize-packetBufferPos;
-  cout << "residual packet length: " << residualPacketLength << endl << flush;
-  char* tmpBuf = new char[actualSize + residualPacketLength];  //create a temporary buffer to hold the data;
+  //cout << name << " residual packet length: " << residualPacketLength << endl << flush;
+  //cout << name << " Unpacked Buffer" << endl << flush;
+  //dumpPacket(packetBuffer, 0, packetBufferSize);
   //since the tmpBuf will become the packetBuffer, set the size now
   packetBufferSize = actualSize + residualPacketLength;
-  cout << "packetBufferSize: " << packetBufferSize << endl << flush; 
+  char* tmpBuf = new char[packetBufferSize];  //create a temporary buffer to hold the data;
+  //cout << name << " packetBufferPos: " << packetBufferPos << endl << flush;
+  //cout << name << " packetBufferSize: " << packetBufferSize << endl << flush;
+  //cout << name << "Residual data in Packet Buffer" << endl << flush;
+  //dumpPacket(packetBuffer, packetBufferPos, residualPacketLength);
   //pack the residual data from the packet buffer into the tmp buffer
   pack(packetBuffer, packetBufferPos, residualPacketLength, tmpBuf, 0);
+  //cout << name << " Residual Data in tmp Buffer" << endl << flush;
+  //dumpPacket(tmpBuf, 0, residualPacketLength);
   //pack the newly read data into the tmp buffer 
   pack(readBuffer, 0, actualSize, tmpBuf, residualPacketLength);
   delete [] readBuffer;
@@ -724,6 +732,8 @@ MessageList& ClientConnection::getMessages(){
     packetBuffer = 0;
   }
   packetBuffer = tmpBuf;  //set the packet buffer to the tmp buffer
+  //cout << name << " Fully Packet Buffer" << endl << flush;
+  //dumpPacket(packetBuffer, 0, packetBufferSize);
 
   packetBufferPos = 0;  //set the packetBufferPos to the beginning of the buffer
   //if there aren't even 8 bytes in the buffer there's not even enough for a header so
@@ -734,11 +744,12 @@ MessageList& ClientConnection::getMessages(){
   
   //now parse through the packet buffer to pull out as many messages as possible
   while ((packetBufferPos+PACKET_HEADER_SIZE) < packetBufferSize) { //make sure there's enough room for the next packet header
+    //cout << name << " while loop packetBufferPos " << packetBufferPos << endl << flush;
     //process the current packet header
-    unsigned char toLength = packetBuffer[packetBufferPos]; packetBufferPos++;
-    unsigned char fromLength = packetBuffer[packetBufferPos]; packetBufferPos++;
-    unsigned char threadLength = packetBuffer[packetBufferPos]; packetBufferPos++;
-    unsigned char subjectLength = packetBuffer[packetBufferPos]; packetBufferPos++;
+    unsigned char toLength = (unsigned char)packetBuffer[packetBufferPos]; packetBufferPos++;
+    unsigned char fromLength = (unsigned char)packetBuffer[packetBufferPos]; packetBufferPos++;
+    unsigned char threadLength = (unsigned char)packetBuffer[packetBufferPos]; packetBufferPos++;
+    unsigned char subjectLength = (unsigned char)packetBuffer[packetBufferPos]; packetBufferPos++;
     long bodyLength =0;
     bodyLength |= (unsigned char)packetBuffer[packetBufferPos]; packetBufferPos++;
     bodyLength <<= 8;
@@ -748,22 +759,23 @@ MessageList& ClientConnection::getMessages(){
     bodyLength <<= 8;
     bodyLength |= (unsigned char)packetBuffer[packetBufferPos]; packetBufferPos++;
     int totalLength = toLength+fromLength+threadLength+subjectLength+bodyLength;
-    cout << "toLength: " << (int)toLength << endl << flush;
-    cout << "fromLength: " << (int)fromLength << endl << flush;
-    cout << "threadLength: " << (int)threadLength << endl << flush;
-    cout << "subjectLength: " << (int)subjectLength << endl << flush;
-    cout << "bodyLength: " << (int)bodyLength << endl << flush;
-    cout << "totalLength: " << (int)totalLength << endl << flush;
+    //cout << name << " toLength: " << (int)toLength << endl << flush;
+    //cout << name << " fromLength: " << (int)fromLength << endl << flush;
+    //cout << name << " threadLength: " << (int)threadLength << endl << flush;
+    //cout << name << " subjectLength: " << (int)subjectLength << endl << flush;
+    //cout << name << " bodyLength: " << (int)bodyLength << endl << flush;
+    //cout << name << " totalLength: " << (int)totalLength << endl << flush;
         
     //check to make sure the remainder of the packetBuffer fully contains this packet
     if ((packetBufferSize-packetBufferPos) < totalLength) {
       packetBufferPos -= PACKET_HEADER_SIZE; //step back to tbe beginning of this packet
+      //cout << name <<  " reset packetBufferPos to " << packetBufferPos << endl << flush;
       return *messages;  //return the current list of messages
     }
     //otherwise, we need to constuct the Message
     Message *msg = new Message();
     char *datastr = createSubStr(packetBuffer, packetBufferPos, totalLength);
-    cout << "datastr: " << datastr << endl << flush;
+    //cout << name << " datastr: " << datastr << endl << flush;
     string packetBufferStr = datastr;
     int pos = 0;
     if (toLength != 0) {
@@ -844,4 +856,10 @@ string& ClientConnection::getRoutingProfileStr() {
   return *ret;
 }
 
+void ClientConnection::dumpPacket(char * packet, int pos, int packetLength) {
+  for (int i=pos; i<(pos+packetLength); i++) {
+    cout << (unsigned int)packet[i] << " ";
+  }
+  cout << endl << flush;
+}
 

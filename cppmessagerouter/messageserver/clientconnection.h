@@ -51,7 +51,7 @@ public:
   MessageList& getMessages();
   void pack(char *src, int srcStartPos, int srcLength, char *dest, int destStartPos);
   void pack(char *src, int srcStartPos, int srcLength, unsigned char *dest, int destStartPos);
-
+  
   const bool operator == (const ClientConnection& right);
   void incrementValidationCount();
   int getValidationCount();
@@ -116,6 +116,8 @@ private: // Private methods
   char * createSubStr(char *src, int start, int end);
   /** No descriptions */
   void getHeaderData(unsigned char *buffer, int size);
+  /** debug helper method */
+  void dumpPacket(char * packet, int pos, int packetLength);
 };
 
 
