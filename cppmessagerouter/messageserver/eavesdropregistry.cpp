@@ -19,17 +19,89 @@
 
 EavesDropRegistry::EavesDropRegistry(){
 }
-EavesDropRegistry::~EavesDropRegistry(){
+EavesDropRegistry::~EavesDropRegistry() {
 }
 /** No descriptions */
-void EavesDropRegistry::registerEavesDropper(string& target, ClientConnection& eavesdropper){
+void EavesDropRegistry::registerEavesDropper(string& target, ClientConnection* eavesdropper){
+  mutex.lock();
+  ListEavesDroppers *targetEavesDroppers = NULL;
+  if (eavesDroppers.count(target) == 0) {  //if a list currently does not exist
+    targetEavesDroppers = new ListEavesDroppers();  //create the new list
+    eavesDroppers[target] = targetEavesDroppers;    //add the list to the map
+  }
+  else {
+    targetEavesDroppers = eavesDroppers[target];
+  }
+  targetEavesDroppers->push_back(eavesdropper);
+  mutex.unlock();
 }
 
-void EavesDropRegistry::deregisterEavesDropper(ClientConnection& eavesdropper) {
+void EavesDropRegistry::deregisterEavesDropper(ClientConnection* eavesdropper) {
+  //attempt to remove the designated eaves dropper from every list since we don't
+  //know how many lists it is in
+  mutex.lock();
+  if (!eavesDroppers.empty()) {
+    MapEavesDroppers::iterator pos;
+    pos = eavesDroppers.begin();
+    while (pos != eavesDroppers.end()) {  //iterate over all the lists of eaves droppers
+      if (eavesDroppers[pos->first] != NULL) {
+        eavesDroppers[pos->first]->remove(eavesdropper);   //remove the eavesdropper from the list     
+      }
+      pos++;
+    }
+  }
+  mutex.unlock();
 }
 
-void EavesDropRegistry::registerGlobalEavesDropper(ClientConnection& eavesdropper) {
+void EavesDropRegistry::registerGlobalEavesDropper(ClientConnection* eavesdropper) {
+  mutex.lock();
+
+  globalEavesDroppers.push_back(eavesdropper);
+
+  mutex.unlock();
 }
 
-void EavesDropRegistry::deregisterGlobalEavesDropper(ClientConnection& eavesdropper) {
+void EavesDropRegistry::deregisterGlobalEavesDropper(ClientConnection* eavesdropper) {
+  mutex.lock();
+
+  globalEavesDroppers.remove(eavesdropper);
+
+  mutex.unlock();
+}
+
+void EavesDropRegistry::sendMessage(string& to, Message &msg) {
+  //check the local eaves droppers
+  if (eavesDroppers.count(to) > 0) {
+    ListEavesDroppers *ed = eavesDroppers[to];
+    ListEavesDroppers::iterator pos;
+    pos = ed->begin();
+    while (pos != ed->end()) {
+      if (*pos != NULL) {
+        Message *outmsg = new Message(msg);
+        ((ClientConnection *)(*pos))->sendMessage(*outmsg);
+      }
+      pos++;
+    }
+  }
+
+  //check the global eaves droppers
+  if (!globalEavesDroppers.empty()) {
+    ListEavesDroppers::iterator pos;
+    pos = globalEavesDroppers.begin();
+    while (pos != globalEavesDroppers.end()) {
+      if (*pos != NULL) {
+        Message *outmsg = new Message(msg);
+        ((ClientConnection *)(*pos))->sendMessage(*outmsg);
+      }
+      pos++;
+    }
+  }
+}
+
+/** No descriptions */
+void EavesDropRegistry::checkMessage(Message &msg) {
+  //check local eaves droppers for the from address
+  sendMessage(msg.getfrom(), msg);
+  //check local eaves droppers for the to address
+  sendMessage(msg.getto(), msg);
 }

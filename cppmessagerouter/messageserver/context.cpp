@@ -22,6 +22,8 @@ Context::Context(){
   allowDuplicateConnections = TRUE;  //default value
   connectionRegistry = new ConnectionRegistry();
   listenerRegistry = new ListenerRegistry();
+  edr = new EavesDropRegistry();
+  eavesDroppingAllowed = FALSE;
   logger = new Logger();
   connectionValidator = new ConnectionValidator();
   connectionValidator->start();
@@ -61,4 +63,16 @@ void Context::setAllowDuplicateConnections(bool b) {
 
 bool Context::getAllowDuplicateConnections() {
   return allowDuplicateConnections;
+}
+
+void Context::enableEavesDropping() {
+   eavesDroppingAllowed = TRUE;
+}
+
+bool Context::isEavesDroppingEnabled() {
+  return eavesDroppingAllowed;
+}
+
+EavesDropRegistry* Context::getEavesDropRegistry() {
+  return edr;
 }

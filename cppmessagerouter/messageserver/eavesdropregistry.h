@@ -18,11 +18,15 @@
 #ifndef EAVESDROPREGISTRY_H
 #define EAVESDROPREGISTRY_H
 
-#include <multimap.h>
+#include <map.h>
 #include "clientconnection.h"
 #include <qmutex.h>
+#include <list.h>
+#include "message.h"
 
-typedef multimap<string, ClientConnection*> MapEavesDroppers;
+typedef list<ClientConnection*> ListEavesDroppers;
+typedef map<string, ListEavesDroppers*> MapEavesDroppers; 
+
 
 
 /**
@@ -34,16 +38,23 @@ public:
 	EavesDropRegistry();
 	~EavesDropRegistry();
   /** No descriptions */
-  void registerEavesDropper(string& target, ClientConnection& eavesdropper);
-  void deregisterEavesDropper(ClientConnection& eavesdropper);
-  void registerGlobalEavesDropper(ClientConnection& eavesdropper);
-  void deregisterGlobalEavesDropper(ClientConnection& eavesdropper);
+  void registerEavesDropper(string& target, ClientConnection* eavesdropper);
+  void deregisterEavesDropper(ClientConnection* eavesdropper);
+  void registerGlobalEavesDropper(ClientConnection* eavesdropper);
+  void deregisterGlobalEavesDropper(ClientConnection* eavesdropper);
+  /** No descriptions */
+  void checkMessage(Message &msg);
 
  public:
-  MapEavesDroppers eavesDroppers;
+
+ private:
+  void sendMessage(string& to, Message& msg);
 
  private:
   QMutex mutex;
+  MapEavesDroppers eavesDroppers;
+  ListEavesDroppers globalEavesDroppers;
+  
 };
 
 #endif

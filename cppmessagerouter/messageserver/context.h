@@ -21,6 +21,7 @@
 #include "connectionregistry.h"
 #include "listenerregistry.h"
 #include "connectionvalidator.h"
+#include "eavesdropregistry.h"
 #include "logger.h"
 
 /**
@@ -36,10 +37,14 @@ public:
   static Context* getInstance();
   /** Read property of ListenerRegistry listenerRegistry. */
   ListenerRegistry* getlistenerRegistry();
+
+  EavesDropRegistry* getEavesDropRegistry();
   Logger* getLogger();
   ConnectionValidator *getConnectionValidator();
   void setAllowDuplicateConnections(bool);
   bool getAllowDuplicateConnections();
+  void enableEavesDropping();
+  bool isEavesDroppingEnabled();
   
 private:
 	Context();
@@ -53,9 +58,12 @@ private: // Private attributes
   /**  */
   ListenerRegistry* listenerRegistry;
 
+  EavesDropRegistry* edr;
+  
   Logger* logger;
   ConnectionValidator *connectionValidator;
   bool allowDuplicateConnections;
+  bool eavesDroppingAllowed;
 };
 
 #endif

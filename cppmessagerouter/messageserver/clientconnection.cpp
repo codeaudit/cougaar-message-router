@@ -256,6 +256,9 @@ Message* ClientConnection::getMessage(){
 
 /** No descriptions */
 void ClientConnection::routeMessage(Message& msg){
+  if (Context::getInstance()->isEavesDroppingEnabled()) {
+    Context::getInstance()->getEavesDropRegistry()->checkMessage(msg);
+  }
   ClientConnection *targetConnection = Context::getInstance()->getconnectionRegistry()->findConnection(msg.getto());
   if (targetConnection != NULL) {
     targetConnection->sendMessage(msg);
