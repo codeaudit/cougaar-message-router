@@ -790,7 +790,7 @@ bool ClientConnection::handleMessage(Message& msg){
         Context::getInstance()->enableStatLogging();
         reply->setsubject("stat logging enabled");
       }
-      else if (subject == "disable stat loggin") {
+      else if (subject == "disable stat logging") {
         Context::getInstance()->disableStatLogging();
         reply->setsubject("stat logging disabled");
       }
