@@ -18,8 +18,8 @@ import java.util.List;
 
 public class Client extends JFrame
     implements AsyncMessageReceiverListener {
-  //SortedListModel onlineUsers = new SortedListModel();
-  DefaultListModel onlineUsers = new DefaultListModel();
+  SortedListModel onlineUsers = new SortedListModel();
+  //DefaultListModel onlineUsers = new DefaultListModel();
   History msgHistory = new History();
   History subjectHistory = new History();
   static Client currentInstance;
@@ -84,6 +84,74 @@ public class Client extends JFrame
   JMenuItem jMenuItemTestMulticonnect = new JMenuItem();
   JMenuItem jMenuItemTestMessageStresser = new JMenuItem();
   JMenuItem jMenuItemTestMultidisconnect = new JMenuItem();
+
+  class HostItem implements Comparable {
+    String name;
+    boolean eavesDroppingEnabled = false;
+
+    public HostItem(String name) {
+      this.name = name;
+    }
+
+    /**
+     * compareTo
+     *
+     * @param o Object
+     * @return int
+     */
+    public int compareTo(Object o) {
+      return name.compareTo(((HostItem)o).name);
+    }
+
+    public String toString() {
+      return name;
+    }
+
+    public boolean equals(Object o) {
+      return name.equals(o.toString());
+    }
+
+    /**
+     * Returns a hash code value for the object.
+     *
+     * @return a hash code value for this object.
+     * @todo Implement this java.lang.Object method
+     */
+    public int hashCode() {
+      return name.hashCode();
+    }
+
+  }
+
+  class OnlineListCellRenderer
+      implements ListCellRenderer {
+    /**
+     * Return a component that has been configured to display the specified value.
+     *
+     * @param list The JList we're painting.
+     * @param value The value returned by list.getModel().getElementAt(index).
+     * @param index The cells index.
+     * @param isSelected True if the specified cell was selected.
+     * @param cellHasFocus True if the specified cell has the focus.
+     * @return A component whose paint() method will render the specified value.
+     * @todo Implement this javax.swing.ListCellRenderer method
+     */
+    public Component getListCellRendererComponent(JList list, Object value,
+                                                  int index, boolean isSelected,
+                                                  boolean cellHasFocus) {
+      HostItem hi = (HostItem)value;
+      JLabel c = new JLabel(hi.name);
+      if (hi.eavesDroppingEnabled) {
+        c.setBackground(Color.red);
+      }
+      else {
+        c.setBackground(Color.white);
+      }
+
+      return c;
+    }
+
+  }
 
   public Client() {
     try {
@@ -231,6 +299,7 @@ public class Client extends JFrame
     jMenuTest.add(jMenuItemTestMessageStresser);
     jSplitPane1.setDividerLocation(200);
     jSplitPane2.setDividerLocation(600);
+    jListOnlineUsers.setCellRenderer(new OnlineListCellRenderer());
 
     jMenuItemTestMulticonnect.setEnabled(true);
     jMenuItemTestMultidisconnect.setEnabled(false);
@@ -332,16 +401,35 @@ public class Client extends JFrame
   public void receiveMsg(Message msg) {
     //System.out.println(msg.getSubject() + " : " + msg.getBody());
     String subject = msg.getSubject();
-    if (subject != null && subject.equals("online")) {
-      onlineUsers.addElement(msg.getBody());
-      displayMessage(msg.getBody()+ " : Online", onlineClientAttrSet);
-    }
-    else if (subject != null && subject.equals("offline")) {
-      onlineUsers.removeElement(msg.getBody());
-      displayMessage(msg.getBody()+" : Offline", offlineClientAttrSet);
+    if (subject != null) {
+      if (subject.equals("online")) {
+        onlineUsers.addElement(new HostItem(msg.getBody()));
+        displayMessage(msg.getBody() + " : Online", onlineClientAttrSet);
+      }
+      else if (subject.equals("offline")) {
+        onlineUsers.removeElement(new HostItem(msg.getBody()));
+        displayMessage(msg.getBody() + " : Offline", offlineClientAttrSet);
+      }
+      else if (subject.equals("eavesdrop enabled")) {
+
+      }
+      else if (subject.equals("eavesdrop disabled")) {
+
+      }
+      else if (subject.equals("globaleavesdrop enabled")) {
+
+      }
+      else if (subject.equals("globaleavesdrop disabled")) {
+
+      }
+      else {
+        String from = msg.getFrom() == null?"server":msg.getFrom();
+        String body = msg.getBody()!=null?msg.getBody():"";
+        displayMessage(subject, from, body, incomingMsgAttrSet);
+      }
     }
     else {
-      subject = subject == null?"":subject;
+      subject = "";
       String from = msg.getFrom() == null?"server":msg.getFrom();
       String body = msg.getBody()!=null?msg.getBody():"";
       displayMessage(subject, from, body, incomingMsgAttrSet);
@@ -409,7 +497,7 @@ public class Client extends JFrame
       System.out.println("LIST: " + msg.getBody());
       StringTokenizer st = new StringTokenizer(msg.getBody(), "\n");
       while (st.hasMoreTokens()) {
-        onlineUsers.addElement(st.nextToken());
+        onlineUsers.addElement(new HostItem(st.nextToken()));
       }
       session.postMessage("", "register", "");
     }
@@ -664,15 +752,6 @@ public class Client extends JFrame
   void jMenuItemTestMultidisconnect_actionPerformed(ActionEvent e) {
     multiConnect();
   }
-
-
-
-
-
-
-
-
-
 }
 
 class Flasher extends Thread {
@@ -1012,5 +1091,7 @@ class Client_jMenuItemTestMultidisconnect_actionAdapter implements java.awt.even
     adaptee.jMenuItemTestMultidisconnect_actionPerformed(e);
   }
 }
+
+
 
 
