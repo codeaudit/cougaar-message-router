@@ -6,11 +6,22 @@ import java.awt.event.*;
 import javax.swing.border.*;
 import com.borland.jbcl.layout.*;
 import java.util.StringTokenizer;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.*;
+import java.util.Vector;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Client extends JFrame
     implements AsyncMessageReceiverListener {
-  DefaultListModel onlineUsers = new DefaultListModel();
+  SortedListModel onlineUsers = new SortedListModel();
+  List msgHistory = new ArrayList();
+  List subjectHistory = new ArrayList();
+
   JSplitPane jSplitPane1 = new JSplitPane();
   BorderLayout borderLayout1 = new BorderLayout();
   JTextArea jTextAreaSendMessages = new JTextArea();
@@ -48,17 +59,29 @@ public class Client extends JFrame
   TitledBorder titledBorder6;
   JToggleButton jToggleButtonRegister = new JToggleButton();
   JButton jButtonMultiConnect = new JButton();
-  JTextArea jTextAreaDisplayMessages = new JTextArea();
   JToggleButton jToggleButtonConnect = new JToggleButton();
+  JTextPane jTextPaneDisplayMessages = new JTextPane();
+  SimpleAttributeSet incomingMsgAttrSet;
+  SimpleAttributeSet outgoingMsgAttrSet;
 
   public Client() {
     try {
       jbInit();
       Flasher.instance();  //initialize the flasher instance so that it's currently running
+      initializeAttributeSets();
     }
     catch(Exception e) {
       e.printStackTrace();
     }
+  }
+
+  private void initializeAttributeSets() {
+    incomingMsgAttrSet = new SimpleAttributeSet();
+    outgoingMsgAttrSet = new SimpleAttributeSet();
+    StyleConstants.setForeground(incomingMsgAttrSet, Color.BLACK);
+    StyleConstants.setForeground(outgoingMsgAttrSet, Color.BLUE);
+    StyleConstants.setBold(incomingMsgAttrSet, true);
+    StyleConstants.setItalic(outgoingMsgAttrSet, true);
   }
   private void jbInit() throws Exception {
     border1 = new EtchedBorder(EtchedBorder.RAISED,Color.white,new Color(165, 163, 151));
@@ -110,16 +133,15 @@ public class Client extends JFrame
     jToggleButtonRegister.addActionListener(new Client_jToggleButtonRegister_actionAdapter(this));
     jButtonMultiConnect.setText("Multi-Connect");
     jButtonMultiConnect.addActionListener(new Client_jButtonMultiConnect_actionAdapter(this));
-    jTextAreaDisplayMessages.setEditable(false);
-    jTextAreaDisplayMessages.setText("");
     jListOnlineUsers.addMouseListener(new Client_jListOnlineUsers_mouseAdapter(this));
     jToggleButtonConnect.setText("Connect");
     jToggleButtonConnect.addActionListener(new Client_jToggleButtonConnect_actionAdapter(this));
+    jTextPaneDisplayMessages.setEditable(false);
     jPanelSendMessages.add(jTextFieldSendSubject, BorderLayout.NORTH);
     jPanelSendMessages.add(jScrollPaneSendMessages, BorderLayout.CENTER);
     jSplitPane1.add(jSplitPane2, JSplitPane.TOP);
     jSplitPane2.add(jScrollPane1, JSplitPane.TOP);
-    jScrollPane1.getViewport().add(jTextAreaDisplayMessages, null);
+    jScrollPane1.getViewport().add(jTextPaneDisplayMessages, null);
     jSplitPane2.add(jScrollPane2, JSplitPane.BOTTOM);
     jScrollPane2.getViewport().add(jListOnlineUsers, null);
     jScrollPaneSendMessages.getViewport().add(jTextAreaSendMessages, null);
@@ -161,8 +183,10 @@ public class Client extends JFrame
         session.postMessage(jTextFieldTargetUser.getText(),
                             jTextFieldSendSubject.getText(),
                             body);
-        displayMessage(jTextFieldSendSubject.getText(), jTextFieldTargetUser.getText(), body);
+        displayMessage(jTextFieldSendSubject.getText(), jTextFieldTargetUser.getText(), body, outgoingMsgAttrSet);
       }
+      msgHistory.add(body);
+      subjectHistory.add(jTextFieldSendSubject.getText());
       jTextAreaSendMessages.setText("");
       jTextFieldSendSubject.setText("");
     }
@@ -181,14 +205,31 @@ public class Client extends JFrame
       subject = subject == null?"":subject;
       String from = msg.getFrom() == null?"server":msg.getFrom();
       String body = msg.getBody()!=null?msg.getBody():"";
-      displayMessage(subject, from, body);
+      displayMessage(subject, from, body, incomingMsgAttrSet);
     }
   }
 
-  private void displayMessage(String subject, String from, String body) {
-    jTextAreaDisplayMessages.append("FROM: " + from + " - " + subject + " : " + body);
-    if (!body.endsWith("\n")) jTextAreaDisplayMessages.append("\n");
-    jTextAreaDisplayMessages.setCaretPosition(jTextAreaDisplayMessages.getText().length());
+  private void displayMessage(String text, AttributeSet as) {
+    try {
+      if (!text.endsWith("\n")) {
+        text += "\n";
+      }
+
+      jTextPaneDisplayMessages.getDocument().insertString(
+          jTextPaneDisplayMessages.getDocument().getLength(),
+          text,
+          as);
+
+      jTextPaneDisplayMessages.setCaretPosition(jTextPaneDisplayMessages.getDocument().getLength());
+    }
+    catch (BadLocationException ex) {
+    }
+
+  }
+
+  private void displayMessage(String subject, String from, String body, AttributeSet as) {
+      String text = "FROM: " + from + " - " + subject + " : " + body;
+      displayMessage(text, as);
   }
 
   void jTextAreaSendSubject_keyTyped(KeyEvent e) {
@@ -276,15 +317,15 @@ public class Client extends JFrame
   void jToggleButtonConnect_actionPerformed(ActionEvent e) {
     if (jToggleButtonConnect.isSelected())
       try {
-        jTextAreaDisplayMessages.setText("");
+        jTextPaneDisplayMessages.setText("");
         session = new Session();
         if (session.connect(jTextFieldServer.getText(), jTextFieldUser.getText())) {
-          jTextAreaDisplayMessages.append("Connected\n");
+          displayMessage("Connected\n", incomingMsgAttrSet);
           session.addListener(this);
           jToggleButtonConnect.setText("Disconnect");
         }
         else {
-          jTextAreaDisplayMessages.append("Connection attempt failed\n");
+          displayMessage("Connection attempt failed\n", incomingMsgAttrSet);
         }
       }
       catch (Exception ex) {
@@ -421,3 +462,42 @@ class Client_jToggleButtonConnect_actionAdapter implements java.awt.event.Action
     adaptee.jToggleButtonConnect_actionPerformed(e);
   }
 }
+
+class SortedListModel extends DefaultListModel {
+    public SortedListModel() {
+    }
+
+    public SortedListModel(Vector v) {
+        setElements(v);
+    }
+
+    public void setElements(Vector v) {
+        clear();
+        Object arr[]=v.toArray();
+        Arrays.sort(arr);
+        for (int i=0; i<arr.length; i++)
+            super.addElement(arr[i]);
+    }
+
+    public void add(int idx, Object o) {
+        addElement(o);
+    }
+
+    public void setElementAt(Object o, int idx) {
+        removeElementAt(idx);
+        addElement(o);
+    }
+
+    public void addElement(Object o) {
+        Comparable a=(Comparable)o;
+        int i=0;
+        for (i=0; i<getSize(); i++) {
+            if (a.compareTo(getElementAt(i))<0) {
+                break;
+            }
+        }
+        super.add(i,o);
+    }
+}
+
+
