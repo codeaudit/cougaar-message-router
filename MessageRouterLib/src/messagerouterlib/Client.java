@@ -23,6 +23,7 @@ public class Client extends JFrame
   History msgHistory = new History();
   History subjectHistory = new History();
   static Client currentInstance;
+  private static ArrayList commandSchedulers = new ArrayList();
 
   JSplitPane jSplitPane1 = new JSplitPane();
   BorderLayout borderLayout1 = new BorderLayout();
@@ -184,6 +185,10 @@ public class Client extends JFrame
     catch(Exception e) {
       e.printStackTrace();
     }
+  }
+
+  public static ArrayList getCommandSchedulers() {
+    return commandSchedulers;
   }
 
   private void initializeAttributeSets() {
@@ -1364,6 +1369,7 @@ class CommandScheduler extends Thread {
 
   public static CommandScheduler create(String cmd, long interval) {
     CommandScheduler cs = new CommandScheduler(cmd, interval);
+    Client.getCommandSchedulers().add(cs);
     cs.start();
     return cs;
   }
@@ -1381,6 +1387,10 @@ class CommandScheduler extends Thread {
       }
 
     }
+  }
+
+  public String toString() {
+    return cmd + " : " + interval;
   }
 }
 
