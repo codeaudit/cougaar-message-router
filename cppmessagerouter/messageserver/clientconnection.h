@@ -98,6 +98,7 @@ private: // Private methods
   void registerClient(string &);
   /** No descriptions */
   bool handleMessage(Message& msg);
+  bool broadcastMessage(Message& msg);
   /** No descriptions */
   void getData(char *buffer, int size);
   /** No descriptions */

@@ -118,3 +118,20 @@ string& ConnectionRegistry::getSendQueueStats() {
 
   return *ret;
 }
+
+void ConnectionRegistry::broadcastMessage(Message& msg) {
+  if (!clientMap.empty()) {
+    ConnectionMap::iterator pos;
+    pos = clientMap.begin();
+    while (pos != clientMap.end()) {
+      if (clientMap[pos->first] != NULL) {
+        Message *copy = new Message(msg);
+        clientMap[pos->first]->sendMessage(*copy);
+        pos++;
+      }
+      else {
+        clientMap.erase(pos++);
+      }
+    }
+  }
+}

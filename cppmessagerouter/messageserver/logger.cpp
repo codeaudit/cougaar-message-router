@@ -41,28 +41,34 @@ void Logger::setLevel(int level) {
 
 void Logger::writeLogEntry(FILE *pFile, LogEntry *entry) {
   char timebuffer[30];
-  
+    
   if (entry == NULL) return;
   
-  if (entry->subject == "") { //msg only format
-    fprintf(pFile, "%s - %s: %s\n", convertTimeToStr(entry->timestamp, (char *)timebuffer, sizeof(timebuffer)),
-           getLevelStr(entry->logLevel).c_str(),
-           entry->msg.c_str());
+  try {
+    if (entry->subject == "") { //msg only format
+      fprintf(pFile, "%s - %s: %s\n", convertTimeToStr(entry->timestamp, (char *)timebuffer, sizeof(timebuffer)),
+             getLevelStr(entry->logLevel).c_str(),
+             entry->msg.c_str());
+    }
+    else if (entry->to == "") { //subject and message format
+       fprintf(pFile, "%s  - %s: %s : %s\n", convertTimeToStr(entry->timestamp, (char *)timebuffer, sizeof(timebuffer)),
+             getLevelStr(entry->logLevel).c_str(),
+             entry->subject.c_str(),
+             entry->msg.c_str());
+    }
+    else {
+       fprintf(pFile, "%s  - %s: from: %s - to: %s - %s : %s\n", convertTimeToStr(entry->timestamp, (char *)timebuffer, sizeof(timebuffer)),
+             getLevelStr(entry->logLevel).c_str(),
+             entry->from.c_str(),
+             entry->to.c_str(),
+             entry->subject.c_str(),
+             entry->msg.c_str());
+    }
   }
-  else if (entry->to == "") { //subject and message format
-     fprintf(pFile, "%s  - %s: %s : %s\n", convertTimeToStr(entry->timestamp, (char *)timebuffer, sizeof(timebuffer)),
-           getLevelStr(entry->logLevel).c_str(),
-           entry->subject.c_str(),
-           entry->msg.c_str());
+  catch (...) {
+    cout << "Unknown error in writeLogEntry()" << endl << flush;
   }
-  else {
-     fprintf(pFile, "%s  - %s: from: %s - to: %s - %s : %s\n", convertTimeToStr(entry->timestamp, (char *)timebuffer, sizeof(timebuffer)),
-           getLevelStr(entry->logLevel).c_str(),
-           entry->from.c_str(),
-           entry->to.c_str(),
-           entry->subject.c_str(),
-           entry->msg.c_str());
-  }
+  
   delete entry;
 }
 

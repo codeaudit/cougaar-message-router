@@ -19,6 +19,7 @@
 #define CONNECTIONREGISTRY_H
 
 #include "clientconnection.h"
+#include "message.h"
 
 /**
   *@author David Craine
@@ -40,6 +41,7 @@ public:
   string& listConnections();
   void validateConnections();
   string& getSendQueueStats();
+  void broadcastMessage(Message& msg);
 
 private:
   ConnectionMap clientMap;
