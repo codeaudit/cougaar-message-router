@@ -64,6 +64,7 @@ public class Client extends JFrame
   SimpleAttributeSet outgoingMsgAttrSet;
   SimpleAttributeSet onlineClientAttrSet;
   SimpleAttributeSet offlineClientAttrSet;
+  SimpleAttributeSet eavesdropAttrSet;
   JTextField jTextFieldSendMessages = new JTextField();
   Border border9;
   TitledBorder titledBorder7;
@@ -186,14 +187,17 @@ public class Client extends JFrame
     outgoingMsgAttrSet = new SimpleAttributeSet();
     onlineClientAttrSet = new SimpleAttributeSet();
     offlineClientAttrSet = new SimpleAttributeSet();
+    eavesdropAttrSet = new SimpleAttributeSet();
     StyleConstants.setForeground(incomingMsgAttrSet, Color.BLACK);
     StyleConstants.setForeground(outgoingMsgAttrSet, Color.BLUE);
     StyleConstants.setForeground(onlineClientAttrSet, Color.GREEN);
     StyleConstants.setForeground(offlineClientAttrSet, Color.RED);
+    StyleConstants.setForeground(eavesdropAttrSet, Color.lightGray);
     StyleConstants.setBold(incomingMsgAttrSet, true);
     StyleConstants.setBold(onlineClientAttrSet, true);
     StyleConstants.setBold(offlineClientAttrSet, true);
     StyleConstants.setItalic(outgoingMsgAttrSet, true);
+    StyleConstants.setItalic(eavesdropAttrSet, true);
   }
   private void jbInit() throws Exception {
     border1 = new EtchedBorder(EtchedBorder.RAISED,Color.white,new Color(165, 163, 151));
@@ -440,6 +444,7 @@ public class Client extends JFrame
         for (int i=0; i<values.length; i++) {
           ((HostItem)values[i]).eavesDroppingEnabled = true;
         }
+        jListOnlineUsers.updateUI();
       }
       else if (subject.equals("eavesdrop disabled")) {
         Object[] values = jListOnlineUsers.getSelectedValues();
@@ -447,24 +452,37 @@ public class Client extends JFrame
         for (int i=0; i<values.length; i++) {
           ((HostItem)values[i]).eavesDroppingEnabled = false;
         }
+        jListOnlineUsers.updateUI();
       }
       else if (subject.equals("globaleavesdrop enabled")) {
-
+        displayMessage("Global Eavesdropping Enabled", onlineClientAttrSet);
       }
       else if (subject.equals("globaleavesdrop disabled")) {
-
+        displayMessage("Global Eavesdropping Disabled", offlineClientAttrSet);
       }
       else {
-        String from = msg.getFrom() == null?"server":msg.getFrom();
-        String body = msg.getBody()!=null?msg.getBody():"";
-        displayMessage(subject, from, body, incomingMsgAttrSet);
+        String to = msg.getTo();
+        String from = msg.getFrom() == null ? "server" : msg.getFrom();
+        String body = msg.getBody() != null ? msg.getBody() : "";
+        if (jTextFieldUser.getText().equals(to)) { //this message is sent to us
+          displayMessage(subject, from, body, incomingMsgAttrSet);
+        }
+        else { //this is an eavesdrop message
+          displayMessage(subject, to, from, body, eavesdropAttrSet);
+        }
       }
     }
     else {
       subject = "";
+      String to = msg.getTo();
       String from = msg.getFrom() == null?"server":msg.getFrom();
       String body = msg.getBody()!=null?msg.getBody():"";
-      displayMessage(subject, from, body, incomingMsgAttrSet);
+      if (jTextFieldUser.getText().equals(to)) {  //this message is sent to us
+        displayMessage(subject, from, body, incomingMsgAttrSet);
+      }
+      else { //this is an eavesdrop message
+        displayMessage(subject, to, from, body, eavesdropAttrSet);
+      }
     }
   }
 
@@ -484,6 +502,11 @@ public class Client extends JFrame
     }
 
   }
+
+  private void displayMessage(String subject, String to, String from, String body, AttributeSet as) {
+        String text = "FROM: " + from + " - TO: " + to + ": " + subject + " : " + body;
+        displayMessage(text, as);
+    }
 
   private void displayMessage(String subject, String from, String body, AttributeSet as) {
       String text = "FROM: " + from + " - " + subject + " : " + body;
