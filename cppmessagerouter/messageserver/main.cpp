@@ -77,12 +77,25 @@
         Context::getInstance()->getLogger()->forceLog("error messages enabled");
       }
       if (strstr(argv[i], "-l=") != NULL) {
-        char *option = strstr(argv[i], "-l=");
+        //char *option = strstr(argv[i], "-l=");
         Context::getInstance()->getLogger()->setLogFilePath(argv[i]+3);
         string msg = "Log File Set: ";
         msg += argv[i]+3;
         Context::getInstance()->logToFile();
         Context::getInstance()->getLogger()->forceLog(msg.c_str());
+      }
+      if (strstr(argv[i], "-q=") != NULL) {
+        int val = atoi(argv[i]+3);
+        if (val > 0) {
+          Context::getInstance()->setMaxSendQueueSize(val);
+          char buffer[128];
+          sprintf(buffer, "max send queue size set to: %d", val); 
+          Context::getInstance()->getLogger()->forceLog(buffer);
+        }
+        else {
+          Context::getInstance()->getLogger()->forceLog("max send queue size option must specify valid non-zero value");
+          return EXIT_SUCCESS;
+        }
       }
       if (!strcmp(argv[i], "-g")) {
         Context::getInstance()->getLogger()->disable();
@@ -103,6 +116,7 @@
         cout << "   -e Enable eavesdropping" << endl;
         cout << "   -m Enable error messages" << endl;
         cout << "   -l=<path> Set path to log file" << endl;
+        cout << "   -q=<value> Set the max size of the send queues" << endl;
         cout << "   -g disable logging" << endl;
         cout << "   -o log to stdout" << endl;
         cout << "   -h This help message" << endl << flush;

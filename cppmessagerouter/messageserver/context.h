@@ -51,6 +51,8 @@ public:
   bool errorMessagesEnabled();
   void logToFile();
   void logToStdout();
+  int getMaxSendQueueSize();
+  void setMaxSendQueueSize(int size);
   
 private:
 	Context();
@@ -71,6 +73,7 @@ private: // Private attributes
   bool allowDuplicateConnections;
   bool eavesDroppingAllowed;
   bool errorMessagesAllowed;
+  int maxSendQueueSize;
 };
 
 #endif

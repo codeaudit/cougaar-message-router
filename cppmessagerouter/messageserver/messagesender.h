@@ -62,6 +62,7 @@ private: // Private attributes
   QMutex sendStackLock;
   QMutex incomingStackLock;
   QMutex stopLock;
+  int maxSendQueueSize;
 
 };
 

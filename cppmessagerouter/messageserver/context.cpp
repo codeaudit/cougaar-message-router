@@ -32,6 +32,7 @@ Context::Context(){
   connectionValidator = new ConnectionValidator();
   connectionValidator->start();
   ServerStats::getInstance();
+  maxSendQueueSize=5000;      //default
 }
 
 Context::~Context(){
@@ -104,4 +105,12 @@ void Context::logToFile() {
 
 void Context::logToStdout() {
   logger->use_output_file = false;
+}
+
+int Context::getMaxSendQueueSize() {
+  return maxSendQueueSize;
+}
+
+void Context::setMaxSendQueueSize(int size) {
+  maxSendQueueSize = size;
 }

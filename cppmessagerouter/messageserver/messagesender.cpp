@@ -22,7 +22,6 @@
 #include "SocketException.h"
 #include "context.h"
 
-#define MAX_QUEUE_SIZE 1000
 
 int tmpcount=0;
 MessageSender::MessageSender(ServerSocket* sock){
@@ -30,6 +29,7 @@ MessageSender::MessageSender(ServerSocket* sock){
   this->name = "";;
   this->keepRunning = true;
   this->isStopped = false;
+  maxSendQueueSize = Context::getInstance()->getMaxSendQueueSize();
 }
 
 MessageSender::~MessageSender(){
@@ -107,7 +107,7 @@ void MessageSender::addMessage(Message& msg){
   }
 
   incomingStackLock.lock();  //lock the incomging stack
-  if (incomingStack.size() >= MAX_QUEUE_SIZE) {
+  if (incomingStack.size() >= maxSendQueueSize) {
     incomingStackLock.unlock();
     Context::getInstance()->getLogger()->log("Max Send Queue size exceeded", name.c_str(), Logger::LEVEL_DEBUG);
     delete &msg;
