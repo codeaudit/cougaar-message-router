@@ -192,6 +192,72 @@ public class ServerTest {
     }
   }
 
+  public void testLoggingCmd() {
+    Session session = new Session();
+    try {
+      session.connect(server, "test1");
+      Message retMsg = session.sendMessage("", "enable logging", "");
+      if (!retMsg.getSubject().equals("logging enabled")) {
+        System.out.println("Test Logging failed - invalid response to enable logging");
+        session.disconnect();
+        return;
+      }
+      retMsg = session.sendMessage("", "disable logging", "");
+      if (!retMsg.getSubject().equals("logging disabled")) {
+        System.out.println("Test Logging failed - invalid response to disable logging");
+        session.disconnect();
+        return;
+      }
+      System.out.println("Logging test passed");
+      session.disconnect();
+    }
+    catch (Exception ex) {
+      System.out.println("Exception in test logging command");
+    }
+  }
+
+  public void testLogLevelCmd() {
+    Session session = new Session();
+    try {
+      session.connect(server, "test1");
+      Message retMsg = session.sendMessage("", "enable logging", "");
+       if (!retMsg.getSubject().equals("logging enabled")) {
+         System.out.println("Test Log Level failed - invalid response to enable logging");
+         session.disconnect();
+         return;
+       }
+       retMsg = session.sendMessage("", "set log level info", "");
+       if (!retMsg.getSubject().equals("log level set to INFO")) {
+        System.out.println("Test Log Level failed - invalid response to set log level info");
+        session.disconnect();
+        return;
+      }
+      retMsg = session.sendMessage("", "set log level warn", "");
+      if (!retMsg.getSubject().equals("log level set to WARN")) {
+       System.out.println("Test Log Level failed - invalid response to set log level warn");
+       session.disconnect();
+       return;
+     }
+     retMsg = session.sendMessage("", "set log level debug", "");
+      if (!retMsg.getSubject().equals("log level set to DEBUG")) {
+       System.out.println("Test Log Level failed - invalid response to set log level debug");
+       session.disconnect();
+       return;
+     }
+     retMsg = session.sendMessage("", "set log level shout", "");
+      if (!retMsg.getSubject().equals("log level set to SHOUT")) {
+       System.out.println("Test Log Level failed - invalid response to set log level shout");
+       session.disconnect();
+       return;
+     }
+     System.out.println("Log level test passed");
+     session.disconnect();
+    }
+    catch (Exception ex) {
+      System.out.println("Exception in test log level");
+    }
+  }
+
   public void runTests() {
     testConnection();
     testListCmd();
@@ -199,6 +265,8 @@ public class ServerTest {
     testEavesdropCmd();
     testGlobalEavesdropCmd();
     testEnableErrorMsgsCmd();
+    testLoggingCmd();
+    testLogLevelCmd();
   }
 
 
