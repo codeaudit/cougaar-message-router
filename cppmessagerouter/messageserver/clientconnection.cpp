@@ -484,7 +484,7 @@ bool ClientConnection::handleMessage(Message& msg){
      if (Context::getInstance()->isEavesDroppingEnabled()) {
         Context::getInstance()->getEavesDropRegistry()->deregisterAllEavesDroppers(this);
         reply->setto(msg.getfrom());
-        reply->setsubject("globaleavesdrop disabled");
+        reply->setsubject("all eavesdroppers disabled");
       }
     }
     else if (subject == "unglobaleavesdrop") {
@@ -605,7 +605,7 @@ bool ClientConnection::handleMessage(Message& msg){
         reply->setsubject("ERROR");
         reply->setbody("Unknown command");
       }
-      else {   //just delete the reply of error messages are disabled
+      else {   //just delete the reply if error messages are disabled
         delete reply;
         return true;
       }
