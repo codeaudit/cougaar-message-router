@@ -48,7 +48,7 @@ public:
   /** No descriptions */
   void deregisterClient();
   /** No descriptions */
-  MessageList& getMessages();
+  MessageList * getMessages();
   void pack(char *src, int srcStartPos, int srcLength, char *dest, int destStartPos);
   void pack(char *src, int srcStartPos, int srcLength, unsigned char *dest, int destStartPos);
   
@@ -118,6 +118,7 @@ private: // Private methods
   void getHeaderData(unsigned char *buffer, int size);
   /** debug helper method */
   void dumpPacket(char * packet, int pos, int packetLength);
+  void cleanupMessages(MessageList * ml);
 };
 
 

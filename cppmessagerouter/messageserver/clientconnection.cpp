@@ -104,9 +104,19 @@ void ClientConnection::resetValidationCount() {
   validationCount = 0;
 }
 
+void ClientConnection::cleanupMessages(MessageList * ml) {
+  while (ml->size() > 0) {
+    Message * msg = ml->front();
+    ml->pop_front();
+    delete msg;
+  }
+}
+
 /** No descriptions */
 void ClientConnection::run() {
-  Message * msg;                                           
+  Message * msg = NULL;
+  MessageList * messages = NULL;
+                                           
   sender->start();
   keepRunning = true;
   try
@@ -114,16 +124,18 @@ void ClientConnection::run() {
     while ( keepRunning )
     {
       if (use_block_read) {    //determine whether to use block reading method or not
-        MessageList& messages = getMessages();
-        while (messages.size() > 0) {
-          Message *msg = messages.front();
-          messages.pop_front();
+        messages = getMessages();
+        while (messages->size() > 0) {
+          Message *msg = messages->front();
+          messages->pop_front();
           keepRunning = processMessage(*msg);
           if (!keepRunning) {
+            cleanupMessages(messages);
             break;  //break out of the inner loop if we get a disconnect request
           }        
         }
-        delete &messages;
+        delete messages;
+        messages = NULL;
       }
       else {
         //cout << name << " waiting for msg..." << endl << flush;
@@ -141,6 +153,10 @@ void ClientConnection::run() {
     keepRunning = FALSE;
     Logger *logger = Context::getInstance()->getLogger();
     logger->log(name.c_str(), ex.description().c_str(), Logger::LEVEL_WARN);
+    if (messages != NULL) {
+      cleanupMessages(messages);
+      delete messages;
+    }
   }
   
   close();
@@ -701,45 +717,53 @@ void ClientConnection::pack(char *src, int srcStartPos, int srcLength, unsigned 
 }
 
 /** THIS METHOD HAS NOT BEEN TESTED IN A LONG TIME.  IT NEEDS TO BE DEBUGGED.*/
-MessageList& ClientConnection::getMessages(){
+MessageList * ClientConnection::getMessages(){
   char* readBuffer = new char[MAX_BUF_SIZE+1];
-  memset(readBuffer, 0, sizeof(readBuffer));
-  MessageList *messages = new MessageList();
-  //we want to fill the packetBuffer with as much data as we can get
-  int actualSize = ss->recv(readBuffer, MAX_BUF_SIZE, false);
-  //cout << name << " actual size: " << actualSize << endl << flush;
-  int residualPacketLength = packetBufferSize-packetBufferPos;
-  //cout << name << " residual packet length: " << residualPacketLength << endl << flush;
-  //cout << name << " Unpacked Buffer" << endl << flush;
-  //dumpPacket(packetBuffer, 0, packetBufferSize);
-  //since the tmpBuf will become the packetBuffer, set the size now
-  packetBufferSize = actualSize + residualPacketLength;
-  char* tmpBuf = new char[packetBufferSize];  //create a temporary buffer to hold the data;
-  //cout << name << " packetBufferPos: " << packetBufferPos << endl << flush;
-  //cout << name << " packetBufferSize: " << packetBufferSize << endl << flush;
-  //cout << name << "Residual data in Packet Buffer" << endl << flush;
-  //dumpPacket(packetBuffer, packetBufferPos, residualPacketLength);
-  //pack the residual data from the packet buffer into the tmp buffer
-  pack(packetBuffer, packetBufferPos, residualPacketLength, tmpBuf, 0);
-  //cout << name << " Residual Data in tmp Buffer" << endl << flush;
-  //dumpPacket(tmpBuf, 0, residualPacketLength);
-  //pack the newly read data into the tmp buffer 
-  pack(readBuffer, 0, actualSize, tmpBuf, residualPacketLength);
-  delete [] readBuffer;
-  readBuffer = NULL;
-  if (packetBuffer != NULL) {
+  MessageList *messages = NULL;
+  try {
+    memset((void *)readBuffer, 0, sizeof(readBuffer));
+    messages = new MessageList();
+    //we want to fill the packetBuffer with as much data as we can get
+    int actualSize = ss->recv(readBuffer, MAX_BUF_SIZE, false);
+    //cout << name << " actual size: " << actualSize << endl << flush;
+    int residualPacketLength = packetBufferSize-packetBufferPos;
+    //cout << name << " residual packet length: " << residualPacketLength << endl << flush;
+    //cout << name << " Unpacked Buffer" << endl << flush;
+    //dumpPacket(packetBuffer, 0, packetBufferSize);
+    //since the tmpBuf will become the packetBuffer, set the size now
+    packetBufferSize = actualSize + residualPacketLength;
+    char* tmpBuf = new char[packetBufferSize];  //create a temporary buffer to hold the data;
+    //cout << name << " packetBufferPos: " << packetBufferPos << endl << flush;
+    //cout << name << " packetBufferSize: " << packetBufferSize << endl << flush;
+    //cout << name << "Residual data in Packet Buffer" << endl << flush;
+    //dumpPacket(packetBuffer, packetBufferPos, residualPacketLength);
+    //pack the residual data from the packet buffer into the tmp buffer
+    pack(packetBuffer, packetBufferPos, residualPacketLength, tmpBuf, 0);
+    //cout << name << " Residual Data in tmp Buffer" << endl << flush;
+    //dumpPacket(tmpBuf, 0, residualPacketLength);
+    //pack the newly read data into the tmp buffer 
+    pack(readBuffer, 0, actualSize, tmpBuf, residualPacketLength);
+    delete [] readBuffer;
+    readBuffer = NULL;
+    //if (packetBuffer != NULL) {
     delete [] packetBuffer;  //delete the old packet buffer
-    packetBuffer = 0;
-  }
-  packetBuffer = tmpBuf;  //set the packet buffer to the tmp buffer
-  //cout << name << " Fully Packet Buffer" << endl << flush;
-  //dumpPacket(packetBuffer, 0, packetBufferSize);
+    packetBuffer = NULL;
+    //}
+    packetBuffer = tmpBuf;  //set the packet buffer to the tmp buffer
+    //cout << name << " Fully Packet Buffer" << endl << flush;
+    //dumpPacket(packetBuffer, 0, packetBufferSize);
 
-  packetBufferPos = 0;  //set the packetBufferPos to the beginning of the buffer
-  //if there aren't even 8 bytes in the buffer there's not even enough for a header so
-  //there's no use in parsing it yet
-  if (packetBufferSize < PACKET_HEADER_SIZE) {
-    return *messages;
+    packetBufferPos = 0;  //set the packetBufferPos to the beginning of the buffer
+    //if there aren't even 8 bytes in the buffer there's not even enough for a header so
+    //there's no use in parsing it yet
+    if (packetBufferSize < PACKET_HEADER_SIZE) {
+      return messages;
+    }
+  }
+  catch (SocketException& se) {
+    if (messages != NULL) delete messages;
+    if (readBuffer != NULL) delete [] readBuffer;
+    throw se;
   }
   
   //now parse through the packet buffer to pull out as many messages as possible
@@ -770,13 +794,14 @@ MessageList& ClientConnection::getMessages(){
     if ((packetBufferSize-packetBufferPos) < totalLength) {
       packetBufferPos -= PACKET_HEADER_SIZE; //step back to tbe beginning of this packet
       //cout << name <<  " reset packetBufferPos to " << packetBufferPos << endl << flush;
-      return *messages;  //return the current list of messages
+      return messages;  //return the current list of messages
     }
     //otherwise, we need to constuct the Message
     Message *msg = new Message();
     char *datastr = createSubStr(packetBuffer, packetBufferPos, totalLength);
     //cout << name << " datastr: " << datastr << endl << flush;
     string packetBufferStr = datastr;
+    delete [] datastr;
     int pos = 0;
     if (toLength != 0) {
       msg->setto(packetBufferStr.substr(pos, toLength));
@@ -798,11 +823,10 @@ MessageList& ClientConnection::getMessages(){
       msg->setbody(packetBufferStr.substr(pos, bodyLength));
       pos += bodyLength;
     }
-    delete [] datastr;
     messages->push_back(msg);
     packetBufferPos += totalLength;  //update the packet buffer pos
   }
-  return *messages;
+  return messages;
 
 
 } 
