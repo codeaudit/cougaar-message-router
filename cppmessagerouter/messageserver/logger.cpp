@@ -97,6 +97,9 @@ void Logger::run() {
     }
     catch (...) {
       cout << "Unknown exception in Logger" << endl << flush;
+      if (incomingStackLock.gotLock()) {
+        incomingStackLock.unlock();
+      }
     }
   }
 }

@@ -41,16 +41,12 @@ void MessageSender::setName(string& name) {
 
 /** No descriptions */
 void MessageSender::run() {
-  bool gotSendStackLock = FALSE;
-  bool gotIncomingStackLock = FALSE;
   try {
     while(keepRunning) {
       //cout << name << " message sender waking up..." << endl << flush;
       //copy items from incomingStack to sendStack
       sendStackLock.lock();  //lock the send stack so we can write to it
-      gotSendStackLock = TRUE;
       incomingStackLock.lock();  //lock the incomingStack so messages can't be added
-      gotIncomingStackLock = TRUE;
       while (incomingStack.size() > 0) {
         Message *msg = incomingStack.front();
         incomingStack.pop_front();
@@ -59,7 +55,6 @@ void MessageSender::run() {
         }
       }
       incomingStackLock.unlock();  //release the incomingStack so messages can be added again
-      gotIncomingStackLock = FALSE;
       
       while (keepRunning && (sendStack.size() > 0)) {
         Message *msg = sendStack.front();
@@ -67,7 +62,6 @@ void MessageSender::run() {
         sendMessage(*msg);
       }
       sendStackLock.unlock();  //now we can release the sendStack
-      gotSendStackLock = FALSE;
       //cout << name << " message sender going to sleep..." << endl << flush;
       
       msleep(1000);
@@ -76,8 +70,8 @@ void MessageSender::run() {
   catch(SocketException& ex) {
     keepRunning = FALSE;
     Context::getInstance()->getLogger()->log(name.c_str(), ex.description().c_str(), Logger::LEVEL_DEBUG);  
-    if (gotSendStackLock) sendStackLock.unlock();
-    if (gotIncomingStackLock) incomingStackLock.unlock();
+    if (sendStackLock.gotLock()) sendStackLock.unlock();
+    if (incomingStackLock.gotLock()) incomingStackLock.unlock();
     stopLock.lock();
     if (!isStopped) {
       cleanupMessages();
@@ -88,8 +82,8 @@ void MessageSender::run() {
   catch(...) {
      keepRunning = FALSE;
      Context::getInstance()->getLogger()->log("Unknown error in MessageSender::run()", name.c_str(), Logger::LEVEL_DEBUG);
-     if (gotSendStackLock) sendStackLock.unlock();
-     if (gotIncomingStackLock) incomingStackLock.unlock();
+     if (sendStackLock.gotLock()) sendStackLock.unlock();
+     if (incomingStackLock.gotLock()) incomingStackLock.unlock();
      stopLock.lock();
      if (!isStopped) {
        cleanupMessages();
@@ -189,6 +183,8 @@ void MessageSender::cleanupMessages(){
   }
   catch (...)  {
     Context::getInstance()->getLogger()->log("Error in cleanupMessages()", Logger::LEVEL_WARN);
+    if (incomingStackLock.gotLock()) incomingStackLock.unlock();
+    if (sendStackLock.gotLock()) sendStackLock.unlock();
   }
   
   cleanupLock.unlock();

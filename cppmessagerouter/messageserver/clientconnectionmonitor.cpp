@@ -64,6 +64,9 @@ void ClientConnectionMonitor::run(){
     }
     catch (...) {
       Context::getInstance()->getLogger()->log("Unknown exception in ClientConnectionMonitor", "", Logger::LEVEL_DEBUG);
+      if (monitorListLock.gotLock()) {
+        monitorListLock.unlock();
+      }
     }
   }
 }

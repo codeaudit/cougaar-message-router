@@ -19,7 +19,8 @@
 #define MESSAGESENDER_H
 
 #include <qthread.h>
-#include <qmutex.h>
+//#include <qmutex.h>
+#include "lock.h"
 #include "ServerSocket.h"
 #include "message.h"
 #include <list>
@@ -57,11 +58,11 @@ private: // Private methods
 private: // Private attributes
   bool keepRunning;
   bool isStopped;
-  QMutex cleanupLock;
-  QMutex sendLock;
-  QMutex sendStackLock;
-  QMutex incomingStackLock;
-  QMutex stopLock;
+  Lock cleanupLock;
+  Lock sendLock;
+  Lock sendStackLock;
+  Lock incomingStackLock;
+  Lock stopLock;
   int maxSendQueueSize;
 
 };

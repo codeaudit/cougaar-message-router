@@ -1,7 +1,7 @@
 /***************************************************************************
-                          clientconnectionmonitor.h  -  description
+                          lock.cpp  -  description
                              -------------------
-    begin                : Tue Apr 13 2004
+    begin                : Fri Jul 2 2004
     copyright            : (C) 2004 by David Craine
     email                : dcraine@infotether.com
  ***************************************************************************/
@@ -15,37 +15,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef CLIENTCONNECTIONMONITOR_H
-#define CLIENTCONNECTIONMONITOR_H
-
-#include <qthread.h>
-//#include <qmutex.h>
 #include "lock.h"
-#include <list>
-#include "clientconnection.h"
 
-/**
-  *@author David Craine
-  The point of this class is to monitor Client Connection objects to see when their thread
-  has been terminated.  When a thread is terminated this class will then delete that Client
-  Connection object.
-  */
+Lock::Lock(){
+  m_gotLock = false;
+}
 
-typedef list<ClientConnection *> MonitorList;  
+Lock::~Lock(){
+}
 
-class ClientConnectionMonitor : public QThread  {
-public: 
-	ClientConnectionMonitor();
-	~ClientConnectionMonitor();
-  /** No descriptions */
-  void run();
-  /**  */
-  bool keepRunning;
-  /** No descriptions */
-  void addClientConnection(ClientConnection*);
+void Lock::lock() {
+  m_lock.lock();
+  m_gotLock = true;
+}
 
-  MonitorList monitorList;
-  Lock monitorListLock;
-};
+void Lock::unlock() {
+  m_lock.unlock();
+  m_gotLock = false;
+}
 
-#endif
+bool Lock::locked() {
+  return m_lock.locked();
+}
+
+bool Lock::tryLock() {
+  return m_lock.tryLock();
+}
+
+bool Lock::gotLock() {
+  return m_gotLock;
+}

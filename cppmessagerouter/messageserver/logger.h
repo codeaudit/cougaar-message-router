@@ -25,7 +25,8 @@ using namespace std;
 #include <string>
 #include <qthread.h>
 #include <list>
-#include <qmutex.h>
+//#include <qmutex.h>
+#include "lock.h"
 #include <logentry.h>
 #include <time.h>
 
@@ -75,7 +76,7 @@ private: // Private attributes
   bool keepRunning;
   list<LogEntry *> incomingStack;
   list<LogEntry *> outgoingStack;
-  QMutex incomingStackLock;
+  Lock incomingStackLock;
   int currentLevel;
   string LEVEL_INFO_STR;
   string LEVEL_WARN_STR;

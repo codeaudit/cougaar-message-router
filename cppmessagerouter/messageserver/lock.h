@@ -1,7 +1,7 @@
 /***************************************************************************
-                          clientconnectionmonitor.h  -  description
+                          lock.h  -  description
                              -------------------
-    begin                : Tue Apr 13 2004
+    begin                : Fri Jul 2 2004
     copyright            : (C) 2004 by David Craine
     email                : dcraine@infotether.com
  ***************************************************************************/
@@ -15,37 +15,35 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef CLIENTCONNECTIONMONITOR_H
-#define CLIENTCONNECTIONMONITOR_H
+#ifndef LOCK_H
+#define LOCK_H
 
-#include <qthread.h>
-//#include <qmutex.h>
-#include "lock.h"
-#include <list>
-#include "clientconnection.h"
+#include <qmutex.h>
 
 /**
   *@author David Craine
-  The point of this class is to monitor Client Connection objects to see when their thread
-  has been terminated.  When a thread is terminated this class will then delete that Client
-  Connection object.
+  This is essentially a wrapper for the QMutex class.  The reason for this is to
+  provide the gotLock() method.  In some QMutex implementations, if a thread gets a lock and then calls
+  the isLocked() method, the behavior is undefined.   I watned to make sure that
+  I could determine whether or not the current thread had obtained the lock.  This
+  is mainly used in exception handling where a thread may dump out of a piece of code
+  after obtaining a lock but before releasing it.  The Exception handler needs to
+  be able to determine whether or not it should release the lock.
   */
 
-typedef list<ClientConnection *> MonitorList;  
-
-class ClientConnectionMonitor : public QThread  {
+class Lock {
 public: 
-	ClientConnectionMonitor();
-	~ClientConnectionMonitor();
-  /** No descriptions */
-  void run();
-  /**  */
-  bool keepRunning;
-  /** No descriptions */
-  void addClientConnection(ClientConnection*);
+	Lock();
+	~Lock();
+  void lock();
+  void unlock();
+  bool locked();
+  bool tryLock();
+  bool gotLock();
 
-  MonitorList monitorList;
-  Lock monitorListLock;
+private:
+  bool m_gotLock;
+  QMutex m_lock;
 };
 
 #endif
