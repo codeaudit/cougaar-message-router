@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.border.*;
 import com.borland.jbcl.layout.*;
+import java.util.StringTokenizer;
 
 
 public class Client extends JFrame
@@ -220,11 +221,18 @@ public class Client extends JFrame
 
   private void register() {
     if (session != null && session.isConnected()) {
+      onlineUsers.clear();
+      Message msg = session.sendMessage("", "list", "");
+      StringTokenizer st = new StringTokenizer(msg.getBody(), "\n");
+      while (st.hasMoreTokens()) {
+        onlineUsers.addElement(st.nextToken());
+      }
       session.postMessage("", "register", "");
     }
   }
 
   private void deregister() {
+    onlineUsers.clear();
     if (session != null && session.isConnected()) {
      session.postMessage("", "deregister", "");
    }
