@@ -244,6 +244,10 @@ public class Client extends JFrame
 
 
   void jToggleButtonRegister_actionPerformed(ActionEvent e) {
+    if (session == null || !session.isConnected()) {
+      jToggleButtonRegister.setSelected(false);
+      return;
+    }
     if (jToggleButtonRegister.isSelected()) {
       register();
       jToggleButtonRegister.setText("Deregister");
@@ -375,7 +379,7 @@ public class Client extends JFrame
                               subject,
                               body);
           displayMessage(subject,
-                         jTextFieldTargetUser.getText(), body,
+                         jTextFieldUser.getText(), body,
                          outgoingMsgAttrSet);
         }
         msgHistory.add(body);
