@@ -360,7 +360,7 @@ namespace WinMessageRouter
 						reply.Subject = "unable to kill connection";
 					}
 				}
-				else if (subject == "set log level") 
+				else if (subject.StartsWith("set log level")) 
 				{
 					if (subject.IndexOf("info") >= 0) 
 					{
