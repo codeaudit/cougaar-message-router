@@ -19,6 +19,7 @@ namespace WinMessageRouter
 		private Context() 
 		{
 			logger = new Logger();
+			logger.start();
 			connectionRegistry = new ConnectionRegistry();
 			listenerRegistry = new ListenerRegistry();
 			eavesdropRegistry = new EavesDropRegistry();

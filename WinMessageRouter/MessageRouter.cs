@@ -17,57 +17,65 @@ namespace WinMessageRouter
 		//[STAThread]
 		static void Main(string[] args)
 		{
-			Console.WriteLine("STARTED");
 			bool use_block_read = false;
 			for (int i=0; i<args.Length; i++) 
 			{
 				if (args[i].Equals("-b")) 
 				{
 					use_block_read = true;
-					System.Console.WriteLine("Block-read enabled.");
+					Context.getInstance().getLogger().forceLog("Block-read enabled.");
 				}
 				if (args[i].Equals("-i")) 
 				{
 					Logger logger = Context.getInstance().getLogger();
 					logger.CurrentLevel = Logger.LEVEL_INFO;
 					logger.enable();
-					System.Console.WriteLine("Debugging Enabled at level INFO");
+					Context.getInstance().getLogger().forceLog("Debugging Enabled at level INFO");
 				}
 				if (args[i].Equals("-w")) 
 				{
 					Logger logger = Context.getInstance().getLogger();
 					logger.CurrentLevel = Logger.LEVEL_WARN;
 					logger.enable();
-					System.Console.WriteLine("Debugging Enabled at level WARN");
+					Context.getInstance().getLogger().forceLog("Debugging Enabled at level WARN");
 				}
 				if (args[i].Equals("-d")) 
 				{
 					Logger logger = Context.getInstance().getLogger();
 					logger.CurrentLevel = Logger.LEVEL_DEBUG;
 					logger.enable();
-					System.Console.WriteLine("Debugging Enabled at level DEBUG");
+					Context.getInstance().getLogger().forceLog("Debugging Enabled at level DEBUG");
 				}
 				if (args[i].Equals("-s")) 
 				{
 					Logger logger = Context.getInstance().getLogger();
 					logger.CurrentLevel = Logger.LEVEL_SHOUT;
 					logger.enable();
-					System.Console.WriteLine("Debugging Enabled at level SHOUT");
+					Context.getInstance().getLogger().forceLog("Debugging Enabled at level SHOUT");
 				}
 				else if (args[i].Equals("-r")) 
 				{
 					Context.getInstance().setAllowDuplicateConnections(false);
-					System.Console.WriteLine("Disabling duplicate connections");
+					Context.getInstance().getLogger().forceLog("Disabling duplicate connections");
 				}
 				else if (args[i].Equals("-e")) 
 				{
 					Context.getInstance().enableEavesDropping();
-					System.Console.WriteLine("Eavesdropping enabled");
+					Context.getInstance().getLogger().forceLog("Eavesdropping enabled");
 				}
 				else if (args[i].Equals("-m")) 
 				{
 					Context.getInstance().enableErrorMessages();
-					Console.WriteLine("error messages enabled");
+					Context.getInstance().getLogger().forceLog("error messages enabled");
+				}
+				else if (args[i].IndexOf("-l=") != -1) 
+				{
+					Context.getInstance().getLogger().setLogFilePath(args[i].Substring(3));
+				}
+				else if (args[i].Equals("-g")) 
+				{
+					Context.getInstance().getLogger().disable();
+					System.Console.WriteLine("Logging disabled");
 				}
 				if (args[i].Equals("-h")) 
 				{
@@ -87,6 +95,8 @@ namespace WinMessageRouter
 
 			try 
 			{
+				Context.getInstance().getLogger().forceLog("MessageRouter Started");
+
 				Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);	
 				server.Bind(new IPEndPoint(IPAddress.Any, 6667));
 				server.Listen(30);
