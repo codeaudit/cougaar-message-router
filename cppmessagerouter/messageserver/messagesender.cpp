@@ -22,6 +22,7 @@
 #include "SocketException.h"
 #include "context.h"
 
+#define MAX_QUEUE_SIZE 1000
 
 int tmpcount=0;
 MessageSender::MessageSender(ServerSocket* sock){
@@ -101,6 +102,13 @@ void MessageSender::addMessage(Message& msg){
     delete &msg;  //delete the message
     return;
   }
+
+  if (stack.size() >= MAX_QUEUE_SIZE) {
+    Context::getInstance()->getLogger()->log("Max Send Queue size exceeded", name.c_str(), Logger::LEVEL_DEBUG);
+    delete &msg;
+    return;
+  }
+  
   while (!(gotLock = stackLock.tryLock()) && (tryCount++ < 10)) {  //if we can't get a lock on the stack
     msleep(250);  //sleep and try again  
   }
@@ -140,16 +148,16 @@ void MessageSender::sendMessage(Message& msg){
 /** No descriptions */
 void MessageSender::stop(){
   stopLock.lock();
-  //Context::getInstance()->getLogger()->log("close: got stop lock", Logger::LEVEL_WARN);
   if (!isStopped) {
-    //Context::getInstance()->getLogger()->log("close:stopping", Logger::LEVEL_WARN);
     keepRunning = FALSE;
-    while (!this->finished()) {
-      msleep(500);
+    int tryCount = 0;    
+    while (!this->finished() && (tryCount++ <= 100)) {
+      msleep(200);
     }
-    //Context::getInstance()->getLogger()->log("close: finished", Logger::LEVEL_WARN);
+    if (!this->finished()) {
+      Context::getInstance()->getLogger()->log("Could not stop Message Sender", name.c_str(), Logger::LEVEL_DEBUG);
+    }
     cleanupMessages();
-    //Context::getInstance()->getLogger()->log("close: cleaned up messages", Logger::LEVEL_WARN);
     isStopped = TRUE;
   }
   stopLock.unlock();
@@ -162,8 +170,8 @@ void MessageSender::cleanupMessages(){
   
   cleanupLock.lock();
 
-  while (!(gotLock = stackLock.tryLock()) && (tryCount++ < 10)) {  //if we can't get a lock on the stack
-    msleep(250);  //sleep and try again
+  while (!(gotLock = stackLock.tryLock()) && (tryCount++ < 100)) {  //if we can't get a lock on the stack
+    msleep(200);  //sleep and try again
   }
 
   if (!gotLock) {  //log the fact that we couldn't get the lock
