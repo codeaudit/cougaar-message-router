@@ -61,11 +61,13 @@ private: // Private attributes
   
   unsigned long int incomingMsgCount;
   unsigned long int outgoingMsgCount;
+  unsigned long int intervalCount;
   unsigned long int prevCount;
   unsigned long int diffQueue[MAX_INTERVALS]; 
   unsigned long int cycleCount;
   QMutex inLock;
   QMutex outLock;
+  QMutex resetLock;
   time_t startTime;
   bool keepRunning;
   double raw, avg1, avg2, avg3, max;

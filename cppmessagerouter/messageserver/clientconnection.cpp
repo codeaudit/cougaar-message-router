@@ -749,7 +749,17 @@ bool ClientConnection::handleMessage(Message& msg){
           reply->setsubject("unknown log level");
         }
         reply->setto(msg.getfrom());
-      }   
+      }
+      else { //send an error reply
+        if (Context::getInstance()->errorMessagesEnabled()) { //if error messaging is allowed
+          reply->setsubject("ERROR");
+          reply->setbody("Unknown command");
+        }
+        else {   //just delete the reply if error messages are disabled
+          delete reply;
+          return true;
+        }
+      } 
     }
     else { //send an error reply
       if (Context::getInstance()->errorMessagesEnabled()) { //if error messaging is allowed

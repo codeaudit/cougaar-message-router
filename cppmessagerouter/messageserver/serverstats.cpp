@@ -24,6 +24,7 @@ ServerStats::ServerStats(){
   raw = avg1 = avg2 = avg3 = max = 0.0;
   incomingMsgCount = 0;
   outgoingMsgCount = 0;
+  intervalCount = 0;
   prevCount = 0;
   for (int i=0; i<MAX_INTERVALS; i++) { diffQueue[i] = 0; }
   cycleCount = 0;
@@ -57,8 +58,16 @@ void ServerStats::incrementOutgoingMsgCount() {
 
 /** No descriptions */
 void ServerStats::resetStats(){
+  resetLock.lock();
+  outLock.lock();
+  inLock.lock();
   outgoingMsgCount = 0;
   incomingMsgCount = 0;
+  intervalCount = 0;
+  prevCount = 0;
+  resetLock.unlock();
+  outLock.unlock();
+  inLock.unlock();
 }
 
 /** No descriptions */
@@ -99,13 +108,13 @@ string& ServerStats::getStatsStr() {
 
 void ServerStats::run() {
   unsigned long int sum = 0;
-  unsigned long int intervalCount = 0;
 
   //cout << "server stats starting" << endl << flush;
   while (keepRunning) {
     msleep(SLEEP_INTERVAL);
     //cout << "Server stats waking up..." <<  endl << flush;
-
+    //resetLock.lock();  //make sure we can't reset while in the middle of a run
+    
     diffQueue[cycleCount] = incomingMsgCount - prevCount;
     prevCount = incomingMsgCount;
 
@@ -141,6 +150,8 @@ void ServerStats::run() {
     //dump the stats every 5 minutes
     if (!(cycleCount % 60))
       logStats();
+      
+    resetLock.unlock();
   }
 }
 
