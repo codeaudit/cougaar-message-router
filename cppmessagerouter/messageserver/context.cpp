@@ -24,6 +24,7 @@ Context::Context(){
   listenerRegistry = new ListenerRegistry();
   edr = new EavesDropRegistry();
   eavesDroppingAllowed = FALSE;
+  errorMessagesAllowed = FALSE;
   logger = new Logger();
   connectionValidator = new ConnectionValidator();
   connectionValidator->start();
@@ -79,4 +80,16 @@ bool Context::isEavesDroppingEnabled() {
 
 EavesDropRegistry* Context::getEavesDropRegistry() {
   return edr;
+}
+
+void Context::enableErrorMessages() {
+  errorMessagesAllowed = TRUE;
+}
+
+void Context::disableErrorMessages() {
+  errorMessagesAllowed = FALSE;
+}
+
+bool Context::errorMessagesEnabled() {
+  return errorMessagesAllowed;
 }

@@ -295,13 +295,15 @@ void ClientConnection::routeMessage(Message& msg){
     }
   }
   else {
-    Message* reply = new Message();
     Context::getInstance()->getLogger()->log(name.c_str(), msg.getto().c_str(), "ERROR", "unknown client", Logger::LEVEL_WARN);
-    reply->setsubject("ERROR");
-    reply->setto(msg.getfrom());
-    reply->setbody("Unknown client: " + msg.getto());
-    reply->setthread(msg.getthread());
-    sendMessage(*reply);
+    if (Context::getInstance()->errorMessagesEnabled()) {
+      Message* reply = new Message();
+      reply->setsubject("ERROR");
+      reply->setto(msg.getfrom());
+      reply->setbody("Unknown client: " + msg.getto());
+      reply->setthread(msg.getthread());
+      sendMessage(*reply);
+    }
     delete &msg;  //delete the original message
   }
 }
@@ -361,6 +363,9 @@ void ClientConnection::deregisterClient(){
 
 /** No descriptions */
 bool ClientConnection::handleMessage(Message& msg){
+  if (Context::getInstance()->isEavesDroppingEnabled()) {
+    Context::getInstance()->getEavesDropRegistry()->checkMessage(msg);
+  }
   string& subject = msg.getsubject();
   Context::getInstance()->getLogger()->log(msg.getfrom().c_str(), (const char *)"server",
     msg.getsubject().c_str(), msg.getbody().c_str(), Logger::LEVEL_INFO);
@@ -475,6 +480,16 @@ bool ClientConnection::handleMessage(Message& msg){
       reply->setto(msg.getfrom());
       reply->setsubject("eavesdropping disabled");
     }
+    else if (subject == "enable error messages") {
+      Context::getInstance()->enableErrorMessages();
+      reply->setto(msg.getfrom());
+      reply->setsubject("error messages enabled");
+    }
+    else if (subject == "disable error messages") {
+      Context::getInstance()->disableErrorMessages();
+      reply->setto(msg.getfrom());
+      reply->setsubject("error message disabled");
+    }
     else if (subject == "get stats") {
       reply->setto(msg.getfrom());
       reply->setsubject("stats");
@@ -519,10 +534,17 @@ bool ClientConnection::handleMessage(Message& msg){
       }
     }
     else { //send an error reply
-      reply->setto(msg.getfrom());
-      reply->setsubject("ERROR");
-      reply->setbody("Unknown command");
+      if (Context::getInstance()->errorMessagesEnabled()) { //if error messaging is allowed
+        reply->setto(msg.getfrom());
+        reply->setsubject("ERROR");
+        reply->setbody("Unknown command");
+      }
+      else {   //just delete the reply of error messages are disabled
+        delete reply;
+        return true;
+      }
     }
+     
     sendMessage(*reply);
   }
   catch (std::exception& ex) {

@@ -46,6 +46,9 @@ public:
   void enableEavesDropping();
   bool isEavesDroppingEnabled();
   void disableEavesDropping();
+  void enableErrorMessages();
+  void disableErrorMessages();
+  bool errorMessagesEnabled();
   
 private:
 	Context();
@@ -65,6 +68,7 @@ private: // Private attributes
   ConnectionValidator *connectionValidator;
   bool allowDuplicateConnections;
   bool eavesDroppingAllowed;
+  bool errorMessagesAllowed;
 };
 
 #endif

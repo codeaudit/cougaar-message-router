@@ -74,6 +74,10 @@
         Context::getInstance()->enableEavesDropping();
         cout << "eavesdropping enabled" << endl << flush;
       }
+      if (!strcmp(argv[i], "-m")) {
+        Context::getInstance()->enableErrorMessages();
+        cout << "error messages enabled" << endl << flush;
+      }
       if (!strcmp(argv[i], "-h")) {
         cout << "Options are:" << endl << flush;
         cout << "   -b Block Read enabled" << endl << flush;
@@ -83,6 +87,7 @@
         cout << "   -s Shout-level logging enabled" << endl << flush;
         cout << "   -r Refuse duplicate connections" << endl << flush;
         cout << "   -e Enable eavesdropping" << endl << flush;
+        cout << "   -m Enale error messages" << endl << flush;
         return EXIT_SUCCESS;
       }     
    }
