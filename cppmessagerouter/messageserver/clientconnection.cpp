@@ -41,7 +41,31 @@ void printbuffer(char *buf, int size) {
   }
 }
 
-long msgcount=0;
+static const CMD_SIZE = 22;
+static const string CMD_LIST[CMD_SIZE] = {"list - get a list of connected clients",
+                    "register - register for online/offlien updates for all clients",
+                    "deregister - deregister for online/offline updates",
+                    "validateConnections - force valdiation of all connected clients",
+                    "version - get the version of the server",
+                    "enable eavesdropping - enable eavesdropping mode",
+                    "disable eavesdropping - disable eavesdropping mode",
+                    "eavesdrop - eavesdrop on a designated client (body of message must have client name)",
+                    "uneavesdrop - uneavesdrop on designated client (body of message must have client name)",
+                    "uneavesdropall - uneavesdrop on all clients currently being eavesdropped on",
+                    "gloabaleavesdrop - eavesdrop on all clients",
+                    "unglobaleavesdrop - uneavesdrop on all clients",
+                    "enable error messages - enable error messages to be returned to clients",
+                    "disable error messages - prevent error messages from being returned to clients",
+                    "get stats - get current server statistics",
+                    "reset stats - reset server statistics",
+                    "kill sender - kill the send queue of a designated client (body of message must have client name)",
+                    "kill connection - kill the designated client connection (body of message must have client name)",
+                    "enable logging - enable the logging subsystem",
+                    "disable logging - disable the logging subsystem",
+                    "set log level <info|warn|debug|shout> - set the logging level",
+                    "help - get this message"
+                    };
+
 ClientConnection::ClientConnection(ServerSocket* sock, bool blockread){
   ss = sock;
   name = "";
@@ -564,6 +588,16 @@ bool ClientConnection::handleMessage(Message& msg){
       Context::getInstance()->getLogger()->disable();
       reply->setto(msg.getfrom());
       reply->setsubject("logging disabled");
+    }
+    else if (subject == "help") {
+      reply->setto(msg.getfrom());
+      reply->setsubject("COMMAND LIST");
+      string body = "\n";
+      for (int i=0; i<CMD_SIZE; i++) {
+         body +=CMD_LIST[i];
+         body += "\n";
+      }
+      reply->setbody(body);
     }
     else { //send an error reply
       if (Context::getInstance()->errorMessagesEnabled()) { //if error messaging is allowed
