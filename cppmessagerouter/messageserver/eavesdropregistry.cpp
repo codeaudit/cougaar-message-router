@@ -36,6 +36,15 @@ void EavesDropRegistry::registerEavesDropper(string& target, ClientConnection* e
   mutex.unlock();
 }
 
+void EavesDropRegistry::removeTarget(string& target) {
+  mutex.lock();
+  if (eavesDroppers.count(target) > 0) {
+    ListEavesDroppers *targetEavesDroppers = eavesDroppers[target];
+    eavesDroppers.erase(target);
+    delete targetEavesDroppers;
+  }
+}
+
 void EavesDropRegistry::deregisterAllEavesDroppers(ClientConnection* eavesdropper) {
   //attempt to remove the designated eaves dropper from every list since we don't
   //know how many lists it is in

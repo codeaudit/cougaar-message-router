@@ -42,7 +42,7 @@ public:
   void deregisterAllEavesDroppers(ClientConnection* eavesdropper);
   void registerGlobalEavesDropper(ClientConnection* eavesdropper);
   void deregisterEavesDropper(string& target, ClientConnection* eavesdropper);
-
+  void removeTarget(string& target);
   void deregisterGlobalEavesDropper(ClientConnection* eavesdropper);
   /** No descriptions */
   void checkMessage(Message &msg);
