@@ -49,6 +49,8 @@ public:
   void enableErrorMessages();
   void disableErrorMessages();
   bool errorMessagesEnabled();
+  void logToFile();
+  void logToStdout();
   
 private:
 	Context();

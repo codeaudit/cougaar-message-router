@@ -29,6 +29,7 @@ Logger::Logger(){
   LEVEL_SHOUT_STR = "SHOUT";
   keepRunning = true;
   pLogFileName = "/var/log/messagerouter.log";  //default path
+  use_output_file = true;
 }
 
 Logger::~Logger(){
@@ -38,10 +39,9 @@ void Logger::setLevel(int level) {
   this->currentLevel = level;
 }
 
-void Logger::writeLogEntry(LogEntry *entry) {
+void Logger::writeLogEntry(FILE *pFile, LogEntry *entry) {
   char timebuffer[30];
   
-  FILE *pFile = fopen(pLogFileName, "a");
   if (entry->subject == "") { //msg only format
     fprintf(pFile, "%s - %s: %s\n", convertTimeToStr(entry->timestamp, (char *)timebuffer, sizeof(timebuffer)),
            getLevelStr(entry->logLevel).c_str(),
@@ -61,7 +61,6 @@ void Logger::writeLogEntry(LogEntry *entry) {
            entry->subject.c_str(),
            entry->msg.c_str());
   }
-  fclose(pFile);
 }
 
 void Logger::run() {
@@ -80,12 +79,13 @@ void Logger::run() {
     }
     incomingStackLock.unlock(); //unlock the incoming stack so new entries can be added again
     
+    FILE *pFile = fopen(pLogFileName, "a");
     while (keepRunning && (outgoingStack.size() > 0)) {
       LogEntry *entry = outgoingStack.front();
       outgoingStack.pop_front();
-      writeLogEntry(entry);
-      delete entry;
+      writeLogEntry(pFile, entry);
     }
+    fclose(pFile);
   }
 }
 
@@ -139,7 +139,12 @@ string Logger::getLevelStr(int level) const {
 
 //does not check the enabled flag
 void Logger::forceLog(const char *msg) {
-  addLogEntry(new LogEntry(LEVEL_DEBUG, msg));
+  if (use_output_file) {
+    addLogEntry(new LogEntry(LEVEL_DEBUG, msg));
+  }
+  else {
+    writeLogEntry(stdout, new LogEntry(LEVEL_DEBUG, msg));
+  }
 }
 
 /** No descriptions */
@@ -147,21 +152,36 @@ void Logger::log(const char *msg, int level) {
   if (!enabled) return;
   if (level < currentLevel) return;
   
-  addLogEntry(new LogEntry(level, msg));
+  if (use_output_file) {
+    addLogEntry(new LogEntry(level, msg));
+  }
+  else {
+    writeLogEntry(stdout, new LogEntry(level, msg));
+  }
 }
 
 void Logger::log(const char  *subject, const char *msg, int level) {
   if (!enabled) return;
   if (level < currentLevel) return;
 
-  addLogEntry(new LogEntry(level, subject, msg));
+  if (use_output_file) {
+    addLogEntry(new LogEntry(level, subject, msg));
+  }
+  else {
+    writeLogEntry(stdout, new LogEntry(level, subject, msg));
+  }
 }
 
 void Logger::log(const char *from, const char* to, const char *subject, const char* msg, int level) {
   if (!enabled) return;
   if (level < currentLevel) return;
 
-  addLogEntry(new LogEntry(level, from, to, subject, msg));
+  if (use_output_file) {
+    addLogEntry(new LogEntry(level, from, to, subject, msg));
+  }
+  else {
+    writeLogEntry(stdout, new LogEntry(level, from, to, subject, msg));
+  }
 }
 
 const bool Logger::isenabled() {

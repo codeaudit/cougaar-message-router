@@ -81,11 +81,16 @@
         Context::getInstance()->getLogger()->setLogFilePath(argv[i]+3);
         string msg = "Log File Set: ";
         msg += argv[i]+3;
+        Context::getInstance()->logToFile();
         Context::getInstance()->getLogger()->forceLog(msg.c_str());
       }
       if (!strcmp(argv[i], "-g")) {
         Context::getInstance()->getLogger()->disable();
         cout << "Logging disabled" << endl << flush;
+      }
+      if (!strcmp(argv[i], "-o")) {
+        Context::getInstance()->logToStdout();
+        cout << "logging to stdout" << endl << flush;
       }
       if (!strcmp(argv[i], "-h")) {
         cout << "Options are:" << endl;
@@ -99,6 +104,7 @@
         cout << "   -m Enable error messages" << endl;
         cout << "   -l=<path> Set path to log file" << endl;
         cout << "   -g disable logging" << endl;
+        cout << "   -o log to stdout" << endl;
         cout << "   -h This help message" << endl << flush;
         return EXIT_SUCCESS;
       }     

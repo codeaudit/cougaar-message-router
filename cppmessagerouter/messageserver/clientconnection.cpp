@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5096
-#define VERSION "MessageRouter 1.7.31"
+#define VERSION "MessageRouter 1.7.32"
  
 #include "clientconnection.h"
 #include <iostream.h>
@@ -595,6 +595,16 @@ bool ClientConnection::handleMessage(Message& msg){
       Context::getInstance()->getLogger()->disable();
       reply->setto(msg.getfrom());
       reply->setsubject("logging disabled");
+    }
+    else if (subject == "log to file") {
+      Context::getInstance()->logToFile();
+      reply->setto(msg.getfrom());
+      reply->setsubject("logging to file");
+    }
+    else if (subject == "log to stdout") {
+      Context::getInstance()->logToStdout();
+      reply->setto(msg.getfrom());
+      reply->setsubject("logging to stdout");
     }
     else if (subject == "help") {
       reply->setto(msg.getfrom());

@@ -97,3 +97,11 @@ void Context::disableErrorMessages() {
 bool Context::errorMessagesEnabled() {
   return errorMessagesAllowed;
 }
+
+void Context::logToFile() {
+  logger->use_output_file = true;
+}
+
+void Context::logToStdout() {
+  logger->use_output_file = false;
+}
