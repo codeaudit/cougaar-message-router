@@ -33,7 +33,7 @@ public:
   /** No descriptions */
   static Context* getInstance();
   /** Read property of ListenerRegistry listenerRegistry. */
-  virtual const ListenerRegistry* getlistenerRegistry();
+  const ListenerRegistry* getlistenerRegistry();
 private:
 	Context();
  

@@ -244,7 +244,7 @@ void ClientConnection::registerClient(string& name){
 
 /** No descriptions */
 void ClientConnection::sendMessage(Message& msg){
-  char* header = msg.getMessageHeader();
+  /*char* header = msg.getMessageHeader();
   char toLength = header[0];
   char fromLength = header[1];
   char threadLength = header[2];
@@ -258,7 +258,7 @@ void ClientConnection::sendMessage(Message& msg){
   bodyLength <<= 8;
   bodyLength |= header[7];
   //printf("sending message length: %d\n",toLength+fromLength+threadLength+subjectLength+bodyLength);
-  /*msgcount++;
+  msgcount++;
   char tmpc[30];
   sprintf(tmpc, "%d : %d",msgcount, (toLength+fromLength+threadLength+subjectLength+bodyLength));
   cout << "Sent message: " << tmpc << endl << flush;*/
@@ -376,7 +376,6 @@ MessageList& ClientConnection::getMessages(){
   }
   
   //now parse through the packet buffer to pull out as many messages as possible
-  int currentPacketLength = 0;
   while ((packetBufferPos+PACKET_HEADER_SIZE) < packetBufferSize) { //make sure there's enough room for the next packet header
     //process the current packet header
     char toLength = packetBuffer[packetBufferPos]; packetBufferPos++;
