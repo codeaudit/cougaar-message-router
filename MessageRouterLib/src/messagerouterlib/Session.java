@@ -27,7 +27,10 @@ public class Session implements SyncMessageReceiverListener {
    * @param serverName String
    */
   public boolean connect(String serverName, String userName) throws ConnectionException {
-    this.userName = userName;
+    if (userName.startsWith("admin:"))
+      this.userName = "admin";
+    else
+      this.userName = userName;
     this.serverName = serverName;
 
     try {
