@@ -31,8 +31,11 @@ void ConnectionRegistry::registerConnection(ClientConnection *cc, string& name) 
 }
  
 ClientConnection * ConnectionRegistry::findConnection(const string& name) {
-  ClientConnection* cc = clientMap[name];
-  return cc;
+  if (clientMap.count(name) > 0) {  //make sure a connection exists
+    ClientConnection* cc = clientMap[name];
+    return cc;
+  }
+  return NULL;
   
 }
 
