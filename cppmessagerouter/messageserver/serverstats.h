@@ -23,6 +23,7 @@ using namespace std;
 #include <qmutex.h>
 #include <stdlib.h>
 #include <string>
+#include <time.h>
 
 /**
   *@author David Craine
@@ -55,6 +56,7 @@ private: // Private attributes
   unsigned long int outgoingMsgCount;
   QMutex inLock;
   QMutex outLock;
+  time_t startTime;
 };
 
 #endif

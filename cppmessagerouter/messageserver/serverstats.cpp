@@ -17,10 +17,12 @@
 
 #include "serverstats.h"
 #include <stdio.h>
+#include <iostream.h>
 
 ServerStats::ServerStats(){
   incomingMsgCount = 0;
   outgoingMsgCount = 0;
+  time(&startTime);
 }
 
 ServerStats::~ServerStats(){
@@ -63,8 +65,25 @@ ServerStats * ServerStats::getInstance(){
 }
 
 string& ServerStats::getStatsStr() {
-  char tmpBuffer[128];
+  char tmpBuffer[256];
+  struct tm *l_time;
+  char timestr[30];
+  time_t now;
+  unsigned long int uptime;
+  unsigned long int days, hours, mins, secs;
   
-  sprintf(tmpBuffer, "incoming: %u\noutgoing: %u\n", incomingMsgCount, outgoingMsgCount);
+  l_time = localtime(&startTime);
+  time(&now);
+  uptime = (unsigned long int) difftime(now, startTime);
+
+  days = uptime/86400;
+  hours = (uptime%86400)/3600;
+  mins = (uptime%3600)/60;
+  secs = uptime % 60;
+  
+  strftime(timestr, sizeof timestr, "%d-%b-%Y %H:%M:%S", l_time);  
+  sprintf(tmpBuffer, "\nstart time: %s\nup time: %d days, %d hours, %d mins, %d secs\nincoming msg count: %u\noutgoing msg count: %u\n",
+   timestr, days, hours, mins, secs, incomingMsgCount, outgoingMsgCount);
+
   return *(new string(tmpBuffer));
 }
