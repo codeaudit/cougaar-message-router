@@ -172,6 +172,19 @@ public class Session implements SyncMessageReceiverListener {
     }
   }
 
+  public void dropConnection() {
+    try {
+      //stop the receiver
+      receiver.interrupt();
+      connection.close();
+      connection = null;
+    }
+    catch (Exception e){
+      e.printStackTrace();
+    }
+  }
+
+
   /**
    * isConnected
    *
