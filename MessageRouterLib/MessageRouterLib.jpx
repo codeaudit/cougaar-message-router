@@ -13,7 +13,6 @@
   <property category="runtime.0" name="ConfigurationName" value="Client"/>
   <property category="runtime.0" name="RunnableType" value="com.borland.jbuilder.runtime.ApplicationRunner"/>
   <property category="runtime.0" name="application.class" value="messagerouterlib.Client"/>
-  <property category="runtime.0" name="application.parameters" value="-threaded-sender ts1 192.168.10.221 responder 1"/>
   <property category="serverservices" name="single.server.name" value="Tomcat 4.0"/>
   <property category="sys" name="AuthorLabel" value="@author"/>
   <property category="sys" name="BackupPath" value="bak"/>
@@ -42,7 +41,7 @@
   <property category="sys" name="Version" value="1.0"/>
   <property category="sys" name="VersionLabel" value="@version"/>
   <property category="sys" name="WorkingDirectory" value="."/>
-  <property category="sys" name="uidesign.size.messagerouterlib.Client" value="737,376"/>
+  <property category="sys" name="uidesign.size.messagerouterlib.Client" value="737,411"/>
   <node name="MessageRouterClient" type="Archive">
     <property category="archiving" name="archiverClass" value="com.borland.jbuilder.wizard.archive.ApplicationArchiver"/>
     <property category="archiving" name="contentRules.1" value="I:**/*.*"/>

@@ -87,6 +87,8 @@ public class Client extends JFrame
   JMenuItem jMenuItemTestMultidisconnect = new JMenuItem();
   JMenuItem jMenuItemOptionsGlobalEavesdrop = new JMenuItem();
   JMenuItem jMenuItemOptionsGlobalUneavesdrop = new JMenuItem();
+  JLabel jLabelPwd = new JLabel();
+  JPasswordField jPasswordFieldPwd = new JPasswordField();
 
   class HostItem implements Comparable {
     String name;
@@ -289,6 +291,10 @@ public class Client extends JFrame
     jMenuItemOptionsGlobalUneavesdrop.setEnabled(false);
     jMenuItemOptionsGlobalUneavesdrop.setText("Global Uneavesdrop");
     jMenuItemOptionsGlobalUneavesdrop.addActionListener(new Client_jMenuItemOptionsGlobalUneavesdrop_actionAdapter(this));
+    jLabelPwd.setText("Pwd");
+    jPasswordFieldPwd.setMinimumSize(new Dimension(11, 20));
+    jPasswordFieldPwd.setPreferredSize(new Dimension(75, 20));
+    jPasswordFieldPwd.setText("");
     jPanelSendMessages.add(jTextFieldSendSubject, null);
     jPanelSendMessages.add(jTextFieldSendMessages, null);
     jSplitPane1.add(jSplitPane2, JSplitPane.TOP);
@@ -303,6 +309,8 @@ public class Client extends JFrame
     jPanel1.add(jTextFieldServer, null);
     jPanel1.add(jLabelUserId, null);
     jPanel1.add(jTextFieldUser, null);
+    jPanel1.add(jLabelPwd, null);
+    jPanel1.add(jPasswordFieldPwd, null);
     jPanel1.add(jLabeltargetUser, null);
     jPanel1.add(jTextFieldTargetUser, null);
     jPanel1.add(jToggleButtonConnect, null);
@@ -696,8 +704,15 @@ public class Client extends JFrame
         jTextPaneDisplayMessages.setText("");
         session = new Session();
         try {
+          String userid = jTextFieldUser.getText();
+          if (jPasswordFieldPwd.getPassword() != null) {
+            String pwd = String.valueOf(jPasswordFieldPwd.getPassword()).trim();
+            if (!pwd.equals("")) {
+              userid += ":" + pwd;
+            }
+          }
           if (session.connect(jTextFieldServer.getText(),
-                              jTextFieldUser.getText())) {
+                              userid)) {
             displayMessage("Connected\n", incomingMsgAttrSet);
             session.addListener(this);
             jToggleButtonConnect.setText("Disconnect");
