@@ -44,7 +44,7 @@ void ClientConnectionMonitor::run(){
           pos = monitorList.erase(pos);
         }
         else if (((ClientConnection*)(*pos))->isClosed == true) {
-          Context::getInstance()->getLogger()->log("Deleting Connection Object", ((ClientConnection*)(*pos))->name.c_str(), Logger::LEVEL_INFO);
+          Context::getInstance()->getLogger()->log("Deleting Connection Object", ((ClientConnection*)(*pos))->name.c_str(), Logger::LEVEL_WARN);
           ClientConnection *cc = (ClientConnection *)(*pos);
           cc->wait(1000);  //make sure the thread is terminated
           pos = monitorList.erase(pos); //first remove the reference to the connection from this monitor list

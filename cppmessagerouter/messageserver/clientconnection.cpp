@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5096
-#define VERSION "MessageRouter 1.7.4"
+#define VERSION "MessageRouter 1.7.5"
  
 #include "clientconnection.h"
 #include <iostream.h>
@@ -43,6 +43,7 @@ void printbuffer(char *buf, int size) {
 long msgcount=0;
 ClientConnection::ClientConnection(ServerSocket* sock, bool blockread){
   ss = sock;
+  name = "";
   use_block_read = blockread;
   sender = new MessageSender(sock);
   packetBufferPos = 0;
@@ -99,7 +100,7 @@ void ClientConnection::run() {
   catch ( SocketException& ex) {
     keepRunning = FALSE;
     Logger *logger = Context::getInstance()->getLogger();
-    logger->log("Socket exception", ex.description().c_str(), Logger::LEVEL_DEBUG);
+    logger->log(name.c_str(), ex.description().c_str(), Logger::LEVEL_DEBUG);
   }
   
   close();
