@@ -24,3 +24,4 @@ This file contains the Cougaar society message server executable
 /etc/init.d/messageserver
 %clean
 %post
+chkconfig --add messageserver
