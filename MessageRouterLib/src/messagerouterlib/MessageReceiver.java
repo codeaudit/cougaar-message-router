@@ -20,6 +20,11 @@ public class MessageReceiver extends Thread {
 
   public Message waitForMessage(MessageReceiverListener listener,
                                 String threadId) throws MessageException {
+    return waitForMessage(listener, threadId, MESSAGE_TIMEOUT);
+  }
+
+  public Message waitForMessage(MessageReceiverListener listener,
+                                String threadId, long timeout) throws MessageException {
 
     //check to see if the message is already in the message map
     Message msg = (Message)messageMap.get(threadId);
@@ -32,7 +37,7 @@ public class MessageReceiver extends Thread {
     listenerMap.put(threadId, listener);
     synchronized (listener) {
       try {
-        listener.wait(MESSAGE_TIMEOUT);
+        listener.wait(timeout);
         msg = (Message) messageMap.get(threadId);
         if (msg != null) {
           messageMap.remove(msg);

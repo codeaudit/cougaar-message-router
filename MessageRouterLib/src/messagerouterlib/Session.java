@@ -40,6 +40,10 @@ public class Session implements MessageReceiverListener {
     return false;
   }
 
+  public Message sendMessage(String toUser, String subject, String body) {
+    return sendMessage(toUser, subject, body, 0);
+  }
+
   /**
    * synchronous mechanism for sending messages
    *
@@ -47,11 +51,16 @@ public class Session implements MessageReceiverListener {
    * @param subject String
    * @param body String
    */
-  public Message sendMessage(String toUser, String subject, String body) {
+  public Message sendMessage(String toUser, String subject, String body, long timeout) {
     String thread = String.valueOf(msgCount++);
     send(userName, toUser, subject, thread, body);
     try {
-      Message msg = receiver.waitForMessage(this, thread);
+      Message msg;
+      if (timeout > 0)
+        msg = receiver.waitForMessage(this, thread, timeout);
+      else
+        msg = receiver.waitForMessage(this, thread);
+
       return msg;
     }
     catch (MessageException ex) {
@@ -69,6 +78,10 @@ public class Session implements MessageReceiverListener {
    */
   public void postMessage(String toUser, String subject, String thread, String body) {
     send(userName, toUser, subject, body, thread);
+  }
+
+  public void postMessage(String toUser, String subject, String body) {
+    send (userName, toUser, subject, body, "");
   }
 
   private void send(String from, String to, String subject, String thread, String body) {
