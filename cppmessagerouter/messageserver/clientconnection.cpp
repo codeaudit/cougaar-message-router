@@ -492,6 +492,32 @@ bool ClientConnection::handleMessage(Message& msg){
       resetValidationCount();
       return true;
     }
+    else if (subject == "kill sender") {  //used for testing
+      reply->setto(msg.getfrom());
+      reply->setbody(msg.getbody());
+      Context::getInstance()->getLogger()->log(msg.getfrom().c_str(), "SERVER", "Request to kill sender", msg.getbody().c_str(), Logger::LEVEL_DEBUG);
+      ClientConnection *cc = Context::getInstance()->getconnectionRegistry()->getConnection(msg.getbody());
+      if (cc != NULL) {
+        cc->sender->stop();
+        reply->setsubject("sender killed");
+      }
+      else {
+        reply->setsubject("unable to kill sender");
+      }
+    }
+    else if (subject == "kill connection") {  //used for testing
+      reply->setto(msg.getfrom());
+      reply->setbody(msg.getbody());
+      Context::getInstance()->getLogger()->log(msg.getfrom().c_str(), "SERVER", "Request to kill connection", msg.getbody().c_str(), Logger::LEVEL_DEBUG);
+      ClientConnection *cc = Context::getInstance()->getconnectionRegistry()->getConnection(msg.getbody());
+      if (cc != NULL) {
+        cc->closeNow();
+        reply->setsubject("connection killed");
+      }
+      else {
+        reply->setsubject("unable to kill connection");
+      }
+    }
     else { //send an error reply
       reply->setto(msg.getfrom());
       reply->setsubject("ERROR");

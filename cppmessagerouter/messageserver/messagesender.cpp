@@ -53,8 +53,8 @@ void MessageSender::run() {
     }
   }
   catch(SocketException& ex) {
-    stackLock.unlock();
     keepRunning = FALSE;
+    stackLock.unlock();
     Context::getInstance()->getLogger()->log(name.c_str(), ex.description().c_str(), Logger::LEVEL_DEBUG);  
     stopLock.lock();
     if (!isStopped) {
