@@ -50,8 +50,11 @@ namespace WinMessageRouter
 
 		public void log(string from, string to, string subject, string msg) 
 		{
-			System.Console.WriteLine(System.DateTime.Now.ToLongTimeString() + " - " + "from: " + from +
-				" - to: " + to + " - subject: " + subject + " : " + msg);
+			if (enabled) 
+			{
+				System.Console.WriteLine(System.DateTime.Now.ToLongTimeString() + " - " + "from: " + from +
+					" - to: " + to + " - subject: " + subject + " : " + msg);
+			}
 		}
 	}
 }

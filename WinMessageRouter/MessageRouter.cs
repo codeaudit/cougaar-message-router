@@ -19,7 +19,7 @@ namespace WinMessageRouter
 		{
 			Console.WriteLine("STARTED");
 			bool use_block_read = false;
-			for (int i=1; i<args.Length; i++) 
+			for (int i=0; i<args.Length; i++) 
 			{
 				if (args[i].Equals("-b")) 
 				{
