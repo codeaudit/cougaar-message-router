@@ -88,7 +88,7 @@ string& ServerStats::getStatsStr() {
   secs = uptime % 60;
   
   strftime(timestr, sizeof timestr, "%d-%b-%Y %H:%M:%S", l_time);  
-  sprintf(tmpBuffer, "\nstart time: %s\nup time: %d days, %d hours, %d mins, %d secs\nincoming msg count: %u\noutgoing msg count: %u\nraw: %f\n1min: %f\n5min: %f\n15min: %f\nmax: %f\n",
+  sprintf(tmpBuffer, "\nstart time: %s\nup time: %d days, %d hours, %d mins, %d secs\nincoming msg count: %u\noutgoing msg count: %u\nraw: %g\n1min: %g\n5min: %g\n15min: %g\nmax: %g\n",
    timestr, days, hours, mins, secs, incomingMsgCount, outgoingMsgCount, raw, avg1, avg2, avg3, max);
 
   return *(new string(tmpBuffer));
@@ -106,7 +106,7 @@ void ServerStats::run() {
     prevCount = incomingMsgCount;
 
     //calculate raw rate
-    raw = diffQueue[cycleCount]/(SLEEP_INTERVAL/1000);
+    raw = (double)diffQueue[cycleCount]/(double)(SLEEP_INTERVAL/1000);
     max = raw>max?raw:max;
                 
     //calculate 1 minute avg
@@ -115,7 +115,7 @@ void ServerStats::run() {
     for (int i=0; i<intervalCount; i++) {
       sum += diffQueue[(cycleCount + MAX_INTERVALS - i)%MAX_INTERVALS];
     }
-    avg1 = sum/60;  //msgs per sec over last minute
+    avg1 = (double)sum/60;  //msgs per sec over last minute
 
     //calculate 5 minute avg
     sum = 0;
@@ -123,16 +123,15 @@ void ServerStats::run() {
     for (int i=0; i<intervalCount; i++) {
       sum += diffQueue[(cycleCount + MAX_INTERVALS - i)%MAX_INTERVALS];
     }
-    avg2 = sum/300;  
+    avg2 = (double)sum/300;  
 
     //calculate the total minute avg
     sum = 0;
     for (int i=0; i<MAX_INTERVALS; i++) { sum += diffQueue[i]; }
-    avg3 = sum/((SLEEP_INTERVAL*MAX_INTERVALS)/1000);
+    avg3 = (double)sum/((SLEEP_INTERVAL*MAX_INTERVALS)/1000);
 
     //printf("cycle: %d  avg1: %f  avg2: %f  avg3: %f  max: %f\n", cycleCount, avg1, avg2, avg3, max);
     cycleCount = (cycleCount + 1) % MAX_INTERVALS;  //adjust the cycle count
-
   }
 }
 
