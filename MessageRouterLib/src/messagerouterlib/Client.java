@@ -251,15 +251,32 @@ public class Client extends JFrame
   }
 
   void jButtonMultiConnect_actionPerformed(ActionEvent e) {
-    String res = JOptionPane.showInputDialog(this, "Enter number of connections", "Multi-Connect");
-    if (res != null) {
-      int count = Integer.parseInt(res);
-      MultiSessions = new Session[count];
-      for (int i=0; i<count; i++) {
-        MultiSessions[i] = new Session();
-        MultiSessions[i].connect(this.jTextFieldServer.getText(), this.jTextFieldUser.getText()+String.valueOf(i));
+    if (jButtonMultiConnect.getText().equals("Multi-Connect")) {
+      String res = JOptionPane.showInputDialog(this,
+                                               "Enter number of connections",
+                                               "Multi-Connect");
+      if (res != null) {
+        jButtonMultiConnect.setText("Multi-Disconnect");
+        int count = Integer.parseInt(res);
+        MultiSessions = new Session[count];
+        for (int i = 0; i < count; i++) {
+          MultiSessions[i] = new Session();
+          MultiSessions[i].connect(this.jTextFieldServer.getText(),
+                                   this.jTextFieldUser.getText() +
+                                   String.valueOf(i));
+        }
       }
-
+    }
+    else {
+      for (int i=0; i<MultiSessions.length; i++) {
+        try {
+          ( (Session) MultiSessions[i]).disconnect();
+        }
+        catch (Exception ex) {
+          System.out.println("Error disconnectiong from session");
+        }
+      }
+      jButtonMultiConnect.setText("Multi-Connect");
     }
   }
 
