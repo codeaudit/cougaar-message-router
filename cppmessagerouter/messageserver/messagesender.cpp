@@ -19,6 +19,7 @@
 #include <list>
 #include "message.h"
 #include <iostream.h>
+#include "SocketException.h"
 
 
 int tmpcount=0;
@@ -33,13 +34,17 @@ MessageSender::~MessageSender(){
 
 /** No descriptions */
 void MessageSender::run() {
-  while(keepRunning) {
-    while (this->stack.size() > 0) {
-      sendMessage(*(this->stack.front()));
-      this->stack.pop_front();
+  try {
+    while(keepRunning) {
+      while (this->stack.size() > 0) {
+        sendMessage(*(this->stack.front()));
+          this->stack.pop_front();
+      }
+      msleep(500);
     }
-    msleep(500);
-
+  }
+  catch(SocketException& ex) {
+    cout << "Socket exception in message sender thread: " << ex.description() << endl << flush;
   }   
 }
 

@@ -30,6 +30,7 @@ AMChanged=false
 author=David Craine
 configure_args=\s--build=i386-linux --host=i386-linux --target=i386-linux\s
 email=dcraine@infotether.com
+execute_args=-b
 kdevprj_version=1.3
 lfv_open_groups=
 make_options=\s-j1
