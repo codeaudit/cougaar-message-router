@@ -159,16 +159,22 @@ public class ServerTest {
       catch (InterruptedException ie) {
       }
       session1.removeListener(cl);
+      try {
+        Thread.currentThread().sleep(1000);
+      }
+      catch (InterruptedException ex1) {
+      }
+      retMsg = session1.sendMessage("", "unglobaleavesdrop", "");
       retMsg = session1.sendMessage("", "disable eavesdropping", "");
       if (!retMsg.getSubject().equals("eavesdropping disabled")) {
-        System.out.println("test disable avesdrop command failed - invalid response: " + retMsg.getSubject());
+        System.out.println("test global eavesdrop command failed on disable eavesdropping - invalid response: " + retMsg.getSubject());
       }
       session1.disconnect();
       session2.disconnect();
       session3.disconnect();
     }
     catch (ConnectionException ex) {
-
+      System.out.println("Exception in ");
     }
   }
 
