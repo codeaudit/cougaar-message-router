@@ -533,6 +533,38 @@ bool ClientConnection::handleMessage(Message& msg){
         reply->setsubject("unable to kill connection");
       }
     }
+    else if (subject.find("set log level", -1) == 0) {
+      if (subject.find("info", -1) != -1) {
+        Context::getInstance()->getLogger()->setLevel(Logger::LEVEL_INFO);
+        reply->setsubject("log level set to INFO");
+      }
+      else if (subject.find("warn", -1) != -1) {
+        Context::getInstance()->getLogger()->setLevel(Logger::LEVEL_WARN);
+        reply->setsubject("log level set to WARN");
+      }
+      else if (subject.find("debug", -1) != -1) {
+        Context::getInstance()->getLogger()->setLevel(Logger::LEVEL_DEBUG);
+        reply->setsubject("log level set to DEBUG");
+      }
+      else if (subject.find("shout", -1) != -1) {
+        Context::getInstance()->getLogger()->setLevel(Logger::LEVEL_SHOUT);
+        reply->setsubject("log level set to SHOUT");
+      }
+      else {
+        reply->setsubject("unknown log level");
+      }
+      reply->setto(msg.getfrom());
+    }
+    else if (subject == "enable logging") {
+      Context::getInstance()->getLogger()->enable();
+      reply->setto(msg.getfrom());
+      reply->setsubject("logging enabled");
+    }
+    else if (subject == "disable logging") {
+      Context::getInstance()->getLogger()->disable();
+      reply->setto(msg.getfrom());
+      reply->setsubject("logging disabled");
+    }
     else { //send an error reply
       if (Context::getInstance()->errorMessagesEnabled()) { //if error messaging is allowed
         reply->setto(msg.getfrom());
