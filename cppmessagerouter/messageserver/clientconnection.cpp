@@ -137,7 +137,11 @@ Message* ClientConnection::getMessage(){
   Message *msg = new Message();
   int index = 0;
   string messagedata = packetData;
-  if (toLength == 0)   {  //if this message has no to address then it gets handled by the router
+  //if (toLength == 0)   {  //if this message has no to address then it gets handled by the router
+    if (toLength != 0) {
+      msg->setto(messagedata.substr(0, toLength));
+      index += toLength;
+    }
     if (fromLength != 0) {
       msg->setfrom(messagedata.substr(0, fromLength));
       index += fromLength;
@@ -153,13 +157,13 @@ Message* ClientConnection::getMessage(){
     if (bodyLength != 0) {
       msg->setbody(messagedata.substr(index, bodyLength));
     }
-  }
-  else {  //otherwise, we're just going to route the message so all we need to know is the "to" address.  We set the header and
+  //}
+  //else {  //otherwise, we're just going to route the message so all we need to know is the "to" address.  We set the header and
           //data directly since there's no need for the router to know the other contents of this message
-    msg->setto(messagedata.substr(0, toLength));
-    msg->setMessageHeader(packet_header);
-    msg->setMessageData(messagedata);
-  }
+    //msg->setto(messagedata.substr(0, toLength));
+    //msg->setMessageHeader(packet_header);
+    //msg->setMessageData(messagedata);
+  //}
   
   delete packetData;
   
