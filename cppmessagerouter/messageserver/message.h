@@ -38,7 +38,7 @@ public: // Public attributes
   string body;
   /**  */
   string subject;
-  char msgHeader[8];
+  unsigned char msgHeader[8];
   string msgData;
 public: 
 	Message();

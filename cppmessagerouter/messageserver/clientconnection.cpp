@@ -28,6 +28,7 @@
 #include <string>
 #include <vector>
 #include "context.h"
+#include "logger.h"
 
 void printbuffer(char *buf, int size) {
   for (int i=0; i<size; i++) {
@@ -222,6 +223,8 @@ void ClientConnection::routeMessage(Message& msg){
 void ClientConnection::processMessage(Message& msg){
   if (msg.getto() != "") {
     //cout << "routing msg from: " << name << " to: " << msg.getto() << endl << flush;
+    string logmsg = "routing msg - FROM:"+name+" TO:"+msg.getto();
+    Context::getInstance()->getLogger()->log(logmsg);
     routeMessage(msg);
   }
   else {
@@ -281,6 +284,7 @@ void ClientConnection::deregisterClient(){
 /** No descriptions */
 void ClientConnection::handleMessage(Message& msg){
   string& subject = msg.getsubject();
+  Context::getInstance()->getLogger()->log((const char *)"handling message", subject.c_str());
   try {  
     Message* reply = new Message();
     reply->setthread(msg.getthread());
@@ -294,6 +298,7 @@ void ClientConnection::handleMessage(Message& msg){
       reply->setto(msg.getfrom());
       reply->setsubject("list");
       string& list = Context::getInstance()->getconnectionRegistry()->listConnections();
+      Context::getInstance()->getLogger()->log((const char *)"Current List", list.c_str());
       reply->setbody(list);
       delete &list;
     }

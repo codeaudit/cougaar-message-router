@@ -1,7 +1,7 @@
 /***************************************************************************
-                          context.h  -  description
+                          logger.h  -  description
                              -------------------
-    begin                : Wed Jan 28 2004
+    begin                : Tue Mar 9 2004
     copyright            : (C) 2004 by David Craine
     email                : dcraine@infotether.com
  ***************************************************************************/
@@ -15,41 +15,35 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef CONTEXT_H
-#define CONTEXT_H
+#ifndef LOGGER_H
+#define LOGGER_H
 
-#include "connectionregistry.h"
-#include "listenerregistry.h"
-#include "logger.h"
+using namespace std;
+
+#include <stdlib.h>
+#include <string>
 
 /**
   *@author David Craine
   */
 
-class Context {
+class Logger {
 public: 
-	~Context();
-  /** Read property of ConnectionRegistry * connectionRegistry. */
-  ConnectionRegistry* getconnectionRegistry();
+	Logger();
+	~Logger();
   /** No descriptions */
-  static Context* getInstance();
-  /** Read property of ListenerRegistry listenerRegistry. */
-  const ListenerRegistry* getlistenerRegistry();
-  const Logger* getLogger() const;
-  
-private:
-	Context();
- 
-protected: // Protected attributes
+  void log(string& msg) const;
+  /** No descriptions */
+  void log(const char *) const;
+  void log(const char *subject, const char *msg) const;
+  /** Write property of bool enabled. */
+  void enable();
+  void disable();
+  /** Read property of bool enabled. */
+  const bool isenabled();
 private: // Private attributes
   /**  */
-  static Context * currentInstance;
-  /**  */
-  ConnectionRegistry * connectionRegistry;
-  /**  */
-  ListenerRegistry* listenerRegistry;
-
-  Logger* logger;
+  bool enabled;
 };
 
 #endif

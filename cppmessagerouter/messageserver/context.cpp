@@ -21,6 +21,7 @@ Context * Context::currentInstance;
 Context::Context(){
   connectionRegistry = new ConnectionRegistry();
   listenerRegistry = new ListenerRegistry();
+  logger = new Logger();
 }
 
 Context::~Context(){
@@ -41,4 +42,8 @@ Context* Context::getInstance(){
 /** Read property of ListenerRegistry listenerRegistry. */
 const ListenerRegistry* Context::getlistenerRegistry(){
 	return listenerRegistry;
+}
+
+const Logger* Context::getLogger() const {
+  return logger;
 }

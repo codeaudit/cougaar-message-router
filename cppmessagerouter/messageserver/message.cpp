@@ -110,11 +110,12 @@ char * Message::getMessageHeader() {
     msgHeader[1] = from.length();
     msgHeader[2] = thread.length();
     msgHeader[3] = subject.length();
-    long bodyLength = body.length();
-    msgHeader[4] = bodyLength & 0xff000000L;
-    msgHeader[5] = bodyLength & 0x00ff0000L;
-    msgHeader[6] = bodyLength & 0x0000ff00L;
-    msgHeader[7] = bodyLength & 0x000000ffL;
+    unsigned long bodyLength = body.length();
+    msgHeader[4] = (unsigned char)((bodyLength & (unsigned long)0xff000000)>>24);
+    msgHeader[5] = (unsigned char)((bodyLength & (unsigned long)0x00ff0000)>>16);
+    msgHeader[6] = (unsigned char)((bodyLength & (unsigned long)0x0000ff00)>>8);
+    msgHeader[7] = (unsigned char)(bodyLength & (unsigned long)0x000000ff);
+    
   }
   return msgHeader;
 

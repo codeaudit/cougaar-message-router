@@ -26,6 +26,7 @@
  #include "clientconnection.h"
  #include <string>
  #include <map.h>
+ #include "context.h"
 
  
  int main(int argc, char *argv[])
@@ -33,9 +34,16 @@
 
  bool block_read = false;
  if (argc > 1) {
-   if (!strcmp(argv[1], "-b")) {
-     block_read = true;
-     cout << "block read enabled" << endl << flush;
+   for (int i=1; i<argc; i++) {
+     if (!strcmp(argv[i], "-b")) {
+        block_read = true;
+        cout << "block read enabled" << endl << flush;
+      }
+      if (!strcmp(argv[i], "-d")) {
+        Logger* logger = Context::getInstance()->getLogger();
+        logger->enable();
+        cout << "debugging enabled" << endl << flush;
+      }
    }
  }
 
@@ -63,5 +71,4 @@
     
     return EXIT_SUCCESS;
  }
-
  
