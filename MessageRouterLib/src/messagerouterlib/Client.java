@@ -462,8 +462,10 @@ public class Client extends JFrame
               for (int i = 0; i < rate; i++) {
                 msgCount++;
                 Message reply = session.sendMessage(targetUser,
-                                    ("subject " + String.valueOf(msgCount)),
-                                    "body");
+                    ("subject " + String.valueOf(msgCount)), "body", 10);
+                if (reply == null) {
+                  System.out.println("reply not received");
+                }
               }
               session.dropConnection();
             }
