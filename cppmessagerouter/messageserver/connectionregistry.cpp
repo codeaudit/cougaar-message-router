@@ -193,7 +193,7 @@ string& ConnectionRegistry::getConnectionProfiles() {
     while (pos != clientMap.end()) {
       if (clientMap[pos->first] != NULL) {
         *ret += pos->first + " : ";
-        string& profile = clientMap[pos->first]->getConnectionProfile();
+        string& profile = clientMap[pos->first]->getRoutingProfileStr();
         *ret += profile;
         delete &profile; 
       }

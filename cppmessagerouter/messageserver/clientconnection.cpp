@@ -41,7 +41,7 @@ void printbuffer(char *buf, int size) {
   }
 }
 
-static const int CMD_SIZE = 28;
+static const int CMD_SIZE = 29;
 static const string CMD_LIST[CMD_SIZE] = {"list - get a list of connected clients",
                     "register - register for online/offlien updates for all clients",
                     "deregister - deregister for online/offline updates",
@@ -69,6 +69,7 @@ static const string CMD_LIST[CMD_SIZE] = {"list - get a list of connected client
                     "log to stdout - enable logging to stdout"
                     "to: <broadcast> - send a message addressed to <broadcast> to send a message to all connected clients",
                     "get connection stats - get the stats for all current connections",
+                    "get connection profiles - get the routing profile for all connections",
                     "help - get this message"
                     };
 
@@ -644,7 +645,7 @@ bool ClientConnection::handleMessage(Message& msg){
        delete &stats;
     }
     else if (subject == "get connection profiles") {
-       reply->setsubject("connection profiles") {
+       reply->setsubject("connection profiles");
        string& profiles = Context::getInstance()->getconnectionRegistry()->getConnectionProfiles();
        reply->setbody(profiles);
        delete &profiles;
@@ -807,15 +808,17 @@ unsigned int ClientConnection::getOutgoingMsgCount() {
 }
 
 string& ClientConnection::getRoutingProfileStr() {
-  string* ret = new string("");
+  string* ret = new string("\n");
   char tmpbuf[10];
   
   if (!routingProfileMap.empty()) {
     ConnectionProfileMap::iterator pos;
     pos = routingProfileMap.begin();
     while (pos != routingProfileMap.end()) {
+      *ret += "  ->  ";
       *ret += pos->first+": ";
-      *ret += itoa(routingProfileMap[pos->first], tmpbuf, 10);
+      sprintf(tmpbuf, "%d", routingProfileMap[pos->first]);
+      *ret += tmpbuf;
       *ret += "\n";
       pos++;
     }
