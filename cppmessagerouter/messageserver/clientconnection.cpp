@@ -313,9 +313,13 @@ bool ClientConnection::handleMessage(Message& msg){
     }
     else if (subject == "validateConnections") {
       Context::getInstance()->getconnectionRegistry()->validateConnections();
+      delete reply;
+      return true;
     }
     else if (msg.getthread() == "ping") { //a ping response causes validation count to reset
+      delete reply;
       resetValidationCount();
+      return true;
     }
     else { //send an error reply
       reply->setto(msg.getfrom());

@@ -47,7 +47,13 @@ string& ConnectionRegistry::listConnections() {
   
   ConnectionMap::iterator pos;
   for (pos = clientMap.begin(); pos != clientMap.end(); ++pos) {
-    *ret += pos->first + "\n";
+    if (clientMap[pos->first] != NULL) {
+      *ret += pos->first + "\n";
+    }
+    else {
+      Context::getInstance()->getLogger()->log("Found NULL connection", (pos->first).c_str());
+      clientMap.erase(pos);
+    }
   }
    
   return *ret;
@@ -56,6 +62,8 @@ string& ConnectionRegistry::listConnections() {
 void ConnectionRegistry::validateConnections() {
   ConnectionMap::iterator pos;
   for (pos = clientMap.begin(); pos != clientMap.end(); ++pos) {
+    printf("scheduling validation for host: %s\n", (pos->first).c_str());
+    cout<<flush;
     ClientConnection* cc = clientMap[pos->first];
     Context::getInstance()->getConnectionValidator()->validateConnection(cc);
   }
