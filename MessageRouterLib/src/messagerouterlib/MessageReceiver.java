@@ -43,7 +43,7 @@ public class MessageReceiver extends Thread {
     //check to see if the message is already in the message map
     Message msg = (Message)syncMessageMap.get(threadId);
     if (msg != null) {
-      syncMessageMap.remove(msg);
+      syncMessageMap.remove(threadId);
       return msg;
     }
 

@@ -5,11 +5,15 @@
   <property category="debug.0" name="SmartStepSkipStaticInitializers" value="0"/>
   <property category="debug.0" name="SmartStepSkipSynthetics" value="0"/>
   <property category="javadoc" name="custom.tags.1" value="todo;a;To Do:"/>
+  <property category="optimize.0" name="OptimizableType" value="intuitive.ide.borland.jb10.ProfilerBootstrap"/>
+  <property category="optimize.0" name="oicc.FilterFile" value="C:\Documents and Settings\David Craine\My Documents\jbproject\MessageRouterLib\MessageRouterLib.oif"/>
+  <property category="optimize.0" name="oipr.FilterFile" value="C:\Documents and Settings\David Craine\My Documents\jbproject\MessageRouterLib\MessageRouterLib.oif"/>
   <property category="runtime" name="DefaultConfiguration" value="-1"/>
   <property category="runtime.0" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
   <property category="runtime.0" name="ConfigurationName" value="Client"/>
   <property category="runtime.0" name="RunnableType" value="com.borland.jbuilder.runtime.ApplicationRunner"/>
   <property category="runtime.0" name="application.class" value="messagerouterlib.Client"/>
+  <property category="runtime.0" name="application.parameters" value="-threaded-sender ts1 192.168.10.221 responder 1"/>
   <property category="serverservices" name="single.server.name" value="Tomcat 4.0"/>
   <property category="sys" name="AuthorLabel" value="@author"/>
   <property category="sys" name="BackupPath" value="bak"/>
