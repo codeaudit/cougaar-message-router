@@ -17,6 +17,10 @@ public class Session implements SyncMessageReceiverListener {
     currentSession = this;
   }
 
+  public void messageReceiverClosed(MessageReceiver mr) {
+    disconnect();
+  }
+
   /**
    * connect
    *

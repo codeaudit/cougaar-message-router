@@ -81,16 +81,34 @@ public class MessageReceiver extends Thread {
     }
   }
 
+  public void notifyListnersOfClosure() {
+    //notify async message listeners
+    for (Iterator i = asyncListeners.iterator(); i.hasNext();) {
+      ((AsyncMessageReceiverListener)i.next()).messageReceiverClosed(this);
+    }
+
+    //notify sync message listeners
+    for (Iterator i = syncListenerMap.values().iterator(); i.hasNext(); ) {
+      ((SyncMessageReceiverListener)i.next()).messageReceiverClosed(this);
+    }
+  }
+
   public void run() {
     byte[] header = new byte[8];
     while (keepRunning) {
       try {
+        if (!s.isConnected()) return;  //exit the thread if the socket isn't connected
         int count = 0;
         int index = 0;
-        while (index < 8) {
+        while (count >= 0 && index < 8) {
           count = s.getInputStream().read(header, index, 8 - index);
           index += count;
         }
+        if (count < 0)  {  //exit the thread if -1 is returned
+          notifyListnersOfClosure();
+          return;
+        }
+
         //System.out.println(name + "=>header count: " + index);
         int toLength = header[0] & 0xff;
         int fromLength = header[1] & 0xff;
@@ -108,9 +126,13 @@ public class MessageReceiver extends Thread {
         byte[] data = new byte[totalLength];
         count = 0;
         index = 0;
-        while (index < totalLength) {
+        while (count >= 0 && index < totalLength) {
           count = s.getInputStream().read(data, index, totalLength - index);
           index += count;
+        }
+        if (count < 0) {  //exit thread if -1 returned
+          notifyListnersOfClosure();
+          return;
         }
 
         //construct the message object from the data stream

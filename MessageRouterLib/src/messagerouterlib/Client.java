@@ -248,7 +248,10 @@ public class Client extends JFrame
       w.setLocation((screenSize.width - windowSize.width)/2, (screenSize.height - windowSize.height)/2);
   }
 
-
+  public void messageReceiverClosed(MessageReceiver mr) {
+    disconnect();
+    displayMessage("Server connection failure", offlineClientAttrSet);
+  }
 
   public void receiveMsg(Message msg) {
     //System.out.println(msg.getSubject() + " : " + msg.getBody());
@@ -394,6 +397,7 @@ public class Client extends JFrame
     if (session != null && session.isConnected()) {
       session.disconnect();
     }
+    jToggleButtonConnect.setSelected(false);
     jToggleButtonConnect.setText("Connect");
     jToggleButtonRegister.setSelected(false);
     onlineUsers.clear();
