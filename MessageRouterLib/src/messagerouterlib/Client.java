@@ -342,9 +342,13 @@ public class Client extends JFrame
         MultiSessions = new Session[count];
         for (int i = 0; i < count; i++) {
           MultiSessions[i] = new Session();
-          MultiSessions[i].connect(this.jTextFieldServer.getText(),
-                                   this.jTextFieldUser.getText() +
-                                   String.valueOf(i));
+          try {
+            MultiSessions[i].connect(this.jTextFieldServer.getText(),
+                                     this.jTextFieldUser.getText() +
+                                     String.valueOf(i));
+          }
+          catch (ConnectionException ex1) {
+          }
         }
       }
     }
@@ -374,14 +378,21 @@ public class Client extends JFrame
       try {
         jTextPaneDisplayMessages.setText("");
         session = new Session();
-        if (session.connect(jTextFieldServer.getText(), jTextFieldUser.getText())) {
-          displayMessage("Connected\n", incomingMsgAttrSet);
-          session.addListener(this);
-          jToggleButtonConnect.setText("Disconnect");
+        try {
+          if (session.connect(jTextFieldServer.getText(),
+                              jTextFieldUser.getText())) {
+            displayMessage("Connected\n", incomingMsgAttrSet);
+            session.addListener(this);
+            jToggleButtonConnect.setText("Disconnect");
+          }
+          else {
+            jToggleButtonConnect.setSelected(false);
+            displayMessage("Connection attempt failed\n", offlineClientAttrSet);
+          }
         }
-        else {
+        catch (ConnectionException ex1) {
           jToggleButtonConnect.setSelected(false);
-          displayMessage("Connection attempt failed\n", incomingMsgAttrSet);
+          displayMessage("Connection attempt failed: " + ex1.getMessage()+"\n", offlineClientAttrSet);
         }
       }
       catch (Exception ex) {

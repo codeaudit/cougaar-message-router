@@ -26,7 +26,7 @@ public class Session implements SyncMessageReceiverListener {
    *
    * @param serverName String
    */
-  public boolean connect(String serverName, String userName) {
+  public boolean connect(String serverName, String userName) throws ConnectionException {
     this.userName = userName;
     this.serverName = serverName;
 
@@ -35,8 +35,13 @@ public class Session implements SyncMessageReceiverListener {
       receiver = new MessageReceiver(connection, userName);
       receiver.start();
       Message reply = this.sendMessage("", "connect", userName);
-      if ((reply != null) && (reply.subject.equals("connected") || reply.body.equals("connected"))) {
-        return true;
+      if (reply != null) {
+        if (reply.subject.equals("connected") || reply.body.equals("connected")) {
+          return true;
+        }
+        else if (reply.subject.equals("ERROR")) {
+          throw new ConnectionException(reply.body);
+        }
       }
     }
     catch (UnknownHostException ex) {
