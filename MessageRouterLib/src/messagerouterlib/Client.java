@@ -1376,16 +1376,30 @@ class CommandScheduler extends Thread {
 
   public void run()
   {
-    while (keepRunning) {
-      if (Client.currentInstance.session != null && Client.currentInstance.session.isConnected()) {
-        Client.currentInstance.session.postMessage("", cmd, "");
-      }
-      try {
-        Thread.currentThread().sleep(interval);
-      }
-      catch (InterruptedException ex) {
-      }
+    try {
+      while (keepRunning) {
+        if (Client.currentInstance.session != null &&
+            Client.currentInstance.session.isConnected()) {
+          Client.currentInstance.session.postMessage("", cmd, "");
+        }
+        try {
+          Thread.currentThread().sleep(interval);
+        }
+        catch (InterruptedException ex) {
+        }
 
+      }
+    }
+    catch (Exception ex2){}
+  }
+
+  public void end() {
+    this.keepRunning = false;
+    this.interrupt();
+    try {
+      this.join(5000);
+    }
+    catch (InterruptedException ex) {
     }
   }
 

@@ -29,6 +29,7 @@ public class CommandSchedulerDialog extends JDialog {
       jbInit();
       init();
       pack();
+      Client.center(this);
     }
     catch(Exception ex) {
       ex.printStackTrace();
@@ -56,6 +57,7 @@ public class CommandSchedulerDialog extends JDialog {
     jButtonClose.setToolTipText("");
     jButtonClose.setText("Close");
     jButtonClose.addActionListener(new CommandSchedulerDialog_jButtonClose_actionAdapter(this));
+    this.setTitle("Scheduled Commands");
     getContentPane().add(panel1);
     panel1.add(jPanel1, BorderLayout.SOUTH);
     jPanel1.add(jButtonRemove, null);
@@ -65,7 +67,12 @@ public class CommandSchedulerDialog extends JDialog {
   }
 
   void jButtonRemove_actionPerformed(ActionEvent e) {
-
+    CommandScheduler cs = (CommandScheduler)lm.getElementAt(jList1.getSelectedIndex());
+    if (cs != null) {
+      cs.end();
+      Client.getCommandSchedulers().remove(cs);
+      lm.removeElement(cs);
+    }
   }
 
   void jButtonClose_actionPerformed(ActionEvent e) {
