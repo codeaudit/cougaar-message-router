@@ -15,6 +15,7 @@ namespace WinMessageRouter
 	{
 		public static int PACKET_HEADER_SIZE = 8;
 		public static int MAX_BUF_SIZE = 2048;
+		public static string VERSION = "Windows Message Router 1.1";
 
 		private Socket ss;
 		private MessageSender sender;
@@ -128,7 +129,7 @@ namespace WinMessageRouter
 		{
 			if ((msg.To != null) && (msg.To != ""))
 			{
-				Context.getInstance().getLogger().log(msg.From, msg.To, msg.Subject, msg.Body);
+				Context.getInstance().getLogger().log(msg.From, msg.To, msg.Subject, msg.Body, Logger.LEVEL_INFO);
 				routeMessage(msg);
 				return true;
 			}
@@ -153,7 +154,7 @@ namespace WinMessageRouter
 		private bool handleMessage(Message msg) 
 		{
 			string subject = msg.Subject;
-			Context.getInstance().getLogger().log(msg.From, "server", msg.Subject, msg.Body);
+			Context.getInstance().getLogger().log(msg.From, "server", msg.Subject, msg.Body, Logger.LEVEL_INFO);
 			try 
 			{  
 				Message reply = new Message();
@@ -173,7 +174,7 @@ namespace WinMessageRouter
 					reply.To = msg.From;
 					reply.Subject = "list";
 					string list = Context.getInstance().getConnectionRegistry().listConnections();
-					Context.getInstance().getLogger().log("Current List", list);
+					Context.getInstance().getLogger().log("Current List", list, Logger.LEVEL_INFO);
 					reply.Body = list;
 				}
 				else if (subject == "register") 
@@ -187,6 +188,12 @@ namespace WinMessageRouter
 					Context.getInstance().getListenerRegistry().deregisterListener(this);
 					reply.To = msg.From;
 					reply.Subject = "deregistered";
+				}
+				else if (subject == "version") 
+				{
+					reply.To = msg.From;
+					reply.Subject = "version";
+					reply.Body = VERSION;
 				}
 				else 
 				{ //send an error reply
@@ -262,7 +269,7 @@ namespace WinMessageRouter
 			}
 			catch (Exception ex) 
 			{
-				Context.getInstance().getLogger().log("Socket Exception", ex.Message);
+				Context.getInstance().getLogger().log("Socket Exception", ex.Message, Logger.LEVEL_DEBUG);
 			}
 			Context.getInstance().getListenerRegistry().deregisterListener(this);
 			deregisterClient();

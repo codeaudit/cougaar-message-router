@@ -26,11 +26,43 @@ namespace WinMessageRouter
 					use_block_read = true;
 					System.Console.WriteLine("Block-read enabled.");
 				}
+				if (args[i].Equals("-i")) 
+				{
+					Logger logger = Context.getInstance().getLogger();
+					logger.CurrentLevel = Logger.LEVEL_INFO;
+					logger.enable();
+					System.Console.WriteLine("Debugging Enabled at level INFO");
+				}
+				if (args[i].Equals("-w")) 
+				{
+					Logger logger = Context.getInstance().getLogger();
+					logger.CurrentLevel = Logger.LEVEL_WARN;
+					logger.enable();
+					System.Console.WriteLine("Debugging Enabled at level WARN");
+				}
 				if (args[i].Equals("-d")) 
 				{
 					Logger logger = Context.getInstance().getLogger();
+					logger.CurrentLevel = Logger.LEVEL_DEBUG;
 					logger.enable();
-					System.Console.WriteLine("Debugging Enabled.");
+					System.Console.WriteLine("Debugging Enabled at level DEBUG");
+				}
+				if (args[i].Equals("-s")) 
+				{
+					Logger logger = Context.getInstance().getLogger();
+					logger.CurrentLevel = Logger.LEVEL_SHOUT;
+					logger.enable();
+					System.Console.WriteLine("Debugging Enabled at level SHOUT");
+				}
+				if (args[i].Equals("-h")) 
+				{
+					System.Console.WriteLine("Options are:");
+					System.Console.WriteLine("   -b Block Read enabled");
+					System.Console.WriteLine("   -i Info-level logging enabled");
+					System.Console.WriteLine("   -w Wanr-level logging enabled");
+					System.Console.WriteLine("   -d Debug-level logging enabled");
+					System.Console.WriteLine("   -s Shout-level logging enabled");
+					return;
 				}
 			}
 
@@ -49,7 +81,7 @@ namespace WinMessageRouter
 			catch (Exception ex) 
 			{
 				Console.WriteLine(ex.Message);
-				Context.getInstance().getLogger().log("System exiting due to exception: " + ex.Message);
+				Context.getInstance().getLogger().log("System exiting due to exception: " + ex.Message, Logger.LEVEL_DEBUG);
 			}
 		}
 	}

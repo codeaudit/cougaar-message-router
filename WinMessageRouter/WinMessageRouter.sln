@@ -3,6 +3,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinMessageRouter", "WinMess
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "WinMessageRouterSetup", "..\WinMessageRouterSetup\WinMessageRouterSetup.vdproj", "{7EE5BD07-F417-4B59-AC36-5CB39C851233}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -13,6 +17,8 @@ Global
 		{54D6F2A5-FCAC-4A3C-998A-C253B07B8316}.Debug.Build.0 = Debug|.NET
 		{54D6F2A5-FCAC-4A3C-998A-C253B07B8316}.Release.ActiveCfg = Release|.NET
 		{54D6F2A5-FCAC-4A3C-998A-C253B07B8316}.Release.Build.0 = Release|.NET
+		{7EE5BD07-F417-4B59-AC36-5CB39C851233}.Debug.ActiveCfg = Debug
+		{7EE5BD07-F417-4B59-AC36-5CB39C851233}.Release.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

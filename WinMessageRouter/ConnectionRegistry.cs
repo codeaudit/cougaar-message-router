@@ -36,7 +36,15 @@ namespace WinMessageRouter
 			IEnumerator i = map.Keys.GetEnumerator();
 			while (i.MoveNext()) 
 			{
-				ret += ((string)i.Current) + "\n";
+				if (map[i.Current] != null) 
+				{
+					ret += ((string)i.Current) + "\n";
+				}
+				else 
+				{
+					Context.getInstance().getLogger().log("Found NULL connection", (string)i.Current, Logger.LEVEL_WARN);
+					map.Remove(i.Current);
+				}
 			}
 
 			return ret;
