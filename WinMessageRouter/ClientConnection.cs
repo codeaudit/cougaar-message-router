@@ -145,6 +145,10 @@ namespace WinMessageRouter
 		private void routeMessage(Message msg) 
 		{
 			ClientConnection targetConnection = Context.getInstance().getConnectionRegistry().findConnection(msg.To);
+			if (Context.getInstance().isEavesDroppingEnabled()) 
+			{
+				Context.getInstance().getEavesDropRegistry().checkMessage(msg);
+			}
 			if (targetConnection != null) 
 			{
 				targetConnection.sendMessage(msg);
@@ -190,6 +194,9 @@ namespace WinMessageRouter
 		{
 			string subject = msg.Subject;
 			Context.getInstance().getLogger().log(msg.From, "server", msg.Subject, msg.Body, Logger.LEVEL_INFO);
+			if (Context.getInstance().isEavesDroppingEnabled()) {
+				 Context.getInstance().getEavesDropRegistry().checkMessage(msg);
+			}
 			try 
 			{  
 				Message reply = new Message();
@@ -270,7 +277,7 @@ namespace WinMessageRouter
 					{
 						Context.getInstance().getEavesDropRegistry().registerGlobalEavesDropper(this);
 						reply.To = msg.From;
-						reply.Subject = "gloableavesdrop enabled";
+						reply.Subject = "globaleavesdrop enabled";
 					}
 				}
 				else if (subject == "uneavesdrop") 
