@@ -1,0 +1,11 @@
+1.  The Socket::recv method uses teh WAIT_ALL flag when invoking ::recv().  This
+should work fine for now; but you need to keep an eye on it in case it fails.
+The point is to make sure that the entire data size that is specified is actually
+read.  If this does fail...then we need to implement another reading mechanism that
+takes this into account.
+
+2.  One optimization is to read larger chunks of data at a time and then parse them into
+messages.  This would fix the problem delineated in #1 above. It would mean, however, that
+the receive buffer would contain multiples messages at one time and breaks would occur 
+within a single message.  However, this would definitely speed up performance and is worth
+implementing.
