@@ -41,7 +41,7 @@ void printbuffer(char *buf, int size) {
   }
 }
 
-static const int CMD_SIZE = 27;
+static const int CMD_SIZE = 28;
 static const string CMD_LIST[CMD_SIZE] = {"list - get a list of connected clients",
                     "register - register for online/offlien updates for all clients",
                     "deregister - deregister for online/offline updates",
@@ -67,7 +67,8 @@ static const string CMD_LIST[CMD_SIZE] = {"list - get a list of connected client
                     "set log level <info|warn|debug|shout> - set the logging level",
                     "log to file - enable logging to file",
                     "log to stdout - enable logging to stdout"
-                    "to: <broadcast> - send a message to <broadcast> to send a message to all connected clients",
+                    "to: <broadcast> - send a message addressed to <broadcast> to send a message to all connected clients",
+                    "get connection stats - get the stats for all current connections",
                     "help - get this message"
                     };
 
