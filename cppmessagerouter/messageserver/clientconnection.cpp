@@ -57,12 +57,15 @@ static const string CMD_LIST[CMD_SIZE] = {"list - get a list of connected client
                     "enable error messages - enable error messages to be returned to clients",
                     "disable error messages - prevent error messages from being returned to clients",
                     "get stats - get current server statistics",
+                    "get send queue stats - get stats on all sender queues",
                     "reset stats - reset server statistics",
                     "kill sender - kill the send queue of a designated client (body of message must have client name)",
                     "kill connection - kill the designated client connection (body of message must have client name)",
                     "enable logging - enable the logging subsystem",
                     "disable logging - disable the logging subsystem",
                     "set log level <info|warn|debug|shout> - set the logging level",
+                    "log to file - enable logging to file",
+                    "log to stdout - enable logging to stdout",
                     "help - get this message"
                     };
 
