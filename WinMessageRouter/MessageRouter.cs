@@ -77,6 +77,11 @@ namespace WinMessageRouter
 					Context.getInstance().getLogger().disable();
 					System.Console.WriteLine("Logging disabled");
 				}
+				else if (args[i].Equals("-l="))
+				{
+					Context.getInstance().getLogger().setLogFilePath(args[i].Substring(3));
+					Context.getInstance().getLogger().forceLog("Log File Set: " + args[i].Substring(3));
+				}
 				if (args[i].Equals("-h")) 
 				{
 					System.Console.WriteLine("Options are:");
@@ -88,6 +93,12 @@ namespace WinMessageRouter
 					System.Console.WriteLine("   -r Refuse duplicate connections");
 					System.Console.WriteLine("   -e Enable eavesdropping");
 					System.Console.WriteLine("   -m Enable error messages");
+					System.Console.WriteLine("   -l=<path> Set path to log file");
+					System.Console.WriteLine("   -q=<value> Set the max size fo the send queues");
+					System.Console.WriteLine("   -g disable logging");
+					System.Console.WriteLine("   -o log to stdout");
+					System.Console.WriteLine("   -c use syncrhonous sending");
+					System.Console.WriteLine("   -h This help message");
 
 					return;
 				}
