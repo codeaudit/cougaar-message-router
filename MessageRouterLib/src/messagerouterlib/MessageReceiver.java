@@ -4,43 +4,54 @@ import java.net.Socket;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.net.SocketException;
 
 public class MessageReceiver extends Thread {
   private static final long MESSAGE_TIMEOUT = 60000;  //60 seconds
   private boolean keepRunning = true;
   Socket s;
   String name;
-  HashMap listenerMap = new HashMap();
-  HashMap messageMap = new HashMap();
+  HashMap syncListenerMap = new HashMap();  //map for synchronous msg listener
+  HashMap syncMessageMap = new HashMap();   //map for synchronous messages
+  ArrayList asyncListeners = new ArrayList();  //array for asynchronous listeners
 
   public MessageReceiver(Socket s, String name) {
     this.s = s;
     this.name = name;
   }
 
-  public Message waitForMessage(MessageReceiverListener listener,
+  public void addAsyncListener(AsyncMessageReceiverListener listener) {
+    asyncListeners.add(listener);
+  }
+
+  public void removeAsyncListener(AsyncMessageReceiverListener listener) {
+    asyncListeners.remove(listener);
+  }
+
+  public Message waitForMessage(SyncMessageReceiverListener listener,
                                 String threadId) throws MessageException {
     return waitForMessage(listener, threadId, MESSAGE_TIMEOUT);
   }
 
-  public Message waitForMessage(MessageReceiverListener listener,
+  public Message waitForMessage(SyncMessageReceiverListener listener,
                                 String threadId, long timeout) throws MessageException {
 
     //check to see if the message is already in the message map
-    Message msg = (Message)messageMap.get(threadId);
+    Message msg = (Message)syncMessageMap.get(threadId);
     if (msg != null) {
-      messageMap.remove(msg);
+      syncMessageMap.remove(msg);
       return msg;
     }
 
     //otherwise wait for the message
-    listenerMap.put(threadId, listener);
+    syncListenerMap.put(threadId, listener);
     synchronized (listener) {
       try {
         listener.wait(timeout);
-        msg = (Message) messageMap.get(threadId);
+        msg = (Message) syncMessageMap.get(threadId);
         if (msg != null) {
-          messageMap.remove(msg);
+          syncMessageMap.remove(msg);
           return msg;
         }
         throw new MessageException("Timeout occurred");
@@ -53,11 +64,16 @@ public class MessageReceiver extends Thread {
 
 
   private void notifyListeners(Message msg) {
-    if (listenerMap.containsKey(msg.thread)) {
-      messageMap.put(msg.thread, msg); //place the message in the message map
-      MessageReceiverListener listener = (MessageReceiverListener)listenerMap.get(msg.thread);
+    if (syncListenerMap.containsKey(msg.thread)) {
+      syncMessageMap.put(msg.thread, msg); //place the message in the message map
+      SyncMessageReceiverListener listener = (SyncMessageReceiverListener)syncListenerMap.get(msg.thread);
       synchronized(listener) {
         listener.notifyAll();  //notify the waiting thread that the message is ready
+      }
+    }
+    else {
+      for (Iterator i = asyncListeners.iterator(); i.hasNext(); ) {
+        ((AsyncMessageReceiverListener)i.next()).receiveMsg(msg);
       }
     }
   }
@@ -122,6 +138,10 @@ public class MessageReceiver extends Thread {
 
         notifyListeners(msg);
 
+      }
+      catch (SocketException se) {
+        System.out.println("Socket exception in Receiver");
+        break;  // break out of the loop
       }
       catch (IOException ex) {
         ex.printStackTrace();

@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--JBuilder XML Project-->
 <project>
-  <property category="debug.0" name="SmartStepRedefineClasses" value="0"/>
-  <property category="debug.0" name="SmartStepSkipStaticInitializers" value="0"/>
-  <property category="debug.0" name="SmartStepSkipSynthetics" value="0"/>
   <property category="javadoc" name="custom.tags.1" value="todo;a;To Do:"/>
   <property category="runtime" name="DefaultConfiguration" value="-1"/>
-  <property category="runtime.0" name="ConfigurationName" value="TestSession"/>
-  <property category="runtime.0" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
-  <property category="runtime.0" name="test.class" value="messagerouterlib.TestSession"/>
-  <property category="runtime.0" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.0" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.0" name="ConfigurationName" value="Client"/>
+  <property category="runtime.0" name="RunnableType" value="com.borland.jbuilder.runtime.ApplicationRunner"/>
+  <property category="runtime.0" name="application.class" value="messagerouterlib.Client"/>
   <property category="serverservices" name="single.server.name" value="Tomcat 4.0"/>
   <property category="sys" name="AuthorLabel" value="@author"/>
   <property category="sys" name="BackupPath" value="bak"/>
@@ -38,6 +35,7 @@
   <property category="sys" name="Version" value="1.0"/>
   <property category="sys" name="VersionLabel" value="@version"/>
   <property category="sys" name="WorkingDirectory" value="."/>
+  <property category="sys" name="uidesign.size.messagerouterlib.Client" value="553,341"/>
   <node name="MessageRouterLib" type="Archive">
     <property category="archiving" name="contentRules.1" value="I:**/*.*"/>
     <property category="archiving" name="targetPath" value="MessageRouterLib.jar"/>

@@ -3,7 +3,7 @@ package messagerouterlib;
 import java.io.*;
 import java.net.*;
 
-public class Session implements MessageReceiverListener {
+public class Session implements SyncMessageReceiverListener {
   private static final int PORT = 6667;
 
   Socket connection;
@@ -38,6 +38,18 @@ public class Session implements MessageReceiverListener {
     catch (IOException ex) {
     }
     return false;
+  }
+
+  public void addListener(AsyncMessageReceiverListener listener) {
+    if (receiver != null) {
+      receiver.addAsyncListener(listener);
+    }
+  }
+
+  public void removeListener(AsyncMessageReceiverListener listener) {
+    if (receiver != null) {
+      receiver.removeAsyncListener(listener);
+    }
   }
 
   public Message sendMessage(String toUser, String subject, String body) {
@@ -81,7 +93,7 @@ public class Session implements MessageReceiverListener {
   }
 
   public void postMessage(String toUser, String subject, String body) {
-    send (userName, toUser, subject, body, "");
+    send (userName, toUser, subject, "", body);
   }
 
   private void send(String from, String to, String subject, String thread, String body) {
