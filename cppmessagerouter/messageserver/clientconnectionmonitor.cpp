@@ -43,7 +43,7 @@ void ClientConnectionMonitor::run(){
           Context::getInstance()->getLogger()->log("NULL value detected in monitor list");
           pos = monitorList.erase(pos);
         }
-        else if (((ClientConnection*)(*pos))->keepRunning == false) {
+        else if (((ClientConnection*)(*pos))->isRunning() == false) {
           Context::getInstance()->getLogger()->log("Deleting Connection Object", ((ClientConnection*)(*pos))->name.c_str());
           ClientConnection *cc = (ClientConnection *)(*pos);
           cc->wait(1000);  //make sure the thread is terminated

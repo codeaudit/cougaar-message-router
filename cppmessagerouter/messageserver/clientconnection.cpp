@@ -94,11 +94,16 @@ void ClientConnection::run() {
     }
   }
   catch ( SocketException& ex) {
+    keepRunning = false;
     Logger *logger = Context::getInstance()->getLogger();
     logger->log("Socket exception", ex.description().c_str());
   }
   
   close();
+}
+
+bool ClientConnection::isRunning() {
+  return keepRunning;
 }
 
 void ClientConnection::close() {

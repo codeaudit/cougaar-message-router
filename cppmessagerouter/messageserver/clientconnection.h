@@ -53,6 +53,7 @@ public:
   int getValidationCount();
   void resetValidationCount();
   void close();
+  bool isRunning();
 
 public:
   /**  */
