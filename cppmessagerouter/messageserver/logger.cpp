@@ -85,13 +85,18 @@ void Logger::run() {
       incomingStackLock.unlock(); //unlock the incoming stack so new entries can be added again
 
       if (outgoingStack.size() > 0) {
-        FILE *pFile = fopen(pLogFileName, "a");
-        while (keepRunning && (outgoingStack.size() > 0)) {
-          LogEntry *entry = outgoingStack.front();
-          outgoingStack.pop_front();
-          writeLogEntry(pFile, entry);
+        FILE *pFile;
+        if ((pFile = fopen(pLogFileName, "a")) != NULL) {
+          while (keepRunning && (outgoingStack.size() > 0)) {
+            LogEntry *entry = outgoingStack.front();
+            outgoingStack.pop_front();
+            writeLogEntry(pFile, entry);
+          }
+          fclose(pFile);
         }
-        fclose(pFile);
+        else {
+          cout << "ALERT: Unable to open log file" << endl << flush;
+        }
       }
       //cout << "Logger going back to sleep..." << endl << flush;
     }
