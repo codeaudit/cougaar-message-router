@@ -55,11 +55,14 @@ public class MessageReceiver extends Thread {
         msg = (Message) syncMessageMap.get(threadId);
         if (msg != null) {
           syncMessageMap.remove(threadId);
+          syncListenerMap.remove(threadId);
           return msg;
         }
+        syncListenerMap.remove(threadId);
         throw new MessageException("Timeout occurred");
       }
       catch (InterruptedException ex) {
+        syncListenerMap.remove(threadId);
         throw new MessageException(ex.getMessage());
       }
     }
