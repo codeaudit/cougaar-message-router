@@ -18,8 +18,8 @@ import java.util.List;
 
 public class Client extends JFrame
     implements AsyncMessageReceiverListener {
-  SortedListModel onlineUsers = new SortedListModel();
-  //DefaultListModel onlineUsers = new DefaultListModel();
+  //SortedListModel onlineUsers = new SortedListModel();
+  DefaultListModel onlineUsers = new DefaultListModel();
   History msgHistory = new History();
   History subjectHistory = new History();
 
@@ -47,7 +47,6 @@ public class Client extends JFrame
   TitledBorder titledBorder3;
   Border border6;
   TitledBorder titledBorder4;
-  BorderLayout borderLayout2 = new BorderLayout();
   JSplitPane jSplitPane2 = new JSplitPane();
   JScrollPane jScrollPane1 = new JScrollPane();
   JScrollPane jScrollPane2 = new JScrollPane();
@@ -67,6 +66,7 @@ public class Client extends JFrame
   JTextField jTextFieldSendMessages = new JTextField();
   Border border9;
   TitledBorder titledBorder7;
+  VerticalFlowLayout verticalFlowLayout1 = new VerticalFlowLayout();
 
   public Client() {
     try {
@@ -114,6 +114,7 @@ public class Client extends JFrame
     jSplitPane1.setOrientation(JSplitPane.VERTICAL_SPLIT);
     jSplitPane1.setBorder(border1);
     jSplitPane1.setLastDividerLocation(250);
+    jSplitPane1.setResizeWeight(1.0);
     jLabelServer.setRequestFocusEnabled(true);
     jLabelServer.setText("Server");
     jLabelUserId.setText("User Id");
@@ -127,8 +128,12 @@ public class Client extends JFrame
     jTextFieldTargetUser.setPreferredSize(new Dimension(75, 20));
     jTextFieldTargetUser.setText("");
     jPanelSendMessages.setBorder(border2);
+    jPanelSendMessages.setMaximumSize(new Dimension(32767, 32767));
+    jPanelSendMessages.setOpaque(false);
     jPanelSendMessages.setPreferredSize(new Dimension(96, 107));
-    jPanelSendMessages.setLayout(borderLayout2);
+    jPanelSendMessages.setRequestFocusEnabled(true);
+    jPanelSendMessages.setToolTipText("");
+    jPanelSendMessages.setLayout(verticalFlowLayout1);
     jTextFieldSendSubject.setBorder(titledBorder3);
     jTextFieldSendSubject.setText("");
     jTextFieldSendSubject.addKeyListener(new Client_jTextFieldSendSubject_keyAdapter(this));
@@ -146,8 +151,8 @@ public class Client extends JFrame
     jTextFieldSendMessages.setBorder(titledBorder7);
     jTextFieldSendMessages.setToolTipText("");
     jTextFieldSendMessages.addKeyListener(new Client_jTextFieldSendMessages_keyAdapter(this));
-    jPanelSendMessages.add(jTextFieldSendSubject,  BorderLayout.NORTH);
-    jPanelSendMessages.add(jTextFieldSendMessages, BorderLayout.SOUTH);
+    jPanelSendMessages.add(jTextFieldSendSubject, null);
+    jPanelSendMessages.add(jTextFieldSendMessages, null);
     jSplitPane1.add(jSplitPane2, JSplitPane.TOP);
     jSplitPane2.add(jScrollPane1, JSplitPane.TOP);
     jScrollPane1.getViewport().add(jTextPaneDisplayMessages, null);
