@@ -188,7 +188,7 @@ int Socket::recv ( char* c, int size, bool wait ) const
     }
     else if ( status == 0 )
     {
-      std::cout << "status = 0" << endl;
+      //std::cout << "status = 0" << endl;
       return 0;
     }
     /*else if (status != size) {
