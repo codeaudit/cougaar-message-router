@@ -48,6 +48,8 @@ public class ServerTest {
       Message retMsg = session1.sendMessage("", "register", "");
       if (!retMsg.getSubject().equals("registered")) {
         System.out.println("register command test failed - invalid repsonse");
+        session1.disconnect();
+        session2.disconnect();
         return;
       }
       CheckListener listener = new CheckListener("reigster command test", expectedMsg);
@@ -78,12 +80,19 @@ public class ServerTest {
       session3.connect(server, "test3");
       Message retMsg = session1.sendMessage("", "enable eavesdropping", "");
       if (!retMsg.getSubject().equals("eavesdropping enabled")) {
-        System.out.println("test eavesdrop command failed - could not enable eavesdropping");
+        System.out.println(
+            "test eavesdrop command failed - could not enable eavesdropping");
+        session1.disconnect();
+        session2.disconnect();
+        session3.disconnect();
         return;
       }
       retMsg = session1.sendMessage("", "eavesdrop", "test2");
       if (!retMsg.getSubject().equals("eavesdrop enabled")) {
         System.out.println("test eavesdrop command failed - invalid response");
+        session1.disconnect();
+        session2.disconnect();
+        session3.disconnect();
         return;
       }
       Message expectedMsg = new Message();
@@ -119,6 +128,9 @@ public class ServerTest {
       Message retMsg = session1.sendMessage("", "enable eavesdropping", "");
       if (!retMsg.getSubject().equals("eavesdropping enabled")) {
         System.out.println("test eavesdrop command failed - could not enable eavesdropping");
+        session1.disconnect();
+        session2.disconnect();
+        session3.disconnect();
         return;
       }
 
@@ -126,6 +138,10 @@ public class ServerTest {
       if (!retMsg.getSubject().equals("globaleavesdrop enabled")) {
         System.out.println(
             "test global eavesdrop command failed - invalid response");
+        session1.disconnect();
+        session2.disconnect();
+        session3.disconnect();
+
         return;
       }
       Message expectedMsg = new Message();
@@ -146,10 +162,35 @@ public class ServerTest {
       session3.disconnect();
     }
     catch (ConnectionException ex) {
-      System.out.println("Exception in test global eavesdrop command");
+
     }
   }
 
+  public void testEnableErrorMsgsCmd() {
+    Session session = new Session();
+    try {
+      session.connect(server, "test1");
+      Message retMsg = session.sendMessage("", "enable error messages", "");
+      if (!retMsg.getSubject().equals("error messages enabled")) {
+        System.out.println("Test Enable error messages failed - invalid response");
+        session.disconnect();
+        return;
+      }
+      retMsg = session.sendMessage("", "Bogus command", "");
+      if (!retMsg.getSubject().equals("ERROR") || !retMsg.getBody().equals("Unknown command")) {
+        System.out.println("Test Enable error messages failed - invalid error response");
+        session.sendMessage("", "disable error messages", "");
+        session.disconnect();
+        return;
+      }
+      System.out.println("Enable error messages test passed");
+      session.sendMessage("", "disable error messages", "");
+      session.disconnect();
+    }
+    catch (ConnectionException ex) {
+     System.out.println("Exception in test enable error messages command");
+    }
+  }
 
   public void runTests() {
     testConnection();
@@ -157,6 +198,7 @@ public class ServerTest {
     testRegisterCmd();
     testEavesdropCmd();
     testGlobalEavesdropCmd();
+    testEnableErrorMsgsCmd();
   }
 
 
