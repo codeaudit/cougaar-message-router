@@ -35,7 +35,7 @@ public:
   //void deregisterListener(ClientConnection *);
   void deregisterListener(ClientConnection * const) const;
   /** No descriptions */
-  void notifyListeners(Message &);
+  void notifyListeners(Message &) const;
 };
 
 #endif

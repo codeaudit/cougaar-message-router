@@ -80,7 +80,7 @@ void ClientConnection::run() {
     cout << ex.description() << endl;
   }
 
-  //cleanup
+  /***** cleanup *****/
   if (tmp_buffer != NULL) {
     delete tmp_buffer;
   }
@@ -221,6 +221,11 @@ void ClientConnection::registerClient(string& name){
   this->name = name;
   sender->name = name;
   Context::getInstance()->getconnectionRegistry()->registerConnection(this, name);
+  //notify any listeners of this registration
+  Message* msg = new Message();
+  msg->setsubject("online");
+  msg->setbody(name);
+  Context::getInstance()->getlistenerRegistry()->notifyListeners(*msg);
 }
 
 /** No descriptions */
@@ -252,6 +257,11 @@ void ClientConnection::sendMessage(Message& msg){
 /** No descriptions */
 void ClientConnection::deregisterClient(){
   Context::getInstance()->getconnectionRegistry()->deregisterConnection(this->name);
+  //notify listeners
+  Message* msg = new Message();
+  msg->setsubject("offline");
+  msg->setbody(name);
+  Context::getInstance()->getlistenerRegistry()->notifyListeners(*msg);  
 }
 
 /** No descriptions */

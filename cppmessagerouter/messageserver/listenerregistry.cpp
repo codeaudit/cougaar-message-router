@@ -46,11 +46,16 @@ void ListenerRegistry::deregisterListener(ClientConnection * const cc) const {
 }
 
 /** No descriptions */
-void ListenerRegistry::notifyListeners(Message &msg) {
+void ListenerRegistry::notifyListeners(Message &msg) const {
   list<ClientConnection *>::iterator iter;
 
   iter = listeners.begin();
   for (iter = listeners.begin(); iter != listeners.end(); iter++) {
-    ((ClientConnection *)*iter)->sendMessage(msg);
+    //since a call to sendMessage will end up deleting the message
+    //we need to make a copy of it before we send it to each recipient
+    Message *tmpMsg = new Message(msg);
+    ((ClientConnection *)*iter)->sendMessage(*tmpMsg);
   }
+  //now we can delete the original message
+  delete &msg;
 }

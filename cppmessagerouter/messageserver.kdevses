@@ -3,17 +3,19 @@
 <KDevPrjSession>
 <LastCompileConfig>(Default)</LastCompileConfig>
  <Mainframe MaximizeMode="1" />
- <DocsAndViews NumberOfDocuments="5" >
-<Doc0 CursorPosLine="43" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="77" FileName="/root/cppmessagerouter/messageserver/listenerregistry.cpp" >
+ <DocsAndViews NumberOfDocuments="6" >
+<Doc0 CursorPosLine="59" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="10" FileName="/root/cppmessagerouter/messageserver/listenerregistry.cpp" >
 <View0 Top="25" Width="400" Attach="1" Height="300" Left="3" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc0>
-  <Doc1 CursorPosLine="35" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="7" FileName="/root/cppmessagerouter/messageserver/listenerregistry.h" >
-<View0 Top="48" Width="764" Attach="1" Height="408" Left="26" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc1>
-  <Doc2 CursorPosLine="280" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="17" FileName="/root/cppmessagerouter/messageserver/clientconnection.cpp" >
+  <Doc1 CursorPosLine="37" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="39" FileName="/root/cppmessagerouter/messageserver/listenerregistry.h" >
+<View0 Top="48" Width="400" Attach="1" Height="300" Left="26" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc1>
+  <Doc2 CursorPosLine="284" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="17" FileName="/root/cppmessagerouter/messageserver/clientconnection.cpp" >
 <View0 Top="46" Width="770" Attach="1" Height="436" Left="46" Focus="1" Type="KWriteView" MinMaxMode="2" />  </Doc2>
   <Doc3 CursorPosLine="27" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/context.h" >
 <View0 Top="94" Width="764" Attach="1" Height="408" Left="72" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc3>
   <Doc4 CursorPosLine="33" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/context.cpp" >
-<View0 Top="117" Width="764" Attach="1" Height="408" Left="95" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc4> </DocsAndViews>
+<View0 Top="117" Width="764" Attach="1" Height="408" Left="95" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc4>
+  <Doc5 CursorPosLine="56" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/root/cppmessagerouter/messageserver/messagesender.cpp" >
+<View0 Top="140" Width="764" Attach="1" Height="408" Left="118" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc5> </DocsAndViews>
  <CompileConfigs>
 <Release>
 <Architecture>i386</Architecture>
