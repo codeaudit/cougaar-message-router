@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.1 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.2 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -43,10 +43,10 @@ pkglibdir = $(libdir)/messageserver
 pkgincludedir = $(includedir)/messageserver
 top_builddir = ../..
 
-ACLOCAL = ${SHELL} /root/messageserver/admin/missing --run aclocal
-AUTOCONF = ${SHELL} /root/messageserver/admin/missing --run autoconf
-AUTOMAKE = ${SHELL} /root/messageserver/admin/missing --run automake
-AUTOHEADER = ${SHELL} /root/messageserver/admin/missing --run autoheader
+ACLOCAL = ${SHELL} /root/cppmessagerouter/admin/missing --run aclocal
+AUTOCONF = ${SHELL} /root/cppmessagerouter/admin/missing --run autoconf
+AUTOMAKE = ${SHELL} /root/cppmessagerouter/admin/missing --run automake
+AUTOHEADER = ${SHELL} /root/cppmessagerouter/admin/missing --run autoheader
 
 INSTALL = /usr/bin/install -c -p
 INSTALL_PROGRAM = ${INSTALL} $(INSTALL_STRIP_FLAG)
@@ -66,7 +66,7 @@ host_alias = i386-linux
 host_triplet = i386-pc-linux-gnu
 target_alias = i386-linux
 target_triplet = i386-pc-linux-gnu
-AMTAR = ${SHELL} /root/messageserver/admin/missing --run tar
+AMTAR = ${SHELL} /root/cppmessagerouter/admin/missing --run tar
 ARTSCCONFIG = @ARTSCCONFIG@
 AS = @AS@
 AUTODIRS = @AUTODIRS@
@@ -208,7 +208,7 @@ all_libraries = -L/usr/X11R6/lib -L/usr/lib/qt3-gcc3.2/lib
 am__include = include
 am__quote = 
 idldir = @idldir@
-install_sh = /root/messageserver/admin/install-sh
+install_sh = /root/cppmessagerouter/admin/install-sh
 jni_includes = @jni_includes@
 kde_appsdir = @kde_appsdir@
 kde_bindir = @kde_bindir@

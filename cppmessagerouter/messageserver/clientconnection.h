@@ -61,6 +61,10 @@ private: // Private attributes
   /**  */
   int packetBufferPos;
   /**  */
+  char * tmp_buffer;
+  /**  */
+  char * packetData;
+  /**  */
 private: // Private methods
   /** No descriptions */
   Message* getMessage();

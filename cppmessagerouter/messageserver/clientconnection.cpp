@@ -65,8 +65,18 @@ void ClientConnection::run() {
   }
 
   //cleanup
+  if (tmp_buffer != NULL) {
+    delete tmp_buffer;
+  }
+  //if (packetData != NULL) {
+    //delete packetData;
+  //}
   deregisterClient();
   delete ss;
+  if (sender != NULL) {
+    sender->stop();
+    delete sender;
+  }
   delete this;
   
   return;
@@ -76,7 +86,7 @@ void ClientConnection::run() {
     This method gets the exact amount of data requested and places it in the buffer.
 */
 void ClientConnection::getData(char *buffer, int size){
-  char *tmp_buffer = new char[size];
+  tmp_buffer = new char[size];
   int index = 0;
   while (index < size) {
     int recv_size = ss->recv(tmp_buffer, (size-index));
@@ -116,7 +126,7 @@ Message* ClientConnection::getMessage(){
   int totalLength = toLength+fromLength+threadLength+subjectLength+bodyLength;
   //msgcount++;
   //printf("%d: received packet length: %d\n", msgcount, totalLength);
-  char *packetData = new char[totalLength+1]; //add 1 for the end of string char
+  packetData = new char[totalLength+1]; //add 1 for the end of string char
   memset(packetData, 0, sizeof(packetData));
 
   getData(packetData, totalLength);
@@ -151,7 +161,6 @@ Message* ClientConnection::getMessage(){
     msg->setMessageData(messagedata);
   }
   
-
   delete packetData;
   
   return msg;

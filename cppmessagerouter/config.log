@@ -668,8 +668,8 @@ configure:17475: checking for crt_externs.h
 configure:17482: result: no
 configure:17495: checking for _NSGetEnviron
 configure:17538: gcc -o conftest -ansi -W -Wall -pedantic -Wshadow -Wpointer-arith -Wmissing-prototypes -Wwrite-strings -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -O2     conftest.c  >&5
-/tmp/cccSkF1l.o: In function `main':
-/tmp/cccSkF1l.o(.text+0xf): undefined reference to `_NSGetEnviron'
+/tmp/cc2WB4lo.o: In function `main':
+/tmp/cc2WB4lo.o(.text+0xf): undefined reference to `_NSGetEnviron'
 collect2: ld returned 1 exit status
 configure:17541: $? = 1
 configure: failed program was:
@@ -799,8 +799,8 @@ configure:17837: checking for CoreAudio/CoreAudio.h
 configure:17844: result: no
 configure:17866: checking for res_init
 configure:17909: gcc -o conftest -ansi -W -Wall -pedantic -Wshadow -Wpointer-arith -Wmissing-prototypes -Wwrite-strings -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -O2     conftest.c  >&5
-/tmp/ccu3j0wQ.o: In function `main':
-/tmp/ccu3j0wQ.o(.text+0xf): undefined reference to `res_init'
+/tmp/ccspqHye.o: In function `main':
+/tmp/ccspqHye.o(.text+0xf): undefined reference to `res_init'
 collect2: ld returned 1 exit status
 configure:17912: $? = 1
 configure: failed program was:
@@ -1153,6 +1153,7 @@ config.status:682: creating messageserver/Makefile
 config.status:682: creating messageserver/docs/Makefile
 config.status:682: creating messageserver/docs/en/Makefile
 config.status:786: creating config.h
+config.status:921: config.h is unchanged
 config.status:1022: executing default-1 commands
 
 ## ---------------- ##

@@ -463,13 +463,13 @@ s,@PACKAGE@,messageserver,;t t
 s,@VERSION@,0.1,;t t
 s,@EXEEXT@,,;t t
 s,@OBJEXT@,o,;t t
-s,@ACLOCAL@,${SHELL} /root/messageserver/admin/missing --run aclocal,;t t
-s,@AUTOCONF@,${SHELL} /root/messageserver/admin/missing --run autoconf,;t t
-s,@AUTOMAKE@,${SHELL} /root/messageserver/admin/missing --run automake,;t t
-s,@AUTOHEADER@,${SHELL} /root/messageserver/admin/missing --run autoheader,;t t
-s,@MAKEINFO@,${SHELL} /root/messageserver/admin/missing --run makeinfo,;t t
-s,@AMTAR@,${SHELL} /root/messageserver/admin/missing --run tar,;t t
-s,@install_sh@,/root/messageserver/admin/install-sh,;t t
+s,@ACLOCAL@,${SHELL} /root/cppmessagerouter/admin/missing --run aclocal,;t t
+s,@AUTOCONF@,${SHELL} /root/cppmessagerouter/admin/missing --run autoconf,;t t
+s,@AUTOMAKE@,${SHELL} /root/cppmessagerouter/admin/missing --run automake,;t t
+s,@AUTOHEADER@,${SHELL} /root/cppmessagerouter/admin/missing --run autoheader,;t t
+s,@MAKEINFO@,${SHELL} /root/cppmessagerouter/admin/missing --run makeinfo,;t t
+s,@AMTAR@,${SHELL} /root/cppmessagerouter/admin/missing --run tar,;t t
+s,@install_sh@,/root/cppmessagerouter/admin/install-sh,;t t
 s,@INSTALL_STRIP_PROGRAM@,${SHELL} $(install_sh) -c -s,;t t
 s,@AWK@,gawk,;t t
 s,@SET_MAKE@,,;t t

@@ -22,11 +22,10 @@
 
 
 
-bool keepRunning = true;
-
 MessageSender::MessageSender(ServerSocket* sock){
   this->ss = sock;
   this->name = name;
+  this->keepRunning = true;
 }
 
 MessageSender::~MessageSender(){
@@ -39,7 +38,7 @@ void MessageSender::run() {
       sendMessage(*(this->stack.front()));
       this->stack.pop_front();
     }
-    usleep(1000);
+    msleep(500);
 
   }   
 }
@@ -62,4 +61,16 @@ void MessageSender::sendMessage(Message& msg){
   } */
   *ss << msg.getMessageHeader() << msg.getMessageData();
   delete &msg;
+}
+/** No descriptions */
+void MessageSender::stop(){
+  keepRunning = false;
+  while (!this->finished()) {
+    msleep(500);
+  }
+  while (this->stack.size() > 0) {
+    Message *msg = this->stack.front();
+    this->stack.pop_front();
+    delete msg;
+  }
 }

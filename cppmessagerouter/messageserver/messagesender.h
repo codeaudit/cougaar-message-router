@@ -36,6 +36,8 @@ public:
   void addMessage(Message &);
   /** No descriptions */
   void run();
+  /** No descriptions */
+  void stop();
 public: // Public attributes
   /**  */
   ServerSocket* ss;
@@ -45,6 +47,9 @@ public: // Public attributes
 private: // Private methods
   /** No descriptions */
   void sendMessage(Message &);
+
+private: // Private attributes
+  bool keepRunning;
 
 };
 
