@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5096
-#define VERSION "MessageRouter 1.7.26"
+#define VERSION "MessageRouter 1.7.27"
  
 #include "clientconnection.h"
 #include <iostream.h>
@@ -337,7 +337,7 @@ bool ClientConnection::processMessage(Message& msg){
   ServerStats::getInstance()->incrementIncomingMsgCount();
   if (msg.getto() != "") {
     Context::getInstance()->getLogger()->log(msg.getfrom().c_str(), msg.getto().c_str(),
-      "Routing Message", msg.getsubject().c_str(), Logger::LEVEL_INFO);
+      "Routing Message", msg.getbody().c_str(), Logger::LEVEL_INFO);
     routeMessage(msg);
     return true;
   }
