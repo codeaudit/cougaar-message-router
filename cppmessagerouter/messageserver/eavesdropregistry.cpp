@@ -36,7 +36,7 @@ void EavesDropRegistry::registerEavesDropper(string& target, ClientConnection* e
   mutex.unlock();
 }
 
-void EavesDropRegistry::deregisterEavesDropper(ClientConnection* eavesdropper) {
+void EavesDropRegistry::deregisterAllEavesDroppers(ClientConnection* eavesdropper) {
   //attempt to remove the designated eaves dropper from every list since we don't
   //know how many lists it is in
   mutex.lock();
@@ -48,6 +48,17 @@ void EavesDropRegistry::deregisterEavesDropper(ClientConnection* eavesdropper) {
         eavesDroppers[pos->first]->remove(eavesdropper);   //remove the eavesdropper from the list     
       }
       pos++;
+    }
+  }
+  mutex.unlock();
+}
+
+void EavesDropRegistry::deregisterEavesDropper(string& target, ClientConnection* eavesdropper) {
+  mutex.lock();
+  if (eavesDroppers.count(target) > 0) {
+    ListEavesDroppers* led = eavesDroppers[target];
+    if (led != NULL) {  
+      led->remove(eavesdropper);   //remove the eavesdropper from the list
     }
   }
   mutex.unlock();

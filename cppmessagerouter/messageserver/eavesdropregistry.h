@@ -39,8 +39,10 @@ public:
 	~EavesDropRegistry();
   /** No descriptions */
   void registerEavesDropper(string& target, ClientConnection* eavesdropper);
-  void deregisterEavesDropper(ClientConnection* eavesdropper);
+  void deregisterAllEavesDroppers(ClientConnection* eavesdropper);
   void registerGlobalEavesDropper(ClientConnection* eavesdropper);
+  void deregisterEavesDropper(string& target, ClientConnection* eavesdropper);
+
   void deregisterGlobalEavesDropper(ClientConnection* eavesdropper);
   /** No descriptions */
   void checkMessage(Message &msg);

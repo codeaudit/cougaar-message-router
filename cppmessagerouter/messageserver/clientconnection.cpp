@@ -390,6 +390,43 @@ bool ClientConnection::handleMessage(Message& msg){
       reply->setsubject("version");
       reply->setbody(VERSION);
     }
+    else if (subject == "eavesdrop") {
+      if (Context::getInstance()->isEavesDroppingEnabled()) {
+        Context::getInstance()->getEavesDropRegistry()->registerEavesDropper(msg.getbody(), this);
+        reply->setto(msg.getfrom());
+        reply->setsubject("eavesdrop enabled");
+        reply->setbody(msg.getbody());
+      }
+    }
+    else if (subject == "globaleavesdrop") {
+       if (Context::getInstance()->isEavesDroppingEnabled()) {
+          Context::getInstance()->getEavesDropRegistry()->registerGlobalEavesDropper(this);
+          reply->setto(msg.getfrom());
+          reply->setsubject("globaleavesdrop enabled");
+       }
+    }
+    else if (subject == "uneavesdrop") {
+     if (Context::getInstance()->isEavesDroppingEnabled()) {
+        Context::getInstance()->getEavesDropRegistry()->deregisterEavesDropper(msg.getbody(), this);
+        reply->setto(msg.getfrom());
+        reply->setsubject("eavesdrop disabled");
+        reply->setbody(msg.getbody());
+      }
+    }
+    else if (subject == "uneavesdropall") {
+     if (Context::getInstance()->isEavesDroppingEnabled()) {
+        Context::getInstance()->getEavesDropRegistry()->deregisterAllEavesDroppers(this);
+        reply->setto(msg.getfrom());
+        reply->setsubject("all eavesdropping disabled");
+      }
+    }
+    else if (subject == "unglobaleavesdrop") {
+      if (Context::getInstance()->isEavesDroppingEnabled()) {
+        Context::getInstance()->getEavesDropRegistry()->deregisterGlobalEavesDropper(this);
+        reply->setto(msg.getfrom());
+        reply->setsubject("globaleavesdrop disnabled");
+      }
+    }
     else if (msg.getthread() == "ping") { //a ping response causes validation count to reset
       delete reply;
       resetValidationCount();
