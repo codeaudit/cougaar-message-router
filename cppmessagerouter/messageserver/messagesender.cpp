@@ -58,7 +58,19 @@ void MessageSender::addMessage(Message& msg){
 /** No descriptions */
 void MessageSender::sendMessage(Message& msg){
   sendLock.lock();
-  *ss << msg.getMessageHeader() << msg.getMessageData();
+  try {
+    *ss << msg.getMessageHeader() << msg.getMessageData();
+  }
+  catch (SocketException &se) {
+    Context::getInstance()->getLogger()->log("ERROR", se.description().c_str(), Logger::LEVEL_WARN);
+    delete &msg;
+    sendLock.unlock();
+    throw se;
+  }
+  catch (...) {
+    Context::getInstance()->getLogger()->log("Unknown exception in sendMessage()", Logger::LEVEL_WARN);    
+  }
+
   delete &msg;
   sendLock.unlock();
 }
@@ -75,10 +87,15 @@ void MessageSender::stop(){
 /** No descriptions */
 void MessageSender::cleanupMessages(){
   cleanupLock.lock();
-  while (this->stack.size() > 0) {
-    Message *msg = this->stack.front();
-    this->stack.pop_front();
-    delete msg;
+  try {
+    while (this->stack.size() > 0) {
+      Message *msg = this->stack.front();
+      this->stack.pop_front();
+      delete msg;
+    }
+  }
+  catch (...)  {
+    Context::getInstance()->getLogger()->log("Error in cleanupMessages()", Logger::LEVEL_WARN);
   }
   cleanupLock.unlock();
 }
