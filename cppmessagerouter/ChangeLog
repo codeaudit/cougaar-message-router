@@ -1,0 +1,2 @@
+28 Apr 04 
+Modified to prevent duplicate user ids from being connected at the same time.
