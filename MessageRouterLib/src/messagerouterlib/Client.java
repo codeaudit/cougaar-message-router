@@ -18,8 +18,8 @@ import java.util.List;
 
 public class Client extends JFrame
     implements AsyncMessageReceiverListener {
-  SortedListModel onlineUsers = new SortedListModel();
-  //DefaultListModel onlineUsers = new DefaultListModel();
+  //SortedListModel onlineUsers = new SortedListModel();
+  DefaultListModel onlineUsers = new DefaultListModel();
   History msgHistory = new History();
   History subjectHistory = new History();
   static Client currentInstance;
@@ -89,6 +89,7 @@ public class Client extends JFrame
   JMenuItem jMenuItemOptionsGlobalUneavesdrop = new JMenuItem();
   JLabel jLabelPwd = new JLabel();
   JPasswordField jPasswordFieldPwd = new JPasswordField();
+  JMenuItem jMenuItemScheduleCommand = new JMenuItem();
 
   class HostItem implements Comparable {
     String name;
@@ -295,6 +296,8 @@ public class Client extends JFrame
     jPasswordFieldPwd.setMinimumSize(new Dimension(11, 20));
     jPasswordFieldPwd.setPreferredSize(new Dimension(75, 20));
     jPasswordFieldPwd.setText("");
+    jMenuItemScheduleCommand.setText("Schedule Command");
+    jMenuItemScheduleCommand.addActionListener(new Client_jMenuItemScheduleCommand_actionAdapter(this));
     jPanelSendMessages.add(jTextFieldSendSubject, null);
     jPanelSendMessages.add(jTextFieldSendMessages, null);
     jSplitPane1.add(jSplitPane2, JSplitPane.TOP);
@@ -332,6 +335,7 @@ public class Client extends JFrame
     jMenuTest.add(jMenuItemTestMulticonnect);
     jMenuTest.add(jMenuItemTestMultidisconnect);
     jMenuTest.add(jMenuItemTestMessageStresser);
+    jMenuTest.add(jMenuItemScheduleCommand);
     jSplitPane1.setDividerLocation(200);
     jSplitPane2.setDividerLocation(600);
     jListOnlineUsers.setCellRenderer(new OnlineListCellRenderer());
@@ -950,6 +954,21 @@ public class Client extends JFrame
     globalUneavesdrop();
   }
 
+  void jMenuItemScheduleCommand_actionPerformed(ActionEvent e) {
+    try {
+      String result = JOptionPane.showInputDialog("Enter <command>,<interval>");
+      if (result != null) {
+        StringTokenizer st = new StringTokenizer(result, ",");
+        if (st.countTokens() == 2) {
+          String command = st.nextToken();
+          long interval = Long.parseLong(st.nextToken());
+          CommandScheduler.create(command, interval);
+        }
+      }
+    }
+    catch (Exception ex){
+    }
+  }
 }
 
 class Flasher extends Thread {
@@ -1309,6 +1328,50 @@ class Client_jMenuItemOptionsGlobalUneavesdrop_actionAdapter implements java.awt
   }
   public void actionPerformed(ActionEvent e) {
     adaptee.jMenuItemOptionsGlobalUneavesdrop_actionPerformed(e);
+  }
+}
+
+class Client_jMenuItemScheduleCommand_actionAdapter implements java.awt.event.ActionListener {
+  Client adaptee;
+
+  Client_jMenuItemScheduleCommand_actionAdapter(Client adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jMenuItemScheduleCommand_actionPerformed(e);
+  }
+}
+
+class CommandScheduler extends Thread {
+
+  private String cmd;
+  private long interval;
+  private boolean keepRunning = true;
+
+  private CommandScheduler(String cmd, long interval){
+    this.cmd = cmd;
+    this.interval = interval;
+  }
+
+  public static CommandScheduler create(String cmd, long interval) {
+    CommandScheduler cs = new CommandScheduler(cmd, interval);
+    cs.start();
+    return cs;
+  }
+
+  public void run()
+  {
+    while (keepRunning) {
+      if (Client.currentInstance.session != null && Client.currentInstance.session.isConnected()) {
+        Client.currentInstance.session.postMessage("", cmd, "");
+      }
+      try {
+        Thread.currentThread().sleep(interval);
+      }
+      catch (InterruptedException ex) {
+      }
+
+    }
   }
 }
 
