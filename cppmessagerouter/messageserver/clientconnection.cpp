@@ -84,6 +84,9 @@ void ClientConnection::run() {
   if (tmp_buffer != NULL) {
     delete tmp_buffer;
   }
+  //deregister any listeners for this client connection
+  Context::getInstance()->getlistenerRegistry()->deregisterListener(this);
+    
   //if (packetData != NULL) {
     //delete packetData;
   //}
@@ -270,6 +273,16 @@ void ClientConnection::handleMessage(Message& msg){
       reply->setbody(list);
       delete &list;
     }
+    else if (subject == "register") {
+      Context::getInstance()->getlistenerRegistry()->registerListener(this);
+      reply->setto(msg.getfrom());
+      reply->setsubject("registered");
+    }
+    else if (subject == "deregister") {
+      Context::getInstance()->getlistenerRegistry()->deregisterListener(this);
+      reply->setto(msg.getfrom());
+      reply->setsubject("deregistered");
+    }
     else { //send an error reply
       reply->setto(msg.getfrom());
       reply->setsubject("ERROR");
@@ -412,3 +425,7 @@ char * ClientConnection::createSubStr(char *src, int start, int length){
 
   return ret;
 }
+
+const bool ClientConnection::operator== (const ClientConnection& right) {
+  return (this->name == right.name);
+} 

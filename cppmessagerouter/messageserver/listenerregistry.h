@@ -1,7 +1,7 @@
 /***************************************************************************
-                          context.h  -  description
+                          listenerregistry.h  -  description
                              -------------------
-    begin                : Wed Jan 28 2004
+    begin                : Mon Feb 23 2004
     copyright            : (C) 2004 by David Craine
     email                : dcraine@infotether.com
  ***************************************************************************/
@@ -15,36 +15,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef CONTEXT_H
-#define CONTEXT_H
+#ifndef LISTENERREGISTRY_H
+#define LISTENERREGISTRY_H
 
-#include "connectionregistry.h"
-#include "listenerregistry.h"
+#include "clientconnection.h"
 
 /**
   *@author David Craine
   */
 
-class Context {
+class ListenerRegistry {
 public: 
-	~Context();
-  /** Read property of ConnectionRegistry * connectionRegistry. */
-  ConnectionRegistry* getconnectionRegistry();
+	ListenerRegistry();
+	~ListenerRegistry();
   /** No descriptions */
-  static Context* getInstance();
-  /** Read property of ListenerRegistry listenerRegistry. */
-  virtual const ListenerRegistry* getlistenerRegistry();
-private:
-	Context();
- 
-protected: // Protected attributes
-private: // Private attributes
-  /**  */
-  static Context * currentInstance;
-  /**  */
-  ConnectionRegistry * connectionRegistry;
-  /**  */
-  ListenerRegistry* listenerRegistry;
+  //void registerListener(ClientConnection *);
+  void registerListener(ClientConnection * const) const;
+  /** No descriptions */
+  //void deregisterListener(ClientConnection *);
+  void deregisterListener(ClientConnection * const) const;
+  /** No descriptions */
+  void notifyListeners(Message &);
 };
 
 #endif

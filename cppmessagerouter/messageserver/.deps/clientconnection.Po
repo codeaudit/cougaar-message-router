@@ -119,7 +119,8 @@ clientconnection.o clientconnection.o: clientconnection.cpp \
   /usr/include/c++/3.2/typeinfo /usr/include/c++/3.2/istream \
   /usr/include/c++/3.2/bits/istream.tcc SocketException.h \
   /usr/include/c++/3.2/vector /usr/include/c++/3.2/bits/stl_vector.h \
-  /usr/include/c++/3.2/bits/stl_bvector.h context.h connectionregistry.h
+  /usr/include/c++/3.2/bits/stl_bvector.h context.h connectionregistry.h \
+  listenerregistry.h
 
 clientconnection.h:
 
@@ -510,3 +511,5 @@ SocketException.h:
 context.h:
 
 connectionregistry.h:
+
+listenerregistry.h:

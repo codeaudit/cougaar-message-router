@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.4 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.5 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -237,14 +237,14 @@ x_libraries = /usr/X11R6/lib
 
 bin_PROGRAMS = messageserver
 
-messageserver_SOURCES = messagesender.cpp connectionregistry.cpp context.cpp message.cpp main.cpp Socket.cpp ServerSocket.cpp ClientSocket.cpp clientconnection.cpp 
-SOURCES = messagesender.cpp connectionregistry.cpp context.cpp message.cpp main.cpp Socket.cpp ServerSocket.cpp ClientSocket.cpp clientconnection.cpp 
+messageserver_SOURCES = listenerregistry.cpp messagesender.cpp connectionregistry.cpp context.cpp message.cpp main.cpp Socket.cpp ServerSocket.cpp ClientSocket.cpp clientconnection.cpp 
+SOURCES = listenerregistry.cpp messagesender.cpp connectionregistry.cpp context.cpp message.cpp main.cpp Socket.cpp ServerSocket.cpp ClientSocket.cpp clientconnection.cpp 
 INTERFACES = 
 TRANSLATIONS = 
 KDE_OPTIONS = qtonly
 messageserver_LDADD = $(LIB_QPE) $(LIB_QT) $(LIBSOCKET)
 
-EXTRA_DIST = clientconnection.cpp clientconnection.h ClientSocket.cpp ClientSocket.h ServerSocket.cpp ServerSocket.h Socket.cpp SocketException.h Socket.h main.cpp message.cpp message.h context.cpp context.h connectionregistry.cpp connectionregistry.h messagesender.cpp messagesender.h 
+EXTRA_DIST = clientconnection.cpp clientconnection.h ClientSocket.cpp ClientSocket.h ServerSocket.cpp ServerSocket.h Socket.cpp SocketException.h Socket.h main.cpp message.cpp message.h context.cpp context.h connectionregistry.cpp connectionregistry.h messagesender.cpp messagesender.h listenerregistry.cpp listenerregistry.h 
 
 ####### kdevelop will overwrite this part!!! (end)############
 
@@ -265,18 +265,18 @@ CONFIG_CLEAN_FILES =
 bin_PROGRAMS = messageserver$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
-am_messageserver_OBJECTS = messagesender.$(OBJEXT) \
-	connectionregistry.$(OBJEXT) context.$(OBJEXT) \
-	message.$(OBJEXT) main.$(OBJEXT) Socket.$(OBJEXT) \
-	ServerSocket.$(OBJEXT) ClientSocket.$(OBJEXT) \
+am_messageserver_OBJECTS = listenerregistry.$(OBJEXT) \
+	messagesender.$(OBJEXT) connectionregistry.$(OBJEXT) \
+	context.$(OBJEXT) message.$(OBJEXT) main.$(OBJEXT) \
+	Socket.$(OBJEXT) ServerSocket.$(OBJEXT) ClientSocket.$(OBJEXT) \
 	clientconnection.$(OBJEXT)
 #>- messageserver_OBJECTS = $(am_messageserver_OBJECTS)
 #>+ 8
 messageserver_final_OBJECTS = messageserver.all_cpp.o 
-messageserver_nofinal_OBJECTS = messagesender.$(OBJEXT) \
-	connectionregistry.$(OBJEXT) context.$(OBJEXT) \
-	message.$(OBJEXT) main.$(OBJEXT) Socket.$(OBJEXT) \
-	ServerSocket.$(OBJEXT) ClientSocket.$(OBJEXT) \
+messageserver_nofinal_OBJECTS = listenerregistry.$(OBJEXT) \
+	messagesender.$(OBJEXT) connectionregistry.$(OBJEXT) \
+	context.$(OBJEXT) message.$(OBJEXT) main.$(OBJEXT) \
+	Socket.$(OBJEXT) ServerSocket.$(OBJEXT) ClientSocket.$(OBJEXT) \
 	clientconnection.$(OBJEXT)
 messageserver_OBJECTS = $(messageserver_nofinal_OBJECTS)
 #messageserver_OBJECTS = $(messageserver_final_OBJECTS)
@@ -292,21 +292,24 @@ depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
 #>- 	$(DEPDIR)/ServerSocket.Po $(DEPDIR)/Socket.Po \
 #>- 	$(DEPDIR)/clientconnection.Po \
 #>- 	$(DEPDIR)/connectionregistry.Po \
-#>- 	$(DEPDIR)/context.Po $(DEPDIR)/main.Po \
-#>- 	$(DEPDIR)/message.Po $(DEPDIR)/messagesender.Po
-#>+ 13
+#>- 	$(DEPDIR)/context.Po $(DEPDIR)/listenerregistry.Po \
+#>- 	$(DEPDIR)/main.Po $(DEPDIR)/message.Po \
+#>- 	$(DEPDIR)/messagesender.Po
+#>+ 15
 #DEP_FILES =   $(DEPDIR)/messageserver.all_cpp.P  $(DEPDIR)/ClientSocket.Po \
 		$(DEPDIR)/ServerSocket.Po $(DEPDIR)/Socket.Po \
 		$(DEPDIR)/clientconnection.Po \
 		$(DEPDIR)/connectionregistry.Po \
-		$(DEPDIR)/context.Po $(DEPDIR)/main.Po \
-		$(DEPDIR)/message.Po $(DEPDIR)/messagesender.Po
+		$(DEPDIR)/context.Po $(DEPDIR)/listenerregistry.Po \
+		$(DEPDIR)/main.Po $(DEPDIR)/message.Po \
+		$(DEPDIR)/messagesender.Po
 DEP_FILES =   $(DEPDIR)/ClientSocket.Po \
 		$(DEPDIR)/ServerSocket.Po $(DEPDIR)/Socket.Po \
 		$(DEPDIR)/clientconnection.Po \
 		$(DEPDIR)/connectionregistry.Po \
-		$(DEPDIR)/context.Po $(DEPDIR)/main.Po \
-		$(DEPDIR)/message.Po $(DEPDIR)/messagesender.Po
+		$(DEPDIR)/context.Po $(DEPDIR)/listenerregistry.Po \
+		$(DEPDIR)/main.Po $(DEPDIR)/message.Po \
+		$(DEPDIR)/messagesender.Po
 
 #>- CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 #>- $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -329,7 +332,7 @@ CXXLINK = $(LIBTOOL) --mode=link --tag=CXX $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $
 CXXFLAGS = -Wnon-virtual-dtor -Wno-long-long -Wbad-function-cast -Wundef -Wall -pedantic -W -Wpointer-arith -Wmissing-prototypes -Wwrite-strings -ansi -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -Wcast-align -Wconversion -O2 -O1 -Wall -fno-exceptions -fno-check-new -fexceptions
 DIST_SOURCES = $(messageserver_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = messagesender.cpp connectionregistry.cpp context.cpp message.cpp main.cpp Socket.cpp ServerSocket.cpp ClientSocket.cpp clientconnection.cpp 
+SOURCES = listenerregistry.cpp messagesender.cpp connectionregistry.cpp context.cpp message.cpp main.cpp Socket.cpp ServerSocket.cpp ClientSocket.cpp clientconnection.cpp 
 
 #>- all: all-am
 #>+ 1
@@ -397,6 +400,7 @@ include $(DEPDIR)/Socket.Po
 include $(DEPDIR)/clientconnection.Po
 include $(DEPDIR)/connectionregistry.Po
 include $(DEPDIR)/context.Po
+include $(DEPDIR)/listenerregistry.Po
 include $(DEPDIR)/main.Po
 include $(DEPDIR)/message.Po
 include $(DEPDIR)/messagesender.Po
@@ -456,7 +460,12 @@ GTAGS:
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH
 
-DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+#>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+#>+ 4
+KDE_DIST=messageserver 
+
+DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
+
 
 top_distdir = ..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
@@ -577,11 +586,11 @@ force-reedit:
 
 
 #>+ 11
-messageserver.all_cpp.cpp: $(srcdir)/Makefile.in  $(srcdir)/messagesender.cpp $(srcdir)/connectionregistry.cpp $(srcdir)/context.cpp $(srcdir)/message.cpp $(srcdir)/main.cpp $(srcdir)/Socket.cpp $(srcdir)/ServerSocket.cpp $(srcdir)/ClientSocket.cpp $(srcdir)/clientconnection.cpp 
+messageserver.all_cpp.cpp: $(srcdir)/Makefile.in  $(srcdir)/listenerregistry.cpp $(srcdir)/messagesender.cpp $(srcdir)/connectionregistry.cpp $(srcdir)/context.cpp $(srcdir)/message.cpp $(srcdir)/main.cpp $(srcdir)/Socket.cpp $(srcdir)/ServerSocket.cpp $(srcdir)/ClientSocket.cpp $(srcdir)/clientconnection.cpp 
 	@echo 'creating messageserver.all_cpp.cpp ...'; \
 	rm -f messageserver.all_cpp.files messageserver.all_cpp.final; \
 	echo "#define KDE_USE_FINAL 1" >> messageserver.all_cpp.final; \
-	for file in messagesender.cpp connectionregistry.cpp context.cpp message.cpp main.cpp Socket.cpp ServerSocket.cpp ClientSocket.cpp clientconnection.cpp ; do \
+	for file in listenerregistry.cpp messagesender.cpp connectionregistry.cpp context.cpp message.cpp main.cpp Socket.cpp ServerSocket.cpp ClientSocket.cpp clientconnection.cpp ; do \
 	  echo "#include \"$$file\"" >> messageserver.all_cpp.files; \
 	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> messageserver.all_cpp.final; \
 	done; \

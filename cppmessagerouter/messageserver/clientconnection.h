@@ -46,6 +46,7 @@ public:
   /** No descriptions */
   MessageList& getMessages();
   void pack(char *src, int srcStartPos, int srcLength, char *dest, int destStartPos);
+  const bool operator == (const ClientConnection& right); 
 
 public:
   /**  */

@@ -108,7 +108,7 @@ install_location=
 type=HEADER
 
 [messageserver/Makefile.am]
-files=messageserver/clientconnection.cpp,messageserver/clientconnection.h,messageserver/ClientSocket.cpp,messageserver/ClientSocket.h,messageserver/ServerSocket.cpp,messageserver/ServerSocket.h,messageserver/Socket.cpp,messageserver/SocketException.h,messageserver/Socket.h,messageserver/main.cpp,messageserver/message.cpp,messageserver/message.h,messageserver/context.cpp,messageserver/context.h,messageserver/connectionregistry.cpp,messageserver/connectionregistry.h,messageserver/messagesender.cpp,messageserver/messagesender.h
+files=messageserver/clientconnection.cpp,messageserver/clientconnection.h,messageserver/ClientSocket.cpp,messageserver/ClientSocket.h,messageserver/ServerSocket.cpp,messageserver/ServerSocket.h,messageserver/Socket.cpp,messageserver/SocketException.h,messageserver/Socket.h,messageserver/main.cpp,messageserver/message.cpp,messageserver/message.h,messageserver/context.cpp,messageserver/context.h,messageserver/connectionregistry.cpp,messageserver/connectionregistry.h,messageserver/messagesender.cpp,messageserver/messagesender.h,messageserver/listenerregistry.cpp,messageserver/listenerregistry.h
 sub_dirs=
 type=prog_main
 
@@ -185,6 +185,18 @@ type=normal
 [messageserver/docs/en/Makefile.am]
 sub_dirs=
 type=normal
+
+[messageserver/listenerregistry.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[messageserver/listenerregistry.h]
+dist=true
+install=false
+install_location=
+type=HEADER
 
 [messageserver/main.cpp]
 dist=true
