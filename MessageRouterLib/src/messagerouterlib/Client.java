@@ -18,14 +18,13 @@ import java.util.List;
 
 public class Client extends JFrame
     implements AsyncMessageReceiverListener {
-  //SortedListModel onlineUsers = new SortedListModel();
-  DefaultListModel onlineUsers = new DefaultListModel();
+  SortedListModel onlineUsers = new SortedListModel();
+  //DefaultListModel onlineUsers = new DefaultListModel();
   History msgHistory = new History();
   History subjectHistory = new History();
 
   JSplitPane jSplitPane1 = new JSplitPane();
   BorderLayout borderLayout1 = new BorderLayout();
-  JTextArea jTextAreaSendMessages = new JTextArea();
   JPanel jPanel1 = new JPanel();
   JLabel jLabelServer = new JLabel();
   JTextField jTextFieldServer = new JTextField();
@@ -46,7 +45,6 @@ public class Client extends JFrame
   JTextField jTextFieldSendSubject = new JTextField();
   Border border5;
   TitledBorder titledBorder3;
-  JScrollPane jScrollPaneSendMessages = new JScrollPane();
   Border border6;
   TitledBorder titledBorder4;
   BorderLayout borderLayout2 = new BorderLayout();
@@ -64,6 +62,9 @@ public class Client extends JFrame
   JTextPane jTextPaneDisplayMessages = new JTextPane();
   SimpleAttributeSet incomingMsgAttrSet;
   SimpleAttributeSet outgoingMsgAttrSet;
+  JTextField jTextFieldSendMessages = new JTextField();
+  Border border9;
+  TitledBorder titledBorder7;
 
   public Client() {
     try {
@@ -99,15 +100,12 @@ public class Client extends JFrame
     titledBorder5 = new TitledBorder(border7,"Messages");
     border8 = new EtchedBorder(EtchedBorder.RAISED,Color.white,new Color(165, 163, 151));
     titledBorder6 = new TitledBorder(border8,"Online Users");
+    border9 = new EtchedBorder(EtchedBorder.RAISED,Color.white,new Color(178, 178, 178));
+    titledBorder7 = new TitledBorder(border9,"Send Message");
     this.getContentPane().setLayout(borderLayout1);
     jSplitPane1.setOrientation(JSplitPane.VERTICAL_SPLIT);
     jSplitPane1.setBorder(border1);
     jSplitPane1.setLastDividerLocation(250);
-    jSplitPane1.setRightComponent(jTextAreaSendMessages);
-    jTextAreaSendMessages.setBorder(null);
-    jTextAreaSendMessages.setToolTipText("");
-    jTextAreaSendMessages.setLineWrap(true);
-    jTextAreaSendMessages.addKeyListener(new Client_jTextAreaSendMessages_keyAdapter(this));
     jLabelServer.setRequestFocusEnabled(true);
     jLabelServer.setText("Server");
     jLabelUserId.setText("User Id");
@@ -126,7 +124,6 @@ public class Client extends JFrame
     jTextFieldSendSubject.setBorder(titledBorder3);
     jTextFieldSendSubject.setText("");
     jTextFieldSendSubject.addKeyListener(new Client_jTextFieldSendSubject_keyAdapter(this));
-    jScrollPaneSendMessages.setBorder(titledBorder4);
     jSplitPane2.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
     jScrollPane1.setBorder(titledBorder5);
     jScrollPane2.setBorder(titledBorder6);
@@ -138,14 +135,16 @@ public class Client extends JFrame
     jToggleButtonConnect.setText("Connect");
     jToggleButtonConnect.addActionListener(new Client_jToggleButtonConnect_actionAdapter(this));
     jTextPaneDisplayMessages.setEditable(false);
-    jPanelSendMessages.add(jTextFieldSendSubject, BorderLayout.NORTH);
-    jPanelSendMessages.add(jScrollPaneSendMessages, BorderLayout.CENTER);
+    jTextFieldSendMessages.setBorder(titledBorder7);
+    jTextFieldSendMessages.setToolTipText("");
+    jTextFieldSendMessages.addKeyListener(new Client_jTextFieldSendMessages_keyAdapter(this));
+    jPanelSendMessages.add(jTextFieldSendSubject,  BorderLayout.NORTH);
+    jPanelSendMessages.add(jTextFieldSendMessages, BorderLayout.SOUTH);
     jSplitPane1.add(jSplitPane2, JSplitPane.TOP);
     jSplitPane2.add(jScrollPane1, JSplitPane.TOP);
     jScrollPane1.getViewport().add(jTextPaneDisplayMessages, null);
     jSplitPane2.add(jScrollPane2, JSplitPane.BOTTOM);
     jScrollPane2.getViewport().add(jListOnlineUsers, null);
-    jScrollPaneSendMessages.getViewport().add(jTextAreaSendMessages, null);
     this.getContentPane().add(jSplitPane1,  BorderLayout.CENTER);
     jSplitPane1.add(jPanelSendMessages, JSplitPane.BOTTOM);
     this.getContentPane().add(jPanel1, BorderLayout.NORTH);
@@ -176,24 +175,6 @@ public class Client extends JFrame
   }
 
 
-  void jTextAreaSendMessages_keyTyped(KeyEvent e) {
-    if (e.getKeyChar() == '\n') {
-      //strip off the \n
-      String body = jTextAreaSendMessages.getText().substring(0, jTextAreaSendMessages.getText().length()-1);
-      if (session != null && session.isConnected()) {
-        session.postMessage(jTextFieldTargetUser.getText(),
-                            jTextFieldSendSubject.getText(),
-                            body);
-        displayMessage(jTextFieldSendSubject.getText(), jTextFieldTargetUser.getText(), body, outgoingMsgAttrSet);
-      }
-      msgHistory.add(body);
-      subjectHistory.add(jTextFieldSendSubject.getText());
-      msgHistory.add(jTextAreaSendMessages.getText());
-      subjectHistory.add(jTextFieldSendSubject.getText());
-      jTextAreaSendMessages.setText("");
-      jTextFieldSendSubject.setText("");
-    }
-  }
 
   public void receiveMsg(Message msg) {
     //System.out.println(msg.getSubject() + " : " + msg.getBody());
@@ -235,12 +216,6 @@ public class Client extends JFrame
       displayMessage(text, as);
   }
 
-  void jTextFieldSendSubject_keyTyped(KeyEvent e) {
-    if (e.getKeyChar() == '\n') {
-      jTextAreaSendMessages.requestFocus();
-    }
-
-  }
 
   void jToggleButtonRegister_actionPerformed(ActionEvent e) {
     if (jToggleButtonRegister.isSelected()) {
@@ -308,7 +283,7 @@ public class Client extends JFrame
     if (e.getClickCount() == 2) {
       jTextFieldTargetUser.setText((String)jListOnlineUsers.getSelectedValue());
       Flasher.instance().flashBackground(jTextFieldTargetUser, Color.yellow, 2);
-      jTextAreaSendMessages.requestFocus();
+      jTextFieldSendMessages.requestFocus();
     }
   }
 
@@ -345,17 +320,43 @@ public class Client extends JFrame
     jToggleButtonRegister.setText("Register");
   }
 
-  void jTextAreaSendMessages_keyPressed(KeyEvent e) {
+  void jTextFieldSendMessages_keyPressed(KeyEvent e) {
     if(e.getKeyCode() == e.VK_DOWN) {
       String s = msgHistory.forward();
       if (s != null) {
-        jTextAreaSendMessages.setText(s);
+        jTextFieldSendMessages.setText(s);
       }
     }
     else if (e.getKeyCode() == e.VK_UP) {
       String s = msgHistory.back();
       if (s != null) {
-        jTextAreaSendMessages.setText(s);
+        jTextFieldSendMessages.setText(s);
+      }
+    }
+    else if (e.getKeyChar() == '\n') {
+      String body = jTextFieldSendMessages.getText();
+      if (body.length() > 0) {
+        if (body.charAt(body.length() - 1) == '\n') body = body.substring(0,
+            body.length() - 1);
+        String subject = jTextFieldSendSubject.getText();
+        if (subject.length() > 0) {
+          if (subject.charAt(subject.length() - 1) == '\n') subject = subject.
+              substring(0, subject.length() - 1);
+        }
+        if (session != null && session.isConnected()) {
+          session.postMessage(jTextFieldTargetUser.getText(),
+                              subject,
+                              body);
+          displayMessage(subject,
+                         jTextFieldTargetUser.getText(), body,
+                         outgoingMsgAttrSet);
+        }
+        msgHistory.add(body);
+        subjectHistory.add(subject);
+        subjectHistory.reset();
+        msgHistory.reset();
+        jTextFieldSendMessages.setText("");
+        jTextFieldSendSubject.setText("");
       }
     }
 
@@ -374,9 +375,11 @@ public class Client extends JFrame
         jTextFieldSendSubject.setText(s);
       }
     }
+    else if (e.getKeyChar() == '\n') {
+      jTextFieldSendMessages.requestFocus();
+    }
+
   }
-
-
 
 }
 
@@ -426,28 +429,11 @@ class Flasher extends Thread {
   }
 }
 
-class Client_jTextAreaSendMessages_keyAdapter extends java.awt.event.KeyAdapter {
-  Client adaptee;
-
-  Client_jTextAreaSendMessages_keyAdapter(Client adaptee) {
-    this.adaptee = adaptee;
-  }
-  public void keyTyped(KeyEvent e) {
-    adaptee.jTextAreaSendMessages_keyTyped(e);
-  }
-  public void keyPressed(KeyEvent e) {
-    adaptee.jTextAreaSendMessages_keyPressed(e);
-  }
-}
-
 class Client_jTextFieldSendSubject_keyAdapter extends java.awt.event.KeyAdapter {
   Client adaptee;
 
   Client_jTextFieldSendSubject_keyAdapter(Client adaptee) {
     this.adaptee = adaptee;
-  }
-  public void keyTyped(KeyEvent e) {
-    adaptee.jTextFieldSendSubject_keyTyped(e);
   }
   public void keyPressed(KeyEvent e) {
     adaptee.jTextFieldSendSubject_keyPressed(e);
@@ -501,25 +487,26 @@ class Client_jToggleButtonConnect_actionAdapter implements java.awt.event.Action
 
 
 class History {
-   ArrayList list;
+   Vector list;
    int pos = 0;
 
 
    public History() {
-     list = new ArrayList();
+     list = new Vector();
    }
 
    public String forward() {
-     if (!list.isEmpty()) {
-       return (String)list.get(pos++);
+     if (!list.isEmpty() && pos > 0) {
+       return (String)list.get(--pos);
      }
      return null;
    }
 
    public String back() {
      if (!list.isEmpty()) {
-       pos = pos>0?--pos:0;
-       return (String)list.get(pos);
+       String ret = (String)list.elementAt(pos);
+       if (pos < (list.size()-1)) pos++;
+       return ret;
      }
      return null;
 
@@ -530,7 +517,7 @@ class History {
    }
 
    public void add(String s) {
-     list.add(s);
+     list.insertElementAt(s, 0);
    }
  }
 
@@ -568,6 +555,17 @@ class History {
           }
       }
       super.add(i,o);
+  }
+}
+
+class Client_jTextFieldSendMessages_keyAdapter extends java.awt.event.KeyAdapter {
+  Client adaptee;
+
+  Client_jTextFieldSendMessages_keyAdapter(Client adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void keyPressed(KeyEvent e) {
+    adaptee.jTextFieldSendMessages_keyPressed(e);
   }
 }
 
