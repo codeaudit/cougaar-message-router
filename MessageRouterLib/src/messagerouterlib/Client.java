@@ -294,6 +294,11 @@ public class Client extends JFrame
       displayMessage(text, as);
   }
 
+  private void displaySendMessage(String subject, String to, String body, AttributeSet as) {
+    String text = "TO: " + to + " - " + subject + " : " + body;
+    displayMessage(text, as);
+  }
+
 
   void jToggleButtonRegister_actionPerformed(ActionEvent e) {
     if (session == null || !session.isConnected()) {
@@ -442,8 +447,8 @@ public class Client extends JFrame
           session.postMessage(jTextFieldTargetUser.getText(),
                               subject,
                               body);
-          displayMessage(subject,
-                         jTextFieldUser.getText(), body,
+          displaySendMessage(subject,
+                         jTextFieldTargetUser.getText(), body,
                          outgoingMsgAttrSet);
         }
         msgHistory.add(body);
