@@ -328,7 +328,10 @@ void ClientConnection::routeMessage(Message& msg){
   ClientConnection *targetConnection = Context::getInstance()->getconnectionRegistry()->getConnection(msg.getto());
   if (targetConnection != NULL) {
     if (!targetConnection->isClosing) {
-      targetConnection->sendMessage(msg);
+      //check to see if the routingProfileMap entry needs to be initialized
+      if (routingProfileMap.find(msg.getto()) == routingProfileMap.end()) {
+        routingProfileMap[msg.getto()] = 0;
+      }
       routingProfileMap[msg.getto()]++;
     }
     else {
