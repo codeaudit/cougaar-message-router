@@ -35,12 +35,12 @@ void Logger::log(string& msg) const {
 void Logger::forceLog(const char *msg) const {
   time_t now;
   struct tm *l_time;
-  char str[20];
+  char str[30];
 
   time(&now);
   l_time = localtime(&now);
   strftime(str, sizeof str, "%d-%b-%Y %H:%M:%S", l_time);
-  printf("%s  - %s\n", str, msg);
+  printf("%s - %s\n", str, msg);
   cout << flush;
 }
    
@@ -50,7 +50,7 @@ void Logger::log(const char *msg) const {
   
   time_t now;
   struct tm *l_time;
-  char str[20];
+  char str[30];
 
   time(&now);
   l_time = localtime(&now);
@@ -64,7 +64,7 @@ void Logger::log(const char  *subject, const char *msg) const {
 
   time_t now;
   struct tm *l_time;
-  char str[20];
+  char str[30];
 
   time(&now);
   l_time = localtime(&now);
@@ -78,7 +78,7 @@ void Logger::log(const char *from, const char* to, const char *subject, const ch
 
   time_t now;
   struct tm *l_time;
-  char str[20];
+  char str[30];
 
   time(&now);
   l_time = localtime(&now);

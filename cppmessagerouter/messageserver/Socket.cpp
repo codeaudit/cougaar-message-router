@@ -167,7 +167,7 @@ int Socket::recv ( std::string& s ) const
 }
 
 int Socket::recv ( char* c, int size) const {
-  recv(c, size, true);
+  return recv(c, size, true);
 }
 
 int Socket::recv ( char* c, int size, bool wait ) const
