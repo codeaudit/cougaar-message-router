@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5096
-#define VERSION "MessageRouter 1.7.48"
+#define VERSION "MessageRouter 1.7.49"
  
 #include "clientconnection.h"
 #include <iostream.h>
@@ -331,8 +331,8 @@ void ClientConnection::routeMessage(Message& msg){
   ClientConnection *targetConnection = Context::getInstance()->getconnectionRegistry()->getConnection(msg.getto());
   if (targetConnection != NULL) {
     if (!targetConnection->isClosing) {
+      routingProfileMap[msg.getto()]++;
       targetConnection->sendMessage(msg);
-      routingProfileMap[msg.getto().c_str()]++;
     }
     else {
       delete &msg;
