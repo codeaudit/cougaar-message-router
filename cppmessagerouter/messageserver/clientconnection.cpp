@@ -48,6 +48,7 @@ ClientConnection::ClientConnection(ServerSocket* sock, bool blockread){
   packetBufferPos = 0;
   packetBufferSize = 0;
   validationCount = 0;
+  isClosed = false;
 }
 
 ClientConnection::~ClientConnection(){
@@ -128,6 +129,7 @@ void ClientConnection::close() {
     sender->wait(2000);
     delete sender;
   }
+  isClosed = true;
   return;
 }
 
@@ -219,7 +221,7 @@ Message* ClientConnection::getMessage(){
     //msg->setMessageData(messagedata);
   //}
   
-  delete packetData;
+    delete packetData;
   
   return msg;
 }

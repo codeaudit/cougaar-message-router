@@ -60,6 +60,7 @@ public:
   /**  */
   string name;
   bool keepRunning;
+  bool isClosed;
 
 private: // Private attributes
   /**  */

@@ -1,2 +1,6 @@
+Version 1.5
+29 Apr 04
+Modified the ConnectionRegistry::findConnection() method so that it checks the count of registered connections for a given name before trying to retrieve the connection.  This is because the reference mechanism in the std::map class will create a default object of one does not exist upon dereference.  
+Placed the MessageSender::sendMessage() method in a semaphore block to prevent thread contention.
 28 Apr 04 
 Modified to prevent duplicate user ids from being connected at the same time.
