@@ -113,7 +113,7 @@ void ServerStats::run() {
   while (keepRunning) {
     msleep(SLEEP_INTERVAL);
     //cout << "Server stats waking up..." <<  endl << flush;
-    //resetLock.lock();  //make sure we can't reset while in the middle of a run
+    resetLock.lock();  //make sure we can't reset while in the middle of a run
     
     diffQueue[cycleCount] = incomingMsgCount - prevCount;
     prevCount = incomingMsgCount;
