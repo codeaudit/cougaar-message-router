@@ -230,6 +230,7 @@ void ClientConnection::routeMessage(Message& msg){
     reply->setsubject("ERROR");
     reply->setto(msg.getfrom());
     reply->setbody("Unknown client: " + msg.getto());
+    reply->setthread(msg.getthread());
     sendMessage(*reply);
   }
 }
