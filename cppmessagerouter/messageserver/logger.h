@@ -53,6 +53,7 @@ public:  // Public attributes
 
 private:  //private methods
   string getLevelStr(int level) const;
+  char * getCurrentTimeStr(char*, unsigned int len) const;
     
 private: // Private attributes
   /**  */

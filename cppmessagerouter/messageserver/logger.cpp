@@ -41,6 +41,16 @@ void Logger::log(string& msg, int level) const {
   log(msg.c_str(), level);
 }
 
+char * Logger::getCurrentTimeStr(char* str, unsigned int len) const {
+  time_t now;
+  struct tm *l_time;
+
+  time(&now);
+  l_time = localtime(&now);
+  strftime(str, len, "%d-%b-%Y %H:%M:%S", l_time);
+  return str;
+}
+
 string Logger::getLevelStr(int level) const {
   switch (level) {
     case LEVEL_INFO:
@@ -58,14 +68,8 @@ string Logger::getLevelStr(int level) const {
 
 //does not check the enabled flag
 void Logger::forceLog(const char *msg) const {
-  time_t now;
-  struct tm *l_time;
   char str[30];
-
-  time(&now);
-  l_time = localtime(&now);
-  strftime(str, sizeof str, "%d-%b-%Y %H:%M:%S", l_time);
-  printf("%s - %s\n", str, msg);
+  printf("%s - %s\n", getCurrentTimeStr((char *)str, sizeof(str)), msg);
   cout << flush;
 }
    
@@ -74,14 +78,9 @@ void Logger::log(const char *msg, int level) const {
   if (!enabled) return;
   if (level < currentLevel) return;
   
-  time_t now;
-  struct tm *l_time;
   char str[30];
 
-  time(&now);
-  l_time = localtime(&now);
-  strftime(str, sizeof str, "%d-%b-%Y %H:%M:%S", l_time);
-  printf("%s  - %s: %s\n", str, getLevelStr(level).c_str(), msg);
+  printf("%s  - %s: %s\n", getCurrentTimeStr((char *)str, sizeof(str)), getLevelStr(level).c_str(), msg);
   cout << flush;
 }
 
@@ -89,14 +88,8 @@ void Logger::log(const char  *subject, const char *msg, int level) const {
   if (!enabled) return;
   if (level < currentLevel) return;
 
-  time_t now;
-  struct tm *l_time;
   char str[30];
-
-  time(&now);
-  l_time = localtime(&now);
-  strftime(str, sizeof str, "%d-%b-%Y %H:%M:%S", l_time);
-  printf("%s  - %s: %s : %s\n", str, getLevelStr(level).c_str(), subject, msg);
+  printf("%s  - %s: %s : %s\n", getCurrentTimeStr((char *)str, sizeof(str)), getLevelStr(level).c_str(), subject, msg);
   cout << flush;
 }
 
@@ -104,14 +97,8 @@ void Logger::log(const char *from, const char* to, const char *subject, const ch
   if (!enabled) return;
   if (level < currentLevel) return;
 
-  time_t now;
-  struct tm *l_time;
   char str[30];
-
-  time(&now);
-  l_time = localtime(&now);
-  strftime(str, sizeof str, "%d-%b-%Y %H:%M:%S", l_time);
-  printf("%s  - %s: from: %s - to: %s - %s : %s\n", str, getLevelStr(level).c_str(), from, to, subject, msg);
+  printf("%s  - %s: from: %s - to: %s - %s : %s\n", getCurrentTimeStr((char *)str, sizeof(str)), getLevelStr(level).c_str(), from, to, subject, msg);
   cout << flush;
 }
 
