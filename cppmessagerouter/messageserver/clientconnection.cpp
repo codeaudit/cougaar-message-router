@@ -41,7 +41,7 @@ void printbuffer(char *buf, int size) {
   }
 }
 
-static const int CMD_SIZE = 22;
+static const int CMD_SIZE = 25;
 static const string CMD_LIST[CMD_SIZE] = {"list - get a list of connected clients",
                     "register - register for online/offlien updates for all clients",
                     "deregister - deregister for online/offline updates",
