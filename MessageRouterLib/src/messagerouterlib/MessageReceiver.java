@@ -168,7 +168,7 @@ public class MessageReceiver extends Thread {
 
       }
       catch (SocketException se) {
-        System.out.println("Socket exception in Receiver");
+        //System.out.println("Socket exception in Receiver");
         break;  // break out of the loop
       }
       catch (IOException ex) {

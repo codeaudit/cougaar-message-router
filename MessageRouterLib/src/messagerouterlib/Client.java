@@ -398,9 +398,7 @@ public class Client extends JFrame
             }
             Thread.currentThread().sleep(2000);
           }
-
         }
-
       }
 
       catch (Exception e) {
@@ -409,7 +407,7 @@ public class Client extends JFrame
     }
     else {
       Client client = new Client();
-      client.setSize(800, 400);
+      client.setSize(800, 420);
       center(client);
       client.show();
     }

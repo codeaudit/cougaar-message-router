@@ -19,11 +19,11 @@ public class Message {
   }
 
   public String getSubject() {
-    return subject;
+    return subject==null?"":subject;
   }
 
   public String getBody() {
-    return body;
+    return body==null?"":body;
   }
 
   public void setFrom(String s) {

@@ -53,4 +53,11 @@
     <property category="archiving" name="targetPath" value="MessageRouterLib.jar"/>
     <property category="archiving" name="usingRules" value="1"/>
   </node>
+  <node name="ServerTest" type="Archive">
+    <property category="archiving" name="archiverClass" value="com.borland.jbuilder.wizard.archive.ApplicationArchiver"/>
+    <property category="archiving" name="contentRules.1" value="I:**/*.*"/>
+    <property category="archiving" name="manifestMainClass" value="messagerouterlib.ServerTest"/>
+    <property category="archiving" name="targetPath" value="ServerTest.jar"/>
+    <property category="archiving" name="usingRules" value="1"/>
+  </node>
 </project>
