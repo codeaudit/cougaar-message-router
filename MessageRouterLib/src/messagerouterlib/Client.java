@@ -13,7 +13,6 @@ public class Client extends JFrame
   DefaultListModel onlineUsers = new DefaultListModel();
   JSplitPane jSplitPane1 = new JSplitPane();
   BorderLayout borderLayout1 = new BorderLayout();
-  JTextArea jTextAreaDisplayMessages = new JTextArea();
   JTextArea jTextAreaSendMessages = new JTextArea();
   JPanel jPanel1 = new JPanel();
   JLabel jLabelServer = new JLabel();
@@ -51,6 +50,7 @@ public class Client extends JFrame
   TitledBorder titledBorder6;
   JToggleButton jToggleButtonRegister = new JToggleButton();
   JButton jButtonMultiConnect = new JButton();
+  JTextArea jTextAreaDisplayMessages = new JTextArea();
 
   public Client() {
     try {
@@ -80,9 +80,6 @@ public class Client extends JFrame
     jSplitPane1.setBorder(border1);
     jSplitPane1.setLastDividerLocation(250);
     jSplitPane1.setRightComponent(jTextAreaSendMessages);
-    jTextAreaDisplayMessages.setEnabled(false);
-    jTextAreaDisplayMessages.setPreferredSize(new Dimension(75, 17));
-    jTextAreaDisplayMessages.setText("");
     jTextAreaSendMessages.setBorder(null);
     jTextAreaSendMessages.setToolTipText("");
     jTextAreaSendMessages.setLineWrap(true);
@@ -117,6 +114,8 @@ public class Client extends JFrame
     jToggleButtonRegister.addActionListener(new Client_jToggleButtonRegister_actionAdapter(this));
     jButtonMultiConnect.setText("Multi-Connect");
     jButtonMultiConnect.addActionListener(new Client_jButtonMultiConnect_actionAdapter(this));
+    jTextAreaDisplayMessages.setEditable(false);
+    jTextAreaDisplayMessages.setText("");
     jPanelSendMessages.add(jTextFieldSendSubject, BorderLayout.NORTH);
     jPanelSendMessages.add(jScrollPaneSendMessages, BorderLayout.CENTER);
     jSplitPane1.add(jSplitPane2, JSplitPane.TOP);
@@ -201,8 +200,10 @@ public class Client extends JFrame
       onlineUsers.removeElement(msg.getBody());
     }
     else {
+      subject = subject == null?"":subject;
+      String from = msg.getFrom() == null?"server":msg.getFrom();
       String body = msg.getBody()!=null?msg.getBody():"";
-      jTextAreaDisplayMessages.append(msg.getSubject() + " : " + body);
+      jTextAreaDisplayMessages.append("FROM: " + from + " - " + subject + " : " + body);
       if (!body.endsWith("\n")) jTextAreaDisplayMessages.append("\n");
     }
   }
