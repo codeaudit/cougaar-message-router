@@ -233,5 +233,5 @@ void Logger::addLogEntry(LogEntry* entry) {
 }
 
 void Logger::setLogFilePath(const char *path) {
-  pLogFileName = path;
+  pLogFileName = (char *)path;
 }

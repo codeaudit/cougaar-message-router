@@ -635,6 +635,12 @@ bool ClientConnection::handleMessage(Message& msg){
       Context::getInstance()->logToStdout();
       reply->setsubject("logging to stdout");
     }
+    else if (subject == "get connection stats") {
+       reply->setsubject("connection stats");
+       string& stats = Context::getInstance()->getconnectionRegistry()->getConnectionStatsStr();
+       reply->setbody(stats);
+       delete &stats;
+    }
     else if (subject == "help") {
       reply->setsubject("COMMAND LIST");
       string body = "\n";
@@ -778,6 +784,18 @@ const bool ClientConnection::operator== (const ClientConnection& right) {
 
 string& ClientConnection::getSendQueueStats() {
   return sender->getStats();  
+}
+
+time_t ClientConnection::getStartTime() {
+  return startTime;
+}
+
+unsigned int ClientConnection::getIncomingMsgCount() {
+  return incomingMsgCount;
+}
+
+unsigned int ClientConnection::getOutgoingMsgCount() {
+  return outgoingMsgCount;
 }
 
 

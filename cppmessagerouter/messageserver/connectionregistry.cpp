@@ -139,3 +139,47 @@ void ConnectionRegistry::broadcastMessage(Message& msg) {
 int ConnectionRegistry::getConnectionCount() {
   return clientMap.size();
 }
+
+string& ConnectionRegistry::getConnectionStatsStr() {
+   string *ret = new string("\n");
+   struct tm *l_time;
+   char tmpBuffer[256];
+   char timestr[30];
+   unsigned long int uptime;
+   unsigned long int days, hours, mins, secs;
+   time_t now;
+
+   time(&now);
+ 
+   if (!clientMap.empty()) {
+    ConnectionMap::iterator pos;
+    pos = clientMap.begin();
+    while (pos != clientMap.end()) {
+      if (clientMap[pos->first] != NULL) {
+         time_t startTime = clientMap[pos->first]->getStartTime();
+         uptime = (unsigned long int) difftime(now, startTime);
+         days = uptime/86400;
+         hours = (uptime%86400)/3600;
+         mins = (uptime%3600)/60;
+         secs = uptime % 60;
+         l_time = localtime(&startTime);
+         strftime(timestr, sizeof timestr, "%d-%b-%Y %H:%M:%S", l_time);
+         unsigned int incomingMsgCount = clientMap[pos->first]->getIncomingMsgCount();
+         unsigned int outgoingMsgCount = clientMap[pos->first]->getOutgoingMsgCount();
+         sprintf(tmpBuffer, "\nconnect time: %s\nduration: %d days, %d hours, %d mins, %d secs\nincoming msg count: %u\noutgoing msg count: %u",
+          timestr, days, hours, mins, secs, incomingMsgCount, outgoingMsgCount);
+
+
+         *ret += pos->first + " : ";
+         *ret += tmpBuffer;
+         *ret += "\n";
+         pos++;
+      }
+      else {
+        Context::getInstance()->getLogger()->log("Found NULL connection", (pos->first).c_str(), Logger::LEVEL_WARN);
+        clientMap.erase(pos++);
+      }
+    }
+  }
+  return *ret;
+}

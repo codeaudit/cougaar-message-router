@@ -41,6 +41,7 @@ public:
   string& listConnections();
   void validateConnections();
   string& getSendQueueStats();
+  string& getConnectionStatsStr();
   void broadcastMessage(Message& msg);
   int getConnectionCount();
 

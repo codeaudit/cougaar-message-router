@@ -59,6 +59,9 @@ public:
   void closeNow();
   bool isRunning();
   string& getSendQueueStats();
+  time_t getStartTime();
+  unsigned int getIncomingMsgCount();
+  unsigned int getOutgoingMsgCount();
 
 public:
   /**  */
