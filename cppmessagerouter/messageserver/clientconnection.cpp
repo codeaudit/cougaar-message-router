@@ -115,20 +115,32 @@ void ClientConnection::getData(char *buffer, int size){
   delete tmp_buffer;
 }
 
+/** No descriptions */
+void ClientConnection::getHeaderData(unsigned char* buffer, int size){
+  tmp_buffer = new char[size];
+  int index = 0;
+  while (index < size) {
+    int recv_size = ss->recv(tmp_buffer, (size-index));
+    pack(tmp_buffer, 0, recv_size, buffer, index);
+    index += recv_size;
+  }
+  delete tmp_buffer;
+}
+
 
 //Del by KDevelop: 
 //Del by KDevelop: 
 //Del by KDevelop: /** No descriptions */
 Message* ClientConnection::getMessage(){
-  char packet_header[PACKET_HEADER_SIZE];
+  unsigned char packet_header[PACKET_HEADER_SIZE];
 
-  getData(packet_header, PACKET_HEADER_SIZE);
+  getHeaderData(packet_header, PACKET_HEADER_SIZE);
   
   //examine packet header to determine total message length
-  char toLength = packet_header[0];
-  char fromLength = packet_header[1];
-  char threadLength = packet_header[2];
-  char subjectLength = packet_header[3];
+  unsigned char toLength = packet_header[0];
+  unsigned char fromLength = packet_header[1];
+  unsigned char threadLength = packet_header[2];
+  unsigned char subjectLength = packet_header[3];
   long bodyLength =0;
   bodyLength |= packet_header[4];
   bodyLength <<= 8;
@@ -137,6 +149,8 @@ Message* ClientConnection::getMessage(){
   bodyLength |= packet_header[6];
   bodyLength <<= 8;
   bodyLength |= packet_header[7];
+  //printf("%x %x %x %x\n", packet_header[4], packet_header[5], packet_header[6], packet_header[7]);
+  cout << flush;
   /*printf("to length: %d\n", toLength);
   printf("from length: %d\n", fromLength);
   printf("thread length: %d\n", threadLength);
@@ -314,6 +328,14 @@ void ClientConnection::pack(char *src, int srcStartPos, int srcLength, char *des
   }
 }
 
+void ClientConnection::pack(char *src, int srcStartPos, int srcLength, unsigned char *dest, int destStartPos) {
+  int index = destStartPos;
+  for (int i=srcStartPos; i<srcLength; i++) {
+    dest[index] = (unsigned char)src[i];
+    index++;
+  }
+}
+
 /** No descriptions */
 MessageList& ClientConnection::getMessages(){
   //cout << "in getMessages()" << endl << flush;
@@ -439,3 +461,4 @@ char * ClientConnection::createSubStr(char *src, int start, int length){
 const bool ClientConnection::operator== (const ClientConnection& right) {
   return (this->name == right.name);
 } 
+

@@ -46,6 +46,8 @@ public:
   /** No descriptions */
   MessageList& getMessages();
   void pack(char *src, int srcStartPos, int srcLength, char *dest, int destStartPos);
+  void pack(char *src, int srcStartPos, int srcLength, unsigned char *dest, int destStartPos);
+
   const bool operator == (const ClientConnection& right); 
 
 public:
@@ -85,6 +87,8 @@ private: // Private methods
   void getData(char *buffer, int size);
   /** No descriptions */
   char * createSubStr(char *src, int start, int end);
+  /** No descriptions */
+  void getHeaderData(unsigned char *buffer, int size);
 };
 
 
