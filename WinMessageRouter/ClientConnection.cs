@@ -421,6 +421,63 @@ namespace WinMessageRouter
 					reply.Subject = "connection stats";
 					reply.Body = Context.getInstance().getConnectionRegistry().getConnectionStatsStr();
 				}
+				else if (subject == "get send queue stats") 
+				{
+					reply.Subject = "send queue stats";
+					reply.Body = Context.getInstance().getConnectionRegistry().getSendQueueStats();
+				}
+				else if (subject == "get max send queue size") 
+				{
+					reply.Body = "Current max send queue size: " + Context.getInstance().getMaxSendQueueSize;
+				}
+				else if (subject == "set max send queue size") 
+				{
+					int val = Int32.Parse(msg.Body);
+					if (val > 0) 
+					{
+						reply.Subject = "Max send queue size changed from " + Context.getInstance().getMaxSendQueueSize() + " to " + val;
+						Context.getInstance().setMaxSendQueueSize(val);
+					}
+					else 
+					{
+						reply.Subject = "set max send queue size";
+						reply.Body = "invalid value specified";
+					}
+				}
+				else if (subject == "log to file") 
+				{
+					Context.getInstance().logToFile();
+					reply.Subject = "logging to file";
+				}
+				else if (subject == "log to stdout") 
+				{
+					Context.getInstance().logToStdOut();
+					reply.Subject = "logging to stdout";
+				}
+				else if (subect == "get sync send status") 
+				{
+					reply.Subject = "sync send status";
+					if (Context.getInstance().getSyncSend()) 
+					{
+						reply.Body = "enabled";
+					}
+					else  
+					{
+						reply.Body = "disabled";
+					}
+				}
+				else if (subject == "get stat logging") 
+				{
+					reply.Subject = "stat logging status";
+					if (Context.getInstance().getStatLogging()) 
+					{
+						reply.Body = "enabled";
+					}
+					else 
+					{
+						reply.Body = "disabled";
+					}
+				}
 				else 
 				{ 
 					if (Context.getInstance().errorMessageEnabled()) //check if error messaging is enabled
