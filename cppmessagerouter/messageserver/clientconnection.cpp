@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5096
-#define VERSION "MessageRouter 1.7.20"
+#define VERSION "MessageRouter 1.7.21"
  
 #include "clientconnection.h"
 #include <iostream.h>
@@ -129,16 +129,17 @@ void ClientConnection::close() {
     //delete tmp_buffer;
   //}
   if (sender != NULL) {
-    Context::getInstance()->getLogger()->log(name.c_str(), "shutting down sender", Logger::LEVEL_WARN);
+    //Context::getInstance()->getLogger()->log(name.c_str(), "shutting down sender", Logger::LEVEL_WARN);
     sender->stop();
-    Context::getInstance()->getLogger()->log(name.c_str(), "closed sender", Logger::LEVEL_WARN);
+    //Context::getInstance()->getLogger()->log(name.c_str(), "closed sender", Logger::LEVEL_WARN);
     if (!sender->wait(2000)) {
       Context::getInstance()->getLogger()->log(name.c_str(), "unable to shutdown sender", Logger::LEVEL_WARN);
     }
     else {
-      Context::getInstance()->getLogger()->log(name.c_str(), "deleting sender", Logger::LEVEL_WARN);
+      //Context::getInstance()->getLogger()->log(name.c_str(), "deleting sender", Logger::LEVEL_WARN);
       delete sender;
-      Context::getInstance()->getLogger()->log(name.c_str(), "shutdown sender", Logger::LEVEL_WARN);
+      sender = NULL;
+      //Context::getInstance()->getLogger()->log(name.c_str(), "shutdown sender", Logger::LEVEL_WARN);
     }
   }
 
@@ -241,7 +242,6 @@ Message* ClientConnection::getMessage(){
   memset(packetData, 0, sizeof(packetData));
 
   getData(packetData, totalLength);
-
   
   //now construct the Message object
   Message *msg = new Message();

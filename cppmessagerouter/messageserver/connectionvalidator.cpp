@@ -41,7 +41,7 @@ void ConnectionValidator::run() {
           pos = connectionList.erase(pos);
         }
         else if (((ClientConnection*)(*pos))->getValidationCount() == 0) {
-          Context::getInstance()->getLogger()->log("Connection validated", ((ClientConnection*)(*pos))->name.c_str(), Logger::LEVEL_INFO);
+          Context::getInstance()->getLogger()->log("Connection validated", ((ClientConnection*)(*pos))->name.c_str(), Logger::LEVEL_WARN);
           pos = connectionList.erase(pos); //the connection's been validated so remove it from the list
         }
         else if (((ClientConnection*)(*pos))->getValidationCount() > VALIDATION_COUNT_LIMIT) {
@@ -50,7 +50,7 @@ void ConnectionValidator::run() {
           pos = connectionList.erase(pos);  //remove it from the list
         }
         else {
-          Context::getInstance()->getLogger()->log("incrementing validation count", ((ClientConnection*)(*pos))->name.c_str(), Logger::LEVEL_INFO);
+          Context::getInstance()->getLogger()->log("incrementing validation count", ((ClientConnection*)(*pos))->name.c_str(), Logger::LEVEL_WARN);
           ((ClientConnection*)(*pos))->incrementValidationCount();  //
           pos++;
         }
