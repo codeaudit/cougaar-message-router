@@ -28,13 +28,20 @@
  #include <string>
  #include <map.h>
  #include "context.h"
+ #include <signal.h>
 
+
+ void sigterm(int sig) {
+    Context::getInstance()->getLogger()->forceLog("RECEIVED TERM SIGNAL");
+    exit(1);
+ }
  
  int main(int argc, char *argv[])
  {
 
- bool block_read = false;
- if (argc > 1) {
+  signal(SIGTERM, sigterm);
+  bool block_read = false;
+  if (argc > 1) {
    for (int i=1; i<argc; i++) {
      if (!strcmp(argv[i], "-b")) {
         block_read = true;
