@@ -1,7 +1,7 @@
 /***************************************************************************
-                          context.h  -  description
+                          connectionvalidator.h  -  description
                              -------------------
-    begin                : Wed Jan 28 2004
+    begin                : Mon Mar 29 2004
     copyright            : (C) 2004 by David Craine
     email                : dcraine@infotether.com
  ***************************************************************************/
@@ -15,44 +15,31 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef CONTEXT_H
-#define CONTEXT_H
+#ifndef CONNECTIONVALIDATOR_H
+#define CONNECTIONVALIDATOR_H
 
-#include "connectionregistry.h"
-#include "listenerregistry.h"
-#include "connectionvalidator.h"
-#include "logger.h"
+#include <qthread.h>
+#include "clientconnection.h"
 
 /**
   *@author David Craine
   */
 
-class Context {
-public: 
-	~Context();
-  /** Read property of ConnectionRegistry * connectionRegistry. */
-  ConnectionRegistry* getconnectionRegistry();
-  /** No descriptions */
-  static Context* getInstance();
-  /** Read property of ListenerRegistry listenerRegistry. */
-  ListenerRegistry* getlistenerRegistry();
-  Logger* getLogger();
-  ConnectionValidator *getConnectionValidator();
-  
-private:
-	Context();
- 
-protected: // Protected attributes
-private: // Private attributes
-  /**  */
-  static Context * currentInstance;
-  /**  */
-  ConnectionRegistry * connectionRegistry;
-  /**  */
-  ListenerRegistry* listenerRegistry;
+typedef list<ClientConnection*> ValidationList;
 
-  Logger* logger;
-  ConnectionValidator *connectionValidator;
+class ConnectionValidator : public QThread  {
+public: 
+	ConnectionValidator();
+	~ConnectionValidator();
+
+  virtual void run();
+  void validateConnection(ClientConnection *cc);
+
+  private:
+    ValidationList connectionList;
+
 };
+
+
 
 #endif

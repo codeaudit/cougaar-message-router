@@ -37,6 +37,7 @@ public:
   void deregisterConnection(string &name);
   /** No descriptions */
   string& listConnections();
+  void validateConnections();
 
 private:
   ConnectionMap clientMap;

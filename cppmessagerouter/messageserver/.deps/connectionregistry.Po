@@ -86,6 +86,7 @@ connectionregistry.o connectionregistry.o: connectionregistry.cpp \
   /usr/include/c++/3.2/bits/stl_map.h \
   /usr/include/c++/3.2/bits/stl_multimap.h /usr/include/c++/3.2/list \
   /usr/include/c++/3.2/bits/stl_list.h message.h messagesender.h \
+  context.h listenerregistry.h connectionvalidator.h logger.h \
   /usr/include/c++/3.2/backward/iostream.h \
   /usr/include/c++/3.2/backward/backward_warning.h \
   /usr/include/c++/3.2/iostream /usr/include/c++/3.2/ostream \
@@ -397,6 +398,14 @@ Socket.h:
 message.h:
 
 messagesender.h:
+
+context.h:
+
+listenerregistry.h:
+
+connectionvalidator.h:
+
+logger.h:
 
 /usr/include/c++/3.2/backward/iostream.h:
 

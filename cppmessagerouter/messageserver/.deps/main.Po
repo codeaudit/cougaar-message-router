@@ -121,7 +121,8 @@ main.o main.o: main.cpp ../config.h \
   /usr/include/c++/3.2/bits/stl_list.h message.h messagesender.h \
   /usr/include/c++/3.2/backward/map.h \
   /usr/include/c++/3.2/backward/tree.h /usr/include/c++/3.2/ext/rb_tree \
-  context.h connectionregistry.h listenerregistry.h logger.h
+  context.h connectionregistry.h listenerregistry.h connectionvalidator.h \
+  logger.h
 
 ../config.h:
 
@@ -516,5 +517,7 @@ context.h:
 connectionregistry.h:
 
 listenerregistry.h:
+
+connectionvalidator.h:
 
 logger.h:

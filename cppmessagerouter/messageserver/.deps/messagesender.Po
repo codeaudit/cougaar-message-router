@@ -119,7 +119,8 @@ messagesender.o messagesender.o: messagesender.cpp messagesender.h \
   connectionregistry.h clientconnection.h /usr/include/c++/3.2/map \
   /usr/include/c++/3.2/bits/stl_tree.h \
   /usr/include/c++/3.2/bits/stl_map.h \
-  /usr/include/c++/3.2/bits/stl_multimap.h listenerregistry.h logger.h
+  /usr/include/c++/3.2/bits/stl_multimap.h listenerregistry.h \
+  connectionvalidator.h logger.h
 
 messagesender.h:
 
@@ -506,5 +507,7 @@ clientconnection.h:
 /usr/include/c++/3.2/bits/stl_multimap.h:
 
 listenerregistry.h:
+
+connectionvalidator.h:
 
 logger.h:

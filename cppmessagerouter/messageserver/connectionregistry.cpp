@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "connectionregistry.h"
+#include "context.h"
 #include <iostream.h>
 
 
@@ -50,4 +51,12 @@ string& ConnectionRegistry::listConnections() {
   }
    
   return *ret;
+}
+
+void ConnectionRegistry::validateConnections() {
+  ConnectionMap::iterator pos;
+  for (pos = clientMap.begin(); pos != clientMap.end(); ++pos) {
+    ClientConnection* cc = clientMap[pos->first];
+    Context::getInstance()->getConnectionValidator()->validateConnection(cc);
+  }
 }

@@ -46,9 +46,22 @@ ClientConnection::ClientConnection(ServerSocket* sock, bool blockread){
   sender = new MessageSender(sock);
   packetBufferPos = 0;
   packetBufferSize = 0;
+  validationCount = 0;
 }
 
 ClientConnection::~ClientConnection(){
+}
+
+void ClientConnection::incrementValidationCount() {
+  validationCount++;
+}
+
+int ClientConnection::getValidationCount() {
+  return validationCount;
+}
+
+void ClientConnection::resetValidationCount() {
+  validationCount = 0;
 }
 
 /** No descriptions */
@@ -85,6 +98,10 @@ void ClientConnection::run() {
     logger->log("Socket exception", ex.description().c_str());
   }
   
+  close();
+}
+
+void ClientConnection::close() {
   Context::getInstance()->getLogger()->log(name.c_str(), "closing connection");
   /***** cleanup *****/
   if (tmp_buffer != NULL) {
@@ -92,7 +109,7 @@ void ClientConnection::run() {
   }
   //deregister any listeners for this client connection
   Context::getInstance()->getlistenerRegistry()->deregisterListener(this);
-    
+
   //if (packetData != NULL) {
     //delete packetData;
   //}
@@ -105,7 +122,7 @@ void ClientConnection::run() {
     delete sender;
   }
   delete this;
-  
+
   return;
 }
 
@@ -294,6 +311,12 @@ bool ClientConnection::handleMessage(Message& msg){
       reply->setto(msg.getfrom());
       reply->setsubject("deregistered");
     }
+    else if (subject == "validateConnections") {
+      Context::getInstance()->getconnectionRegistry()->validateConnections();
+    }
+    else if (msg.getthread() == "ping") { //a ping response causes validation count to reset
+      resetValidationCount();
+    }
     else { //send an error reply
       reply->setto(msg.getfrom());
       reply->setsubject("ERROR");
@@ -418,5 +441,6 @@ char * ClientConnection::createSubStr(char *src, int start, int length){
 
 const bool ClientConnection::operator== (const ClientConnection& right) {
   return (this->name == right.name);
-} 
+}
+
 

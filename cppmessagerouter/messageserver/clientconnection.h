@@ -48,7 +48,11 @@ public:
   void pack(char *src, int srcStartPos, int srcLength, char *dest, int destStartPos);
   void pack(char *src, int srcStartPos, int srcLength, unsigned char *dest, int destStartPos);
 
-  const bool operator == (const ClientConnection& right); 
+  const bool operator == (const ClientConnection& right);
+  void incrementValidationCount();
+  int getValidationCount();
+  void resetValidationCount();
+  void close();
 
 public:
   /**  */
@@ -72,6 +76,8 @@ private: // Private attributes
   /**  */
   bool use_block_read;
   /**  */
+  bool validationCount;  //used to track outstanding validation requests
+  
 private: // Private methods
   /** No descriptions */
   Message* getMessage();

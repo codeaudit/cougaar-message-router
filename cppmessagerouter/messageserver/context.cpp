@@ -22,6 +22,8 @@ Context::Context(){
   connectionRegistry = new ConnectionRegistry();
   listenerRegistry = new ListenerRegistry();
   logger = new Logger();
+  connectionValidator = new ConnectionValidator();
+  connectionValidator->start();
 }
 
 Context::~Context(){
@@ -46,4 +48,8 @@ ListenerRegistry* Context::getlistenerRegistry(){
 
 Logger* Context::getLogger() {
   return logger;
+}
+
+ConnectionValidator* Context::getConnectionValidator() {
+  return connectionValidator;
 }
