@@ -51,6 +51,15 @@ install=false
 install_location=
 type=DATA
 
+[KPP]
+kpp_appgrp=
+kpp_bldroot=
+kpp_icon=0
+kpp_license=2
+kpp_summary=
+kpp_url=
+kpp_version=0.1
+
 [LFV Groups]
 GNU=AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO,NEWS
 Headers=*.h,*.hh,*.hxx,*.hpp,*.H

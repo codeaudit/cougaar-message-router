@@ -65,7 +65,16 @@
         logger->setLevel(Logger::LEVEL_SHOUT);
         logger->enable();
         cout << "debugging enabled at LEVEL SHOUT" << endl << flush;
-      }      
+      }
+      if (!strcmp(argv[i], "-h")) {
+        cout << "Options are:" << endl << flush;
+        cout << "   -b Block Read enabled" << endl << flush;
+        cout << "   -i Info-level logging enabled" << endl << flush;
+        cout << "   -w Warn-level logging enabled" << endl << flush;
+        cout << "   -d Debug-level logging enabled" << endl << flush;
+        cout << "   -s Shout-level logging enabled" << endl << flush;
+        return EXIT_SUCCESS;
+      }     
    }
  }
 

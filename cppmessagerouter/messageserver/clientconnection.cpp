@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5096
-#define VERSION "MessageRouter 1.4"
+#define VERSION "MessageRouter 1.5"
  
 #include "clientconnection.h"
 #include <iostream.h>
@@ -110,9 +110,9 @@ bool ClientConnection::isRunning() {
 void ClientConnection::close() {
   Context::getInstance()->getLogger()->log(name.c_str(), "closing connection", Logger::LEVEL_INFO);
   /***** cleanup *****/
-  if (tmp_buffer != NULL) {
-    delete tmp_buffer;
-  }
+  //if (tmp_buffer != NULL) {
+    //delete tmp_buffer;
+  //}
   //deregister any listeners for this client connection
   Context::getInstance()->getlistenerRegistry()->deregisterListener(this);
 

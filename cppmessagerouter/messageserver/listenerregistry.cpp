@@ -37,12 +37,12 @@ void ListenerRegistry::notifyListeners(Message &msg)  {
   list<ClientConnection *>::iterator iter;
 
   iter = listeners.begin();
-  for (iter = listeners.begin(); iter != listeners.end(); iter++) {
-    //since a call to sendMessage will end up deleting the message
-    //we need to make a copy of it before we send it to each recipient
-    Message *tmpMsg = new Message(msg);
+  for (iter = listeners.begin(); iter != listeners.end(); iter++) { 
     ClientConnection *cc = (ClientConnection *)(*iter);
     if (cc != NULL) {
+      //since a call to sendMessage will end up deleting the message
+      //we need to make a copy of it before we send it to each recipient
+      Message *tmpMsg = new Message(msg);
       cc->sendMessage(*tmpMsg);
     }
   }
