@@ -161,6 +161,7 @@ public class Client extends JFrame
         session.postMessage(jTextFieldTargetUser.getText(),
                             jTextFieldSendSubject.getText(),
                             body);
+        displayMessage(jTextFieldSendSubject.getText(), jTextFieldTargetUser.getText(), body);
       }
       jTextAreaSendMessages.setText("");
       jTextFieldSendSubject.setText("");
@@ -180,10 +181,14 @@ public class Client extends JFrame
       subject = subject == null?"":subject;
       String from = msg.getFrom() == null?"server":msg.getFrom();
       String body = msg.getBody()!=null?msg.getBody():"";
-      jTextAreaDisplayMessages.append("FROM: " + from + " - " + subject + " : " + body);
-      if (!body.endsWith("\n")) jTextAreaDisplayMessages.append("\n");
-      jTextAreaDisplayMessages.setCaretPosition(jTextAreaDisplayMessages.getText().length());
+      displayMessage(subject, from, body);
     }
+  }
+
+  private void displayMessage(String subject, String from, String body) {
+    jTextAreaDisplayMessages.append("FROM: " + from + " - " + subject + " : " + body);
+    if (!body.endsWith("\n")) jTextAreaDisplayMessages.append("\n");
+    jTextAreaDisplayMessages.setCaretPosition(jTextAreaDisplayMessages.getText().length());
   }
 
   void jTextAreaSendSubject_keyTyped(KeyEvent e) {
@@ -201,9 +206,11 @@ public class Client extends JFrame
   void jToggleButtonRegister_actionPerformed(ActionEvent e) {
     if (jToggleButtonRegister.isSelected()) {
       register();
+      jToggleButtonRegister.setText("Deregister");
     }
     else {
       deregister();
+      jToggleButtonRegister.setText("Register");
     }
   }
 
@@ -267,7 +274,7 @@ public class Client extends JFrame
   }
 
   void jToggleButtonConnect_actionPerformed(ActionEvent e) {
-    if (jToggleButtonConnect.getText().equals("Connect"))
+    if (jToggleButtonConnect.isSelected())
       try {
         jTextAreaDisplayMessages.setText("");
         session = new Session();
@@ -284,12 +291,19 @@ public class Client extends JFrame
         ex.printStackTrace();
       }
     else {
-      if (session != null && session.isConnected()) {
-        session.disconnect();
-      }
-      jToggleButtonConnect.setText("Connect");
+      disconnect();
     }
 
+  }
+
+  private void disconnect() {
+    if (session != null && session.isConnected()) {
+      session.disconnect();
+    }
+    jToggleButtonConnect.setText("Connect");
+    jToggleButtonRegister.setSelected(false);
+    onlineUsers.clear();
+    jToggleButtonRegister.setText("Register");
   }
 
 }
