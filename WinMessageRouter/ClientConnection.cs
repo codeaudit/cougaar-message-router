@@ -28,6 +28,10 @@ namespace WinMessageRouter
 		private string name;
 		private Thread threadRunner;
 		private bool keepRunning = true;
+		private DateTime startTime;
+		long incomingMessageCount = 0;
+		long outgoingMessageCount = 0;
+		private Hashtable routingProfileMap;
 
 		private static string CMD_LIST = 
 		"list - get a list of connected clients\n"+
@@ -61,6 +65,8 @@ namespace WinMessageRouter
 			sender.start();
 			packetBufferPos = 0;
 			packetBufferSize = 0;
+			startTime = DateTime.Now;
+			routingProfileMap = new Hashtable();
 		}
 
 		private void closeNow() 
@@ -151,6 +157,14 @@ namespace WinMessageRouter
 			}
 			if (targetConnection != null) 
 			{
+				if (routingProfileMap[msg.To] != null) 
+				{
+					routingProfileMap[msg.To] = (int)(routingProfileMap[msg.To]) + 1;
+				}
+				else 
+				{
+					routingProfileMap[msg.To] = 1;
+				}
 				targetConnection.sendMessage(msg);
 			}
 			else 
@@ -166,6 +180,7 @@ namespace WinMessageRouter
 		private bool processMessage(Message msg) 
 		{
 			ServerStats.getInstance().incrementIncomingMsgCount();
+			incomingMessageCount++;
 			if ((msg.To != null) && (msg.To != ""))
 			{
 				Context.getInstance().getLogger().log(msg.From, msg.To, msg.Subject, msg.Body, Logger.LEVEL_INFO);
@@ -201,6 +216,8 @@ namespace WinMessageRouter
 			{  
 				Message reply = new Message();
 				reply.Thread = msg.Thread;
+				reply.To = msg.From;
+
 				if (subject == "connect") 
 				{  //handle the connect request
 					//check for an existing connection
@@ -237,7 +254,6 @@ namespace WinMessageRouter
 				}
 				else if (subject == "list") 
 				{  //handle the list request
-					reply.To = msg.From;
 					reply.Subject = "list";
 					string list = Context.getInstance().getConnectionRegistry().listConnections();
 					Context.getInstance().getLogger().log("Current List", list, Logger.LEVEL_INFO);
@@ -246,18 +262,15 @@ namespace WinMessageRouter
 				else if (subject == "register") 
 				{
 					Context.getInstance().getListenerRegistry().registerListener(this);
-					reply.To = msg.From;
 					reply.Subject = "registered";
 				}
 				else if (subject == "deregister") 
 				{
 					Context.getInstance().getListenerRegistry().deregisterListener(this);
-					reply.To = msg.From;
 					reply.Subject = "deregistered";
 				}
 				else if (subject == "version") 
 				{
-					reply.To = msg.From;
 					reply.Subject = "version";
 					reply.Body = VERSION;
 				}
@@ -266,7 +279,6 @@ namespace WinMessageRouter
 					if (Context.getInstance().isEavesDroppingEnabled()) 
 					{
 						Context.getInstance().getEavesDropRegistry().registerEavesDropper(msg.Body, this);
-						reply.To = msg.From;
 						reply.Subject = "eavesdrop enabled";
 						reply.Body = msg.Body;
 					}
@@ -276,7 +288,6 @@ namespace WinMessageRouter
 					if (Context.getInstance().isEavesDroppingEnabled()) 
 					{
 						Context.getInstance().getEavesDropRegistry().registerGlobalEavesDropper(this);
-						reply.To = msg.From;
 						reply.Subject = "globaleavesdrop enabled";
 					}
 				}
@@ -285,7 +296,6 @@ namespace WinMessageRouter
 					if (Context.getInstance().isEavesDroppingEnabled()) 
 					{
 						Context.getInstance().getEavesDropRegistry().deregisterEavesDropper(msg.Body, this);
-						reply.To = msg.From;
 						reply.Subject = "eavesdrop disabled";
 						reply.Body = msg.Body;
 					}
@@ -295,7 +305,6 @@ namespace WinMessageRouter
 					if (Context.getInstance().isEavesDroppingEnabled()) 
 					{
 						Context.getInstance().getEavesDropRegistry().deregisterAllEavesDroppers(this);
-						reply.To = msg.From;
 						reply.Subject = "all eavesdroppers disabled";
 					}
 				}
@@ -304,49 +313,41 @@ namespace WinMessageRouter
 					if (Context.getInstance().isEavesDroppingEnabled()) 
 					{
 						Context.getInstance().getEavesDropRegistry().deregisterGlobalEavesDropper(this);
-						reply.To = msg.From;
 						reply.Subject = "globaleavesdrop disabled";
 					}
 				}
 				else if (subject == "enable eavesdropping") 
 				{
 					Context.getInstance().enableEavesDropping();
-					reply.To = msg.From;
 					reply.Subject = "eavesdropping enabled";
 				}
 				else if (subject == "disable eavesdropping")
 				{
 					Context.getInstance().disableEavesdropping();
-					reply.To = msg.From;
 					reply.Subject = "eavesdropping disabled";
 				}
 				else if (subject == "enable error messages") 
 				{
 					Context.getInstance().enableErrorMessages();
-					reply.To = msg.From;
 					reply.Subject = "error messages enabled";
 				}
 				else if (subject == "disable error messages") 
 				{
 					Context.getInstance().disableErrorMessages();
-					reply.To = msg.From;
 					reply.Subject = "error messages disabled";
 				}
 				else if (subject == "get stats") 
 				{
-					reply.To = msg.From;
 					reply.Subject = "stats";
 					reply.Body = ServerStats.getInstance().getStatsStr();
 				}
 				else if (subject == "reset stats") 
 				{
 					ServerStats.getInstance().resetStats();
-					reply.To = msg.From;
 					reply.Subject = "stats reset";
 				}
 				else if (subject == "kill connection") 
 				{
-					reply.To = msg.From;
 					reply.Body = msg.Body;
 					Context.getInstance().getLogger().log(msg.From, "SERVER", "Request to kill connection", msg.Body, Logger.LEVEL_DEBUG);
 					ClientConnection cc = Context.getInstance().getConnectionRegistry().findConnection(msg.Body);
@@ -392,19 +393,26 @@ namespace WinMessageRouter
 				{
 					Context.getInstance().getLogger().enable();
 					reply.Subject = "logging enabled";
-					reply.To = msg.From;
 				}
 				else if (subject == "disable logging") 
 				{
 					Context.getInstance().getLogger().disable();
 					reply.Subject = "logging disabled";
-					reply.To = msg.From;
 				}
 				else if (subject == "help") 
 				{
-					reply.To = msg.From;
 					reply.Subject = "Command List";
 					reply.Body = CMD_LIST;
+				}
+				else if (subject == "get connection profile")
+				{
+					reply.Subject = "connection profile";
+					reply.Body = Context.getInstance().getConnectionRegistry().getConnectionProfiles();
+				}
+				else if (subject == "get connection stats") 
+				{
+					reply.Subject = "connection stats";
+					reply.Body = Context.getInstance().getConnectionRegistry().getConnectionStatsStr();
 				}
 				else 
 				{ 
@@ -503,12 +511,14 @@ namespace WinMessageRouter
 		public void sendMessage(Message msg) 
 		{
 			ServerStats.getInstance().incrementOutgoingMsgCount();
+			outgoingMessageCount++;
 			sender.addMessage(msg);
 		}
 
 		public void sendMessageNow(Message msg) 
 		{
 			ServerStats.getInstance().incrementOutgoingMsgCount();
+			outgoingMessageCount++;
 			sender.sendMessage(msg);
 		}
 
@@ -625,5 +635,36 @@ namespace WinMessageRouter
 			}
 			return ret;
 		}
+
+		public string getRoutingProfileStr() 
+		{
+			string ret = "";
+
+			IEnumerator i = routingProfileMap.Keys.GetEnumerator();
+			while (i.MoveNext()) 
+			{
+				ret += "    -> ";
+				ret += i.Current + ": ";
+				ret += routingProfileMap[i.Current] + "\n";
+			}
+
+			return ret;
+		}
+
+		public DateTime getStartTime() 
+		{
+			return startTime;
+		}
+
+		public long getIncomingMsgCount() 
+		{
+			return incomingMessageCount;
+		}
+
+		public long getOutgoingMsgCount() 
+		{
+			return outgoingMessageCount;
+		}
+
 	}
 }
