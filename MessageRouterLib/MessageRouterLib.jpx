@@ -42,6 +42,8 @@
   <node name="MessageRouterClient" type="Archive">
     <property category="archiving" name="archiverClass" value="com.borland.jbuilder.wizard.archive.ApplicationArchiver"/>
     <property category="archiving" name="contentRules.1" value="I:**/*.*"/>
+    <property category="archiving" name="libraryStates.1" value="3:JBCL"/>
+    <property category="archiving" name="libraryStates.2" value="1:Data Express"/>
     <property category="archiving" name="manifestConfigFile" value="0"/>
     <property category="archiving" name="targetPath" value="MessageRouterClient.jar"/>
     <property category="archiving" name="usingRules" value="1"/>

@@ -22,6 +22,7 @@ public class Client extends JFrame
   DefaultListModel onlineUsers = new DefaultListModel();
   History msgHistory = new History();
   History subjectHistory = new History();
+  static Client currentInstance;
 
   JSplitPane jSplitPane1 = new JSplitPane();
   BorderLayout borderLayout1 = new BorderLayout();
@@ -67,9 +68,13 @@ public class Client extends JFrame
   Border border9;
   TitledBorder titledBorder7;
   VerticalFlowLayout verticalFlowLayout1 = new VerticalFlowLayout();
+  JButton jButtonMessageStresser = new JButton();
+  JPopupMenu jPopupMenuMessageArea = new JPopupMenu();
+  JMenuItem jMenuItemClearMessages = new JMenuItem();
 
   public Client() {
     try {
+      currentInstance = this;
       jbInit();
       Flasher.instance();  //initialize the flasher instance so that it's currently running
       initializeAttributeSets();
@@ -148,9 +153,14 @@ public class Client extends JFrame
     jToggleButtonConnect.setText("Connect");
     jToggleButtonConnect.addActionListener(new Client_jToggleButtonConnect_actionAdapter(this));
     jTextPaneDisplayMessages.setEditable(false);
+    jTextPaneDisplayMessages.addMouseListener(new Client_jTextPaneDisplayMessages_mouseAdapter(this));
     jTextFieldSendMessages.setBorder(titledBorder7);
     jTextFieldSendMessages.setToolTipText("");
     jTextFieldSendMessages.addKeyListener(new Client_jTextFieldSendMessages_keyAdapter(this));
+    jButtonMessageStresser.setText("Msg Stresser");
+    jButtonMessageStresser.addActionListener(new Client_jToggleButtonMessageStresser_actionAdapter(this));
+    jMenuItemClearMessages.setText("Clear Messages");
+    jMenuItemClearMessages.addActionListener(new Client_jMenuItemClearMessages_actionAdapter(this));
     jPanelSendMessages.add(jTextFieldSendSubject, null);
     jPanelSendMessages.add(jTextFieldSendMessages, null);
     jSplitPane1.add(jSplitPane2, JSplitPane.TOP);
@@ -170,6 +180,8 @@ public class Client extends JFrame
     jPanel1.add(jToggleButtonConnect, null);
     jPanel1.add(jToggleButtonRegister, null);
     jPanel1.add(jButtonMultiConnect, null);
+    jPanel1.add(jButtonMessageStresser, null);
+    jPopupMenuMessageArea.add(jMenuItemClearMessages);
     jSplitPane1.setDividerLocation(200);
     jSplitPane2.setDividerLocation(600);
   }
@@ -213,7 +225,6 @@ public class Client extends JFrame
       if (!text.endsWith("\n")) {
         text += "\n";
       }
-
       jTextPaneDisplayMessages.getDocument().insertString(
           jTextPaneDisplayMessages.getDocument().getLength(),
           text,
@@ -313,6 +324,7 @@ public class Client extends JFrame
           jToggleButtonConnect.setText("Disconnect");
         }
         else {
+          jToggleButtonConnect.setSelected(false);
           displayMessage("Connection attempt failed\n", incomingMsgAttrSet);
         }
       }
@@ -394,6 +406,26 @@ public class Client extends JFrame
       jTextFieldSendMessages.requestFocus();
     }
 
+  }
+
+  void jButtonMessageStresser_actionPerformed(ActionEvent e) {
+    String res = JOptionPane.showInputDialog(this, "Number of messages to send");
+    try {
+      int count = Integer.parseInt(res);
+      Thread t = new Thread(new Stresser(count));
+      t.start();
+    }
+    catch (NumberFormatException nfe) {}
+  }
+
+  void jMenuItemClearMessages_actionPerformed(ActionEvent e) {
+    jTextPaneDisplayMessages.setText("");
+  }
+
+  void jTextPaneDisplayMessages_mouseClicked(MouseEvent e) {
+    if ((e.getModifiers() & Event.META_MASK) == Event.META_MASK ) {
+      jPopupMenuMessageArea.show(jTextPaneDisplayMessages, e.getX(), e.getY());
+    }
   }
 
 }
@@ -588,4 +620,53 @@ class Client_jTextFieldSendMessages_keyAdapter extends java.awt.event.KeyAdapter
     adaptee.jTextFieldSendMessages_keyPressed(e);
   }
 }
+
+class Client_jToggleButtonMessageStresser_actionAdapter implements java.awt.event.ActionListener {
+  Client adaptee;
+
+  Client_jToggleButtonMessageStresser_actionAdapter(Client adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jButtonMessageStresser_actionPerformed(e);
+  }
+}
+
+class Stresser implements Runnable {
+  int msgCount;
+  public Stresser(int msgCount) {
+    this.msgCount = msgCount;
+  }
+
+  public void run() {
+    for (int i=0; i<msgCount; i++) {
+      if (Client.currentInstance.session != null && Client.currentInstance.session.isConnected()) {
+        Client.currentInstance.session.postMessage(Client.currentInstance.jTextFieldTargetUser.getText(), "Test Message " + i, "Test Message");
+      }
+    }
+  }
+}
+
+class Client_jMenuItemClearMessages_actionAdapter implements java.awt.event.ActionListener {
+  Client adaptee;
+
+  Client_jMenuItemClearMessages_actionAdapter(Client adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jMenuItemClearMessages_actionPerformed(e);
+  }
+}
+
+class Client_jTextPaneDisplayMessages_mouseAdapter extends java.awt.event.MouseAdapter {
+  Client adaptee;
+
+  Client_jTextPaneDisplayMessages_mouseAdapter(Client adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void mouseClicked(MouseEvent e) {
+    adaptee.jTextPaneDisplayMessages_mouseClicked(e);
+  }
+}
+
 
