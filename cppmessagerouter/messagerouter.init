@@ -10,7 +10,7 @@
 start() {
   ps -ef > /tmp/$$  
   if grep "messageserver" /tmp/$$> /dev/null ; then
-    echo "messageserver already running.  Use service messageserver stop first."
+    echo "messagerouter already running.  Use service messagerouter stop first."
     RETVAL=1
   else
     cd /usr/local/sbin
@@ -27,11 +27,11 @@ start() {
 debug(){
   ps -ef > /tmp/$$  
   if grep "messageserver" /tmp/$$> /dev/null ; then
-    echo "messageserver already running.  Use service messageserver stop first."
+    echo "messagerouter already running.  Use service messagerouter stop first."
     RETVAL=1
   else
     cd /usr/local/sbin
-    ./messageserver -d &>/var/log/messageserver &
+    ./messageserver -d &>/var/log/messagerouter &
      echo "$!" > messageserver.pid
      RETVAL=0
      echo
