@@ -19,7 +19,6 @@
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5124
 #define VERSION "MessageRouter 1.7.61"
-#define ADMIN_PREFIX "admin:"
 #define ADMIN_ID "admin"
 #define ADMIN_PWD "adminpwd"
  
@@ -445,11 +444,20 @@ void ClientConnection::checkForAdmin(string data,  bool& isAdmin, bool& validPwd
   isAdmin = false;
   validPwd = false;
   
-  string::size_type pos = data.find(ADMIN_PREFIX, 0);
+  string::size_type pos = data.find(ADMIN_ID, 0);
   if (pos == 0) {  //logging in as admin user
-    isAdmin = true;
-    if (data.substr(pos, data.length()-6) == ADMIN_PWD) {
-      validPwd = true;
+    if (data.length()-strlen(ADMIN_ID)<=0) { //no pwd specified
+      isAdmin = true;
+      return;
+    }
+    else {
+      int pwdpos = strlen(ADMIN_ID);
+      if (data[pwdpos] != ':') return; //this isn't the admin userid
+      isAdmin = true;
+      if (data.length()-pwdpos+1 <= 0) return;  //no pwd specified
+      if (data.substr(pwdpos+1, data.length()-pwdpos+1) == ADMIN_PWD) {
+        validPwd = true;
+      }
     }
   }
   return;
@@ -461,7 +469,7 @@ bool ClientConnection::handleMessage(Message& msg){
     Context::getInstance()->getEavesDropRegistry()->checkMessage(msg);
   }
   string& subject = msg.getsubject();
-  Context::getInstance()->getLogger()->log(msg.getfrom().c_str(), (const char *)"server",
+  Context::getInstance()->getLogger()->log(name.c_str(), (const char *)"server",
     msg.getsubject().c_str(), msg.getbody().c_str(), Logger::LEVEL_INFO);
   try {  
     Message* reply = new Message();
@@ -493,12 +501,16 @@ bool ClientConnection::handleMessage(Message& msg){
           if (isAdmin) {
             if (validPwd) {
               reply->setsubject("connected");
+              Context::getInstance()->getLogger()->log("Admin login successful", Logger::LEVEL_SHOUT);
               string adminid = ADMIN_ID;
               reply->setto(adminid);
               registerClient(adminid);
             }
             else {
-              reply->setsubject("invalid admin pwd");
+              reply->setsubject("ERROR");
+              reply->setbody("invalid admin pwd");
+              Context::getInstance()->getLogger()->log("Attempt to login as admin user with invalid password", Logger::LEVEL_SHOUT);
+              sendMessageNow(*reply);
               return false;
             }
           }
@@ -516,12 +528,16 @@ bool ClientConnection::handleMessage(Message& msg){
           if (isAdmin) {
             if (validPwd) {
               reply->setsubject("connected");
+              Context::getInstance()->getLogger()->log("Admin login successful", Logger::LEVEL_SHOUT);
               string adminid = ADMIN_ID;
               reply->setto(adminid);
               registerClient(adminid);
             }
             else {
-              reply->setsubject("invalid admin pwd");
+              reply->setsubject("ERROR");
+              reply->setbody("invalid admin pwd");
+              Context::getInstance()->getLogger()->log("Attempt to login as admin user with invalid password", Logger::LEVEL_SHOUT);
+              sendMessageNow(*reply);
               return false;
             }
           }
