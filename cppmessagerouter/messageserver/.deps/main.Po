@@ -120,7 +120,8 @@ main.o main.o: main.cpp ../config.h \
   /usr/include/c++/3.2/bits/stl_multimap.h /usr/include/c++/3.2/list \
   /usr/include/c++/3.2/bits/stl_list.h message.h messagesender.h \
   /usr/include/c++/3.2/backward/map.h \
-  /usr/include/c++/3.2/backward/tree.h /usr/include/c++/3.2/ext/rb_tree
+  /usr/include/c++/3.2/backward/tree.h /usr/include/c++/3.2/ext/rb_tree \
+  context.h connectionregistry.h listenerregistry.h logger.h
 
 ../config.h:
 
@@ -509,3 +510,11 @@ messagesender.h:
 /usr/include/c++/3.2/backward/tree.h:
 
 /usr/include/c++/3.2/ext/rb_tree:
+
+context.h:
+
+connectionregistry.h:
+
+listenerregistry.h:
+
+logger.h:

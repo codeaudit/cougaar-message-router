@@ -37,6 +37,8 @@ const Message& Message::operator= (const Message& right) {
   this->thread = right.thread;
   this->subject = right.subject;
   this->body = right.body;
+
+  return *this;
 }
 
 Message::Message (const string& _from, const string& _to, const string& _thread, const string& _subject, const string& _body) {

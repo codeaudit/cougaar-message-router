@@ -120,7 +120,7 @@ clientconnection.o clientconnection.o: clientconnection.cpp \
   /usr/include/c++/3.2/bits/istream.tcc SocketException.h \
   /usr/include/c++/3.2/vector /usr/include/c++/3.2/bits/stl_vector.h \
   /usr/include/c++/3.2/bits/stl_bvector.h context.h connectionregistry.h \
-  listenerregistry.h
+  listenerregistry.h logger.h
 
 clientconnection.h:
 
@@ -513,3 +513,5 @@ context.h:
 connectionregistry.h:
 
 listenerregistry.h:
+
+logger.h:
