@@ -40,6 +40,8 @@ public:
   /** No descriptions */
   void stop();
   void sendMessage(Message &);
+  void setName(string& name);
+  
 public: // Public attributes
   /**  */
   ServerSocket* ss;

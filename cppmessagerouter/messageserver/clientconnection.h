@@ -64,12 +64,12 @@ public:
   bool keepRunning;
   bool isClosed;
   bool isClosing;
+    /**  */
+  MessageSender* sender;
 
 private: // Private attributes
   /**  */
   ServerSocket* ss; 
-  /**  */
-  MessageSender* sender;
   /**  */
   char* packetBuffer;
   /**  */

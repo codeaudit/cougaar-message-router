@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5096
-#define VERSION "MessageRouter 1.7.6"
+#define VERSION "MessageRouter 1.7.17"
  
 #include "clientconnection.h"
 #include <iostream.h>
@@ -123,21 +123,21 @@ void ClientConnection::closeNow() {
 void ClientConnection::close() {
   isClosing = true;
   deregisterClient();
-  Context::getInstance()->getLogger()->log(name.c_str(), "closing connection", Logger::LEVEL_WARN);
+  Context::getInstance()->getLogger()->log(name.c_str(), "shutting down connection", Logger::LEVEL_WARN);
   /***** cleanup *****/
   //if (tmp_buffer != NULL) {
     //delete tmp_buffer;
   //}
   //deregister any listeners for this client connection
   Context::getInstance()->getlistenerRegistry()->deregisterListener(this);
-  Context::getInstance()->getLogger()->log(name.c_str(), "deregistered Listeners", Logger::LEVEL_WARN);
+  //Context::getInstance()->getLogger()->log(name.c_str(), "deregistered Listeners", Logger::LEVEL_WARN);
 
   //deregister any eaves droppers for this connection
   if (Context::getInstance()->isEavesDroppingEnabled()) {
     Context::getInstance()->getEavesDropRegistry()->deregisterAllEavesDroppers(this);
     Context::getInstance()->getEavesDropRegistry()->deregisterGlobalEavesDropper(this);
     Context::getInstance()->getEavesDropRegistry()->removeTarget(this->name);
-    Context::getInstance()->getLogger()->log(name.c_str(), "cleared out eavesdropped", Logger::LEVEL_WARN);
+    //Context::getInstance()->getLogger()->log(name.c_str(), "cleared out eavesdropped", Logger::LEVEL_WARN);
   }
   
   //if (packetData != NULL) {
@@ -148,19 +148,7 @@ void ClientConnection::close() {
     ss->shutdown();
     delete ss;
     ss = NULL;
-    Context::getInstance()->getLogger()->log(name.c_str(), "shutdown server socket", Logger::LEVEL_WARN);
-  }
-
-  if (sender != NULL) {
-    Context::getInstance()->getLogger()->log(name.c_str(), "shutting down sender", Logger::LEVEL_WARN);
-    sender->stop();
-    if (!sender->wait(2000)) {
-      Context::getInstance()->getLogger()->log(name.c_str(), "unable to shutdown sender", Logger::LEVEL_WARN);
-    }
-    else {
-      delete sender;
-      Context::getInstance()->getLogger()->log(name.c_str(), "shutdown sender", Logger::LEVEL_WARN);
-    }
+    //Context::getInstance()->getLogger()->log(name.c_str(), "shutdown server socket", Logger::LEVEL_WARN);
   }
 
   Context::getInstance()->getLogger()->log(name.c_str(), "shutdown complete", Logger::LEVEL_WARN);
@@ -320,8 +308,11 @@ bool ClientConnection::processMessage(Message& msg){
 
 /** No descriptions */
 void ClientConnection::registerClient(string& name){
+  Context::getInstance()->getLogger()->log(name.c_str(), "registering connection", Logger::LEVEL_WARN);
   this->name = name;
-  sender->name = name;
+  if (sender != NULL) {
+    sender->setName(name);
+  }
   Context::getInstance()->getconnectionRegistry()->registerConnection(this, name);
   //notify any listeners of this registration
   Message* msg = new Message();

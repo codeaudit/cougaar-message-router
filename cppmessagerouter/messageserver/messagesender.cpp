@@ -26,12 +26,16 @@
 int tmpcount=0;
 MessageSender::MessageSender(ServerSocket* sock){
   this->ss = sock;
-  this->name = name;
+  this->name = "";;
   this->keepRunning = true;
   this->isStopped = false;
 }
 
 MessageSender::~MessageSender(){
+}
+
+void MessageSender::setName(string& name) {
+  this->name = name;
 }
 
 /** No descriptions */
@@ -40,8 +44,9 @@ void MessageSender::run() {
     while(keepRunning) {
       stackLock.lock();
       while (this->stack.size() > 0) {
-        sendMessage(*(this->stack.front()));
-        this->stack.pop_front();
+        Message *msg = stack.front();
+        stack.pop_front();
+        sendMessage(*msg);
       }
       stackLock.unlock();
       msleep(500);
@@ -49,15 +54,7 @@ void MessageSender::run() {
   }
   catch(SocketException& ex) {
     keepRunning = false;
-    Context::getInstance()->getLogger()->log(ex.description().c_str(), Logger::LEVEL_DEBUG);
-    stackLock.unlock();
-    //set this sender in the stopped state
-    stopLock.lock();
-    if (!isStopped) {
-      cleanupMessages();
-      isStopped = TRUE;
-    }
-    stopLock.unlock();  
+    Context::getInstance()->getLogger()->log(name.c_str(), ex.description().c_str(), Logger::LEVEL_DEBUG);  
   }
 }
 
@@ -95,12 +92,16 @@ void MessageSender::sendMessage(Message& msg){
 /** No descriptions */
 void MessageSender::stop(){
   stopLock.lock();
+  //Context::getInstance()->getLogger()->log("close: got stop lock", Logger::LEVEL_WARN);
   if (!isStopped) {
+    //Context::getInstance()->getLogger()->log("close:stopping", Logger::LEVEL_WARN);
     keepRunning = false;
     while (!this->finished()) {
       msleep(500);
     }
+    //Context::getInstance()->getLogger()->log("close: finished", Logger::LEVEL_WARN);
     cleanupMessages();
+    //Context::getInstance()->getLogger()->log("close: cleaned up messages", Logger::LEVEL_WARN);
     isStopped = TRUE;
   }
   stopLock.unlock();
@@ -109,12 +110,22 @@ void MessageSender::stop(){
 /** No descriptions */
 void MessageSender::cleanupMessages(){
   cleanupLock.lock();
+  //Context::getInstance()->getLogger()->log("cleanupmessages: got cleanup lock", Logger::LEVEL_WARN);
   stackLock.lock();
+  //Context::getInstance()->getLogger()->log("cleanupmessages: got stack lock", Logger::LEVEL_WARN);
+
   try {
-    while (this->stack.size() > 0) {
-      Message *msg = this->stack.front();
-      this->stack.pop_front();
-      delete msg;
+    while (!stack.empty()) {
+      //Context::getInstance()->getLogger()->log("cleanupmessages: stack contains items", Logger::LEVEL_WARN);
+      Message *msg = stack.front();
+      //Context::getInstance()->getLogger()->log("cleanupmessages: found message", msg->getsubject().c_str(), Logger::LEVEL_WARN);
+      stack.pop_front();
+      //Context::getInstance()->getLogger()->log("cleanupmessages: popped message from stack", Logger::LEVEL_WARN);
+
+      if (msg != NULL) {
+        delete msg;
+        //Context::getInstance()->getLogger()->log("cleanupmessages: deleted msg", Logger::LEVEL_WARN);
+      }      
     }
   }
   catch (...)  {
@@ -122,5 +133,6 @@ void MessageSender::cleanupMessages(){
   }
   stackLock.unlock();
   cleanupLock.unlock();
+  //Context::getInstance()->getLogger()->log("cleanupmessages: complete", Logger::LEVEL_WARN);
 
 }
