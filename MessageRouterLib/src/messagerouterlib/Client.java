@@ -457,19 +457,18 @@ public class Client extends JFrame
           int rate = Integer.parseInt(args[4]);
           Session session = new Session();
           long msgCount = 0;
-          while (true) {
-            if (session.connect(server, userName)) {
+          if (session.connect(server, userName)) {
+            while (true) {
               for (int i = 0; i < rate; i++) {
                 msgCount++;
                 Message reply = session.sendMessage(targetUser,
-                    ("subject " + String.valueOf(msgCount)), "body", 10);
+                    ("subject " + String.valueOf(msgCount)), "body", 10000);
                 if (reply == null) {
                   System.out.println("reply not received");
                 }
               }
-              session.dropConnection();
+              Thread.currentThread().sleep(5000);
             }
-            Thread.currentThread().sleep(5000);
           }
         }
       }
