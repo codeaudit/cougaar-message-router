@@ -180,10 +180,12 @@ public class Client extends JFrame
 
   void jTextAreaSendMessages_keyTyped(KeyEvent e) {
     if (e.getKeyChar() == '\n') {
+      //strip off the \n
+      String body = jTextAreaSendMessages.getText().substring(0, jTextAreaSendMessages.getText().length()-1);
       if (session != null && session.isConnected()) {
         session.postMessage(jTextFieldTargetUser.getText(),
                             jTextFieldSendSubject.getText(),
-                            jTextAreaSendMessages.getText());
+                            body);
       }
       jTextAreaSendMessages.setText("");
       jTextFieldSendSubject.setText("");

@@ -149,6 +149,7 @@ public class Session implements SyncMessageReceiverListener {
 
     try {
       //stop the receiver
+      this.postMessage("", "disconnect", "");
       receiver.interrupt();
       connection.close();
     }
