@@ -41,48 +41,41 @@ void MessageSender::setName(string& name) {
 
 /** No descriptions */
 void MessageSender::run() {
-  bool gotLock;
-  int tryCount;
-  
   try {
     while(keepRunning) {
-      gotLock = FALSE;
-      tryCount = 0;
+      //copy items from incomingStack to sendStack
+      sendStackLock.lock();  //lock the send stack so we can write to it
+      incomingStackLock.lock();  //lock the incomingStack so messages can't be added
+      while (!incomingStack.empty()) {
+        Message *msg = incomingStack.front();
+        incomingStack.pop_front();
+        if (msg != NULL) {
+          sendStack.push_back(msg);
+        }
+      }
+      incomingStackLock.unlock();  //release the incomingStack so messages can be added again
 
-      while (!(gotLock = stackLock.tryLock()) && (tryCount++ < 10)) {  //if we can't get a lock on the stack
-        msleep(250);  //sleep and try again
-      }
-      if (!gotLock) {  //log the fact that we couldn't get the lock
-        Context::getInstance()->getLogger()->log("run() unable to get lock on sender", name.c_str(), Logger::LEVEL_DEBUG);
-      }
-      while (keepRunning && (stack.size() > 0)) {
-        Message *msg = stack.front();
-        stack.pop_front();
+      while (keepRunning && (sendStack.size() > 0)) {
+        Message *msg = sendStack.front();
+        sendStack.pop_front();
         sendMessage(*msg);
       }
-      if (gotLock) {
-        stackLock.unlock();
-      }
+      sendStackLock.unlock();  //now we can release the sendStack
       msleep(200);
     }
   }
   catch(SocketException& ex) {
     keepRunning = FALSE;
-    if (gotLock) {
-      stackLock.unlock();
-    }
     Context::getInstance()->getLogger()->log(name.c_str(), ex.description().c_str(), Logger::LEVEL_DEBUG);  
     stopLock.lock();
     if (!isStopped) {
       cleanupMessages();
       isStopped = TRUE;
     }
+    stopLock.unlock();
   }
   catch(...) {
      keepRunning = FALSE;
-     if (gotLock) {
-       stackLock.unlock();
-     }
      Context::getInstance()->getLogger()->log("Unknown error in MessageSender::run()", name.c_str(), Logger::LEVEL_DEBUG);
      stopLock.lock();
      if (!isStopped) {
@@ -95,33 +88,20 @@ void MessageSender::run() {
 
 /** No descriptions */
 void MessageSender::addMessage(Message& msg){
-  int tryCount = 0;
-  bool gotLock = FALSE;
-  
   if (!keepRunning) {  //if the message router has stopped running
     delete &msg;  //delete the message
     return;
   }
 
-  if (stack.size() >= MAX_QUEUE_SIZE) {
+  if (incomingStack.size() >= MAX_QUEUE_SIZE) {
     Context::getInstance()->getLogger()->log("Max Send Queue size exceeded", name.c_str(), Logger::LEVEL_DEBUG);
     delete &msg;
     return;
   }
   
-  while (!(gotLock = stackLock.tryLock()) && (tryCount++ < 10)) {  //if we can't get a lock on the stack
-    msleep(250);  //sleep and try again  
-  }
-
-  if (!gotLock) {  //log the fact that we couldn't get the lock
-    Context::getInstance()->getLogger()->log("addMessage() unable to get lock on sender", name.c_str(), Logger::LEVEL_DEBUG);
-  }
-
-  stack.push_back(&msg);  //push the message o the stack even if we didn't get the lock
-
-  if (gotLock) {    //only release the lock if we actually acquired it
-    stackLock.unlock();
-  }
+  incomingStackLock.lock();  //lock the incomging stack
+  incomingStack.push_back(&msg);  //push the message onto the stack
+  incomingStackLock.unlock(); //unlock the incoming stack
 }
 
 /** No descriptions */
@@ -165,44 +145,41 @@ void MessageSender::stop(){
 
 /** No descriptions */
 void MessageSender::cleanupMessages(){
-  bool gotLock = FALSE;
-  int tryCount =0;
-  
   cleanupLock.lock();
-
-  while (!(gotLock = stackLock.tryLock()) && (tryCount++ < 100)) {  //if we can't get a lock on the stack
-    msleep(200);  //sleep and try again
-  }
-
-  if (!gotLock) {  //log the fact that we couldn't get the lock
-    Context::getInstance()->getLogger()->log("cleanupMessages() unable to get lock on sender", name.c_str(), Logger::LEVEL_DEBUG);
-  }
-
+  //cleanup the incoming stack
   try {
-    while (!stack.empty()) {
-      Message *msg = stack.front();
-      stack.pop_front();
-
+    incomingStackLock.lock();
+    while (!incomingStack.empty()) {
+       Message *msg = incomingStack.front();
+       incomingStack.pop_front();
+       if (msg != NULL) {
+          delete msg;
+      }
+    }
+    incomingStackLock.unlock();  //release the incomingStack
+  
+    //cleanup the sendStack
+    sendStackLock.lock();
+    while (!sendStack.empty()) {
+      Message *msg = sendStack.front();
+      sendStack.pop_front();
       if (msg != NULL) {
         delete msg;
       }      
     }
+    sendStackLock.unlock();
   }
   catch (...)  {
     Context::getInstance()->getLogger()->log("Error in cleanupMessages()", Logger::LEVEL_WARN);
   }
-  if (gotLock) {
-    stackLock.unlock();
-  }
   
   cleanupLock.unlock();
-  //Context::getInstance()->getLogger()->log("cleanupmessages: complete", Logger::LEVEL_WARN);
 
 }
 
 string& MessageSender::getStats() {
   char buffer[256];
 
-  sprintf(buffer, "queue length: %d",  stack.size());
+  sprintf(buffer, "incoming queue length: %d\nsend queue length: %d",  incomingStack.size(), sendStack.size());
   return *(new string(buffer));
 }

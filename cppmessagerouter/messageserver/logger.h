@@ -72,8 +72,9 @@ private: // Private attributes
   /**  */
   bool enabled;
   bool keepRunning;
-  list<LogEntry *> stack;
-  QMutex listLock;
+  list<LogEntry *> incomingStack;
+  list<LogEntry *> outgoingStack;
+  QMutex incomingStackLock;
   int currentLevel;
   string LEVEL_INFO_STR;
   string LEVEL_WARN_STR;

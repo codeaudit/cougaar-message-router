@@ -47,7 +47,8 @@ public: // Public attributes
   /**  */
   ServerSocket* ss;
   string name;
-  list<Message *> stack;
+  list<Message *> sendStack;
+  list<Message *> incomingStack;
   
 private: // Private methods
   /** No descriptions */
@@ -58,7 +59,8 @@ private: // Private attributes
   bool isStopped;
   QMutex cleanupLock;
   QMutex sendLock;
-  QMutex stackLock;
+  QMutex sendStackLock;
+  QMutex incomingStackLock;
   QMutex stopLock;
 
 };

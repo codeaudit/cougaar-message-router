@@ -67,15 +67,25 @@ void Logger::writeLogEntry(LogEntry *entry) {
 void Logger::run() {
   while (keepRunning) {
     msleep(5000);
-    //listLock.lock();
-    while (keepRunning && (stack.size() > 0)) {
-      LogEntry *entry = stack.front();
-      stack.pop_front();
+    //first copy any entries from the incoming stack to the outgoing stack
+    //this way we can free the incoming stack so additional log entries can be
+    //posted while this thread is busing writing the current postings to the
+    //log file.  The copy should be quick since we're just moving pointers between
+    //stacks
+    incomingStackLock.lock(); //lock the incoming stack so new entries can't be added
+    while (keepRunning && (incomingStack.size() > 0)) {
+      LogEntry *entry = incomingStack.front();
+      incomingStack.pop_front();
+      outgoingStack.push_back(entry);
+    }
+    incomingStackLock.unlock(); //unlock the incoming stack so new entries can be added again
+    
+    while (keepRunning && (outgoingStack.size() > 0)) {
+      LogEntry *entry = outgoingStack.front();
+      outgoingStack.pop_front();
       writeLogEntry(entry);
       delete entry;
     }
-    //listLock.unlock();
-    
   }
 }
 
@@ -129,9 +139,6 @@ string Logger::getLevelStr(int level) const {
 
 //does not check the enabled flag
 void Logger::forceLog(const char *msg) {
-  //char str[30];
-  //printf("%s - %s\n", getCurrentTimeStr((char *)str, sizeof(str)), msg);
-  //cout << flush;
   addLogEntry(new LogEntry(LEVEL_DEBUG, msg));
 }
 
@@ -140,9 +147,6 @@ void Logger::log(const char *msg, int level) {
   if (!enabled) return;
   if (level < currentLevel) return;
   
-  //char str[30];
-  //printf("%s  - %s: %s\n", getCurrentTimeStr((char *)str, sizeof(str)), getLevelStr(level).c_str(), msg);
-  //cout << flush;
   addLogEntry(new LogEntry(level, msg));
 }
 
@@ -150,9 +154,6 @@ void Logger::log(const char  *subject, const char *msg, int level) {
   if (!enabled) return;
   if (level < currentLevel) return;
 
-  //char str[30];
-  //printf("%s  - %s: %s : %s\n", getCurrentTimeStr((char *)str, sizeof(str)), getLevelStr(level).c_str(), subject, msg);
-  //cout << flush;
   addLogEntry(new LogEntry(level, subject, msg));
 }
 
@@ -160,9 +161,6 @@ void Logger::log(const char *from, const char* to, const char *subject, const ch
   if (!enabled) return;
   if (level < currentLevel) return;
 
-  //char str[30];
-  //printf("%s  - %s: from: %s - to: %s - %s : %s\n", getCurrentTimeStr((char *)str, sizeof(str)), getLevelStr(level).c_str(), from, to, subject, msg);
-  //cout << flush;
   addLogEntry(new LogEntry(level, from, to, subject, msg));
 }
 
@@ -179,9 +177,9 @@ void Logger::disable() {
 }
 
 void Logger::addLogEntry(LogEntry* entry) {
-  //listLock.lock();
-  stack.push_back((LogEntry *)entry);
-  //listLock.unlock();
+  incomingStackLock.lock();
+  incomingStack.push_back((LogEntry *)entry);
+  incomingStackLock.unlock();
 }
 
 void Logger::setLogFilePath(const char *path) {
