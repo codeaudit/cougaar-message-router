@@ -28,7 +28,8 @@ ConnectionValidator::~ConnectionValidator(){
 }
 
 void ConnectionValidator::run() {
-  while (true) {
+  keepRunning = true;
+  while (keepRunning) {
     msleep(1000);
     //loop though the connectionList and remove items that don't have the validation flag set
     if (!connectionList.empty()) {
@@ -67,4 +68,8 @@ void ConnectionValidator::validateConnection(ClientConnection* cc) {
     pingMsg->setthread("ping");
     cc->sendMessage(*pingMsg);
   }
+}
+
+void ConnectionValidator::stop() {
+  this->keepRunning = false;
 }

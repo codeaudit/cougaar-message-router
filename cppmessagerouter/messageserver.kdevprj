@@ -21,9 +21,9 @@ addcxxflags=
 bin_program=messageserver
 cflags=
 cppflags=
-cxxflags=\s-O1 -Wall
+cxxflags=\s-O0 -pg -g1 -Wall
 ldadd=$(LIB_QPE) $(LIB_QT)
-ldflags=\s           \s
+ldflags=\s             \s
 
 [General]
 AMChanged=false

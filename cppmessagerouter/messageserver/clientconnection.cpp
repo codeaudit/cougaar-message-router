@@ -119,6 +119,7 @@ void ClientConnection::close() {
   }
   if (sender != NULL) {
     sender->stop();
+    sender->wait(2000);
     delete sender;
   }
   delete this;

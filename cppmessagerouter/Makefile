@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.11 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.12 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -418,7 +418,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=messagerouter.spec subdirs Makefile.dist messagerouter.init TODO.txt messageserver.kdevses messageserver.spec 
+KDE_DIST=Makefile.dist messageserver.kdevses messageserver.spec messagerouter.init subdirs messagerouter.spec TODO.txt 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 

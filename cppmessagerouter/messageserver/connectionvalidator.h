@@ -34,9 +34,11 @@ public:
 
   virtual void run();
   void validateConnection(ClientConnection *cc);
+  void stop();
 
   private:
     ValidationList connectionList;
+    bool keepRunning;
 
 };
 
