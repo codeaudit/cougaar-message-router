@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 public class MessageReceiver extends Thread {
   private static final long MESSAGE_TIMEOUT = 60000;  //60 seconds
+  private boolean keepRunning = true;
   Socket s;
   String name;
   HashMap listenerMap = new HashMap();
@@ -58,7 +59,7 @@ public class MessageReceiver extends Thread {
 
   public void run() {
     byte[] header = new byte[8];
-    while (true) {
+    while (keepRunning) {
       try {
         int count = 0;
         int index = 0;

@@ -41,7 +41,7 @@ public class Session implements MessageReceiverListener {
   }
 
   /**
-   * synchronous mechanism for sending mechanims
+   * synchronous mechanism for sending messages
    *
    * @param toUser String
    * @param subject String
@@ -119,5 +119,27 @@ public class Session implements MessageReceiverListener {
    * disconnect
    */
   public void disconnect() {
+
+    try {
+      //stop the receiver
+      receiver.interrupt();
+      connection.close();
+    }
+    catch (Exception e){
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * isConnected
+   *
+   * @return boolean
+   */
+  public boolean isConnected() {
+    try {
+      return connection.isConnected();
+    }
+    catch (Exception e) {}
+    return false;
   }
 }
