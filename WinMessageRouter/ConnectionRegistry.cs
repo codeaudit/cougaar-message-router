@@ -95,5 +95,27 @@ namespace WinMessageRouter
 			}
 			return ret;
 		}
+
+		public string getSendQueueStats() 
+		{
+			string ret = "\n";
+
+			IEnumerator i = map.Keys.GetEnumerator();
+			while (i.MoveNext()) 
+			{
+				if (map[i.Current] != null) 
+				{
+					ret += i.Current + " :  ";
+					ret += ((ClientConnection)map[i.Current]).getSendQueueStats();
+					ret += "\n";
+				}
+				else 
+				{
+					Context.getInstance().getLogger().log("Found NULL connection", (string)i.Current, Logger.LEVEL_WARN);
+					map.Remove(i.Current);
+				}
+			}
+			return ret;		
+		}
 	}
 }

@@ -17,6 +17,7 @@ namespace WinMessageRouter
 		private bool keepRunning = true;
 		private string name;
 		private Mutex sendLock = new Mutex();
+		private int maxSendQueueSize = Context.getInstance().getMaxSendQueueSize();
 
 		public MessageSender(Socket sock)
 		{
@@ -40,7 +41,17 @@ namespace WinMessageRouter
 
 		public void addMessage(Message msg) 
 		{
-			stack.Push(msg);
+			if (keepRunning) 
+			{
+				if (stack.Count >= maxSendQueueSize) 
+				{
+					Context.getInstance().getLogger().log("Max Send Queue Size exceeded", name, Logger.LEVEL_DEBUG);
+				}
+				else 
+				{
+					stack.Push(msg);
+				}
+			}
 		}
 
 		public void run() 
@@ -60,6 +71,12 @@ namespace WinMessageRouter
 			{
 				Context.getInstance().getLogger().forceLog("MessageSender: " + ex.Message);
 			}
+		}
+
+		public string getStats() 
+		{
+			string ret = "queue length: " + stack.Count;
+			return ret;
 		}
 
 		public void sendMessage(Message msg) 

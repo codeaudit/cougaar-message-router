@@ -65,20 +65,26 @@ namespace WinMessageRouter
 			while (keepRunning) 
 			{
 				Thread.Sleep(TimeSpan.FromMilliseconds(5000));
-				while (keepRunning && (stack.Count > 0)) 
+				StreamWriter w = File.AppendText(logFilePath);
+				if (w != null) 
 				{
-					LogEntry entry = (LogEntry)stack.Pop();
-					if (entry.logLevel >= currentLevel) 
+					while (keepRunning && (stack.Count > 0)) 
 					{
-						writeLogEntry(entry);
+						LogEntry entry = (LogEntry)stack.Pop();
+						if (entry.logLevel >= currentLevel) 
+						{
+							writeLogEntry(w, entry);
+						}
 					}
+					w.Close();
 				}
 			}
 		}
 
-		private void writeLogEntry(LogEntry entry) 
+		private void writeLogEntry(TextWriter w, LogEntry entry) 
 		{
-			StreamWriter w = File.AppendText(logFilePath);
+			
+			//StreamWriter w = File.AppendText(logFilePath);
 
 			if (entry.subject == "") //msg only format
 			{ 
@@ -123,14 +129,27 @@ namespace WinMessageRouter
 		
 		public void forceLog(string msg) 
 		{
-			addLogEntry(new LogEntry(LEVEL_DEBUG, msg));
+			if (use_output_file) 
+			{
+				addLogEntry(new LogEntry(LEVEL_DEBUG, msg));
+			}
+			else {
+				writeLogEntry(Console.Out, new LogEntry(LEVEL_DEBUG, msg));
+			}
 		}
 
 		public void log(string msg, int level)
 		{
 			if (enabled) 
 			{
-				addLogEntry(new LogEntry(level, msg));
+				if (use_output_file) 
+				{
+					addLogEntry(new LogEntry(level, msg));
+				}
+				else 
+				{
+					writeLogEntry(Console.Out, new LogEntry(level, msg));
+				}
 			}
 		}
 
@@ -138,7 +157,14 @@ namespace WinMessageRouter
 		{
 			if (enabled) 
 			{
-				addLogEntry(new LogEntry(level, subject, msg));				
+				if (use_output_file) 
+				{
+					addLogEntry(new LogEntry(level, subject, msg));				
+				}
+				else 
+				{
+					writeLogEntry(Console.Out, new LogEntry(level, msg));
+				}
 			}		
 		}
 
@@ -146,7 +172,14 @@ namespace WinMessageRouter
 		{
 			if (enabled) 
 			{
-				addLogEntry(new LogEntry(level, from, to, subject, msg));
+				if (use_output_file) 
+				{
+					addLogEntry(new LogEntry(level, from, to, subject, msg));
+				}
+				else 
+				{
+					writeLogEntry(Console.Out, new LogEntry(level, msg));
+				}
 			}
 		}
 	}

@@ -85,6 +85,14 @@ namespace WinMessageRouter
 
 				//printf("cycle: %d  avg1: %f  avg2: %f  avg3: %f  max: %f\n", cycleCount, avg1, avg2, avg3, max);
 				cycleCount = (cycleCount + 1) % MAX_INTERVALS;  //adjust the cycle count
+
+				if (cycleCount %60 == 0) 
+				{
+					if (Context.getInstance().getStatLogging()) 
+					{
+						logStats();
+					}
+				}
 			}
 		}
 
@@ -140,6 +148,16 @@ namespace WinMessageRouter
 				currentInstance.start();
 			}
 			return currentInstance;
+		}
+
+		private void logStats() 
+		{
+			Context ctx = Context.getInstance();
+			Logger lgr = ctx.getLogger();
+			lgr.log("Server Stats", getStatsStr(), Logger.LEVEL_DEBUG);
+			lgr.log("Connection Stats", ctx.getConnectionRegistry().getConnectionStatsStr(), Logger.LEVEL_DEBUG);
+			lgr.log("Send Queue Stats", ctx.getConnectionRegistry().getSendQueueStats(), Logger.LEVEL_DEBUG);
+			lgr.log("Connection Profiles", ctx.getConnectionRegistry().getConnectionProfiles(), Logger.LEVEL_DEBUG);
 		}
 	}
 }

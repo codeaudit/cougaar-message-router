@@ -165,7 +165,14 @@ namespace WinMessageRouter
 				{
 					routingProfileMap[msg.To] = 1;
 				}
-				targetConnection.sendMessage(msg);
+				if (Context.getInstance().getSyncSend()) 
+				{
+					targetConnection.sendMessageNow(msg);
+				}
+				else 
+				{
+					targetConnection.sendMessage(msg);
+				}
 			}
 			else 
 			{
@@ -664,6 +671,11 @@ namespace WinMessageRouter
 		public long getOutgoingMsgCount() 
 		{
 			return outgoingMessageCount;
+		}
+
+		public string getSendQueueStats() 
+		{
+			return sender.getStats();
 		}
 
 	}
