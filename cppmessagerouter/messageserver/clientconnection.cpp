@@ -18,7 +18,7 @@
  
 #define PACKET_HEADER_SIZE 8
 #define MAX_BUF_SIZE 5124
-#define VERSION "MessageRouter 1.7.61"
+#define VERSION "MessageRouter 1.7.62"
 #define ADMIN_ID "admin"
 #define ADMIN_PWD "adminpwd"
  
@@ -650,7 +650,16 @@ bool ClientConnection::handleMessage(Message& msg){
        string& profiles = Context::getInstance()->getconnectionRegistry()->getConnectionProfiles();
        reply->setbody(profiles);
        delete &profiles;
-    }   
+    }
+    else if (subject == "get sync send status") {
+      reply->setsubject("sync send status");
+      if (Context::getInstance()->getSyncSend()) {
+        reply->setbody("enabled");
+      }
+      else {
+        reply->setbody("disabled");
+      }
+    }
     else if (subject == "help") {
       reply->setsubject("COMMAND LIST");
       string body = "\n";
