@@ -55,6 +55,7 @@ public class Client extends JFrame
   public Client() {
     try {
       jbInit();
+      Flasher.instance();  //initialize the flasher instance so that it's currently running
     }
     catch(Exception e) {
       e.printStackTrace();
@@ -284,17 +285,63 @@ public class Client extends JFrame
     }
   }
 
-
   void jListOnlineUsers_mouseClicked(MouseEvent e) {
     if (e.getClickCount() == 2) {
       jTextFieldTargetUser.setText((String)jListOnlineUsers.getSelectedValue());
+      Flasher.instance().flashBackground(jTextFieldTargetUser, Color.yellow, 2);
       jTextAreaSendMessages.requestFocus();
     }
   }
 
 }
 
+class Flasher extends Thread {
+  static private Flasher me;
+  Object semaphore = new Object();
+  Component c;
+  Color flashColor;
+  int flashCount;
 
+  private Flasher(){
+    start();
+  }
+  public static Flasher instance() {
+    if (me == null) me = new Flasher();
+    return me;
+  }
+
+  public static void flashBackground(Component c, Color flashColor, int flashCount) {
+    me.c = c;
+    me.flashColor = flashColor;
+    me.flashCount = flashCount;
+    synchronized(me.semaphore) {
+        me.semaphore.notifyAll();
+    }
+  }
+
+  public void run() {
+    while (true) {
+      synchronized (semaphore) {
+        try {
+          semaphore.wait();
+        }
+        catch (InterruptedException ex) {
+        }
+      }
+      Color origColor = c.getBackground();
+      for (int i=0; i<flashCount; i++) {
+        c.setBackground(flashColor);
+        try {
+          Thread.currentThread().sleep(100);
+        }
+        catch (Exception ex) {}
+        c.setBackground(origColor);
+      }
+    }
+  }
+
+
+}
 
 class Client_jButtonConnect_actionAdapter implements java.awt.event.ActionListener {
   Client adaptee;
